@@ -32,6 +32,7 @@ WHERE
         FROM sarappd s2
         WHERE s2.sarappd_pidm = s1.sarappd_pidm and s2.sarappd_appl_no = s1.sarappd_appl_no)
     AND SARAPPD_APDC_CODE = 'UT'
+    AND SARADAP_APST_CODE != 'W'
     AND SARADAP_TERM_CODE_ENTRY = '201909'
     AND spriden_change_ind is null
     --AND saradap_pidm in (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = 'SRC_LINK')
