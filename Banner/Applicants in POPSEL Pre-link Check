@@ -36,6 +36,11 @@ WHERE
     AND SARADAP_TERM_CODE_ENTRY = '201909'
     AND spriden_change_ind is null
     AND sorlcur_current_cde = 'Y'
+    AND SARADAP_RESD_CODE != '0'
+    AND saraatt_atts_code is not null
+    AND sorlcur_curr_rule is not null
+    AND sobcurr_program != 'DO NOT USE'
+    AND saradap_program_1 = sorlcur_program
     --AND saradap_pidm = '1239915'
     --AND saradap_pidm in (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = 'SRC_LINK')
 ORDER BY
