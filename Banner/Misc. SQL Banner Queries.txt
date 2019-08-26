@@ -1,0 +1,318 @@
+/*
+EXTRACT ALL STUDENTS ON A GIVEN PROGRAM WITH THEIR ASSOCIATED ATTRIBUTE AND STUDY PATH
+*/
+
+SELECT
+      spriden_id, sorlcur_key_seqno, sorlcur_program, sorlcur_priority_no, sgrstsp_term_code_eff, sgrstsp_key_seqno, sgrstsp_stsp_code, sgrsatt_stsp_key_sequence, sgrsatt_atts_code, sgrsatt_term_code_eff
+FROM
+    sorlcur
+    JOIN spriden on sorlcur_pidm = spriden_pidm
+    JOIN sgrstsp sp1 on sgrstsp_pidm = sorlcur_pidm and sgrstsp_key_seqno = sorlcur_key_seqno
+    JOIN sgrsatt on sgrsatt_pidm = sorlcur_pidm and sorlcur_key_seqno = sgrsatt_stsp_key_sequence
+WHERE
+    1=1
+     AND sorlcur_program in (
+                    'BSCH-AG-C',
+                    'BENGH-AG-C',
+                    'BSCH-MH-C',
+                    'BENGH-MED-C',
+                    'BSCH-LN-C',
+                    'BENGH-EEE-C',
+                    'BAH-BMC',
+                    'BAH-BMP',
+                    'BAH-BSE',
+                    'BAH-BU-C',
+                    'BAH-EL-C',
+                    'BAO-EL-C',
+                    'BAH-ELL',
+                    'BAO-ELL',
+                    'BSCH-ABW',
+                    'BSCH-ATR',
+                    'BSCH-SCF',
+                    'BSCH-ABW',
+                    'BSCH-ABI',
+                    'BSCH-ABH',
+                    'BSCH-HSI',
+                    'BSCH-HSI/CAN',
+                    'BSCH-HSI/HHS',
+                    'BSCH-HSI/HMY',
+                    'BSCH-HSI/HOS',
+                    'BSCH-HSI/HUR',
+                    'BSCH-HSI/PAG',
+                    'BSCH-HSI/PAL',
+                    'BSCH-HSI/PRI')*/
+     AND sorlcur_lmod_code = 'LEARNER'
+     AND spriden_change_ind is null
+     AND sp1.sgrstsp_term_code_eff = (
+         SELECT MAX(sp2.sgrstsp_term_code_eff) FROM sgrstsp sp2 WHERE sp2.sgrstsp_pidm = sp1.sgrstsp_pidm AND sp2.sgrstsp_key_seqno = sp1.sgrstsp_key_seqno)
+ORDER BY
+      spriden_id
+;
+
+/*
+EXTRACT ALL STUDENTS WITH A STUDY PATH WITHOUT AN ASSOCIATED ATTRIBUTE
+*/
+
+SELECT
+      spriden_id, sorlcur_key_seqno, sorlcur_program, sorlcur_priority_no, sgrstsp_term_code_eff, sgrstsp_key_seqno, sgrstsp_stsp_code, sgrsatt_stsp_key_sequence, sgrsatt_atts_code, sgrsatt_term_code_eff
+FROM
+    sorlcur
+    JOIN spriden on sorlcur_pidm = spriden_pidm
+    JOIN sgrstsp sp1 on sgrstsp_pidm = sorlcur_pidm and sgrstsp_key_seqno = sorlcur_key_seqno
+    LEFT JOIN sgrsatt on sgrsatt_pidm = sorlcur_pidm and sorlcur_key_seqno = sgrsatt_stsp_key_sequence
+WHERE
+    1=1
+     AND sorlcur_lmod_code = 'LEARNER'
+     AND spriden_change_ind is null
+     AND sp1.sgrstsp_term_code_eff = (
+         SELECT MAX(sp2.sgrstsp_term_code_eff) FROM sgrstsp sp2 WHERE sp2.sgrstsp_pidm = sp1.sgrstsp_pidm AND sp2.sgrstsp_key_seqno = sp1.sgrstsp_key_seqno)
+     AND sgrsatt_stsp_key_sequence is null
+ORDER BY
+      spriden_id
+;
+
+/*
+EXTRACT ALL STUDENTS WITH MULTIPLE ATTRIBUTES IN THE SAME BANNER TERM GROUPED BY STUDY PATH 
+
+TAKE OUT THE SGRSATT_ST_SP_KEY_SEQUENCE ARGUMENTS TO EXTRACT ALL STUDENTS WITH MULTIPLE STUDY PATHS IN THE SAME TERM
+*/
+
+SELECT
+      spriden_id, sgrsatt_stsp_key_sequence, COUNT(sgrsatt_atts_code) as "attribute_count", sgrsatt_term_code_eff
+FROM
+    sgrsatt
+    JOIN spriden on sgrsatt_pidm = spriden_pidm
+WHERE
+    1=1
+    AND spriden_change_ind is null
+HAVING
+      COUNT(sgrsatt_atts_code) > 1
+GROUP BY
+      sgrsatt_term_code_eff, spriden_id,sgrsatt_stsp_key_sequence
+;
+
+
+SELECT
+    spriden_id, sgbstdn_add.*
+FROM
+    sgbstdn_add
+    JOIN spriden ON (sgbstdn_pidm = spriden_pidm)
+WHERE
+    acenrol_status_1 IS NULL
+    AND spriden_change_ind IS NULL
+    AND spriden_id LIKE '19%'
+
+/*
+
+REPORT: Unconditional applicants with M103s
+
+*/
+
+SELECT DISTINCT
+      spriden_id as "Student_Number",
+      spriden_last_name as "Surname",
+      spriden_first_name as "Forename",
+      field10 as "M103",
+      saradap_program_1 as "Course",
+      saraatt_atts_code as "Entry_Stage",
+      sarchrt_chrt_code as "Cohort_Code",
+      s1.sarappd_apdc_code as "Application_Decision",
+      sornote_summary as "Credit_Note",
+      sornote_creation_date as "Credit_Note_Date"
+FROM
+    otgmgr.ae_dt509
+    JOIN spriden ON (ae_dt509.field1 = spriden_id)
+    JOIN saradap  ON (spriden_pidm = saradap_pidm)
+    JOIN sarappd s1 ON (saradap_pidm = sarappd_pidm AND saradap_term_code_entry = sarappd_term_code_entry AND saradap_appl_no = sarappd_appl_no)
+    LEFT JOIN sornote ON (spriden_pidm = sornote_pidm)
+    LEFT JOIN saraatt ON (saradap_pidm = saraatt_pidm AND saradap_appl_no = saraatt_appl_no)
+    LEFT JOIN sarchrt ON (saradap_pidm = sarchrt_pidm AND saradap_appl_no = sarchrt_appl_no)
+WHERE
+    1=1
+    AND field10 = 'M103'
+    AND spriden_change_ind is null
+    AND saradap_term_code_entry = '201909'
+    AND s1.sarappd_apdc_code in ('UT', 'UF')
+    AND saradap_apst_code != 'W'
+    AND s1.sarappd_seq_no = (
+        SELECT MAX(s2.sarappd_seq_no)
+        FROM sarappd s2
+        WHERE s2.sarappd_pidm = s1.sarappd_pidm AND s2.sarappd_appl_no = s1.sarappd_appl_no)
+    AND (sornote_ntcg_code = 'CRED' OR sornote_ntcg_code IS NULL)
+
+
+/*
+
+Unconditional students with advance standing and no M103
+
+BDM - Banner Document Management
+
+*/
+
+SELECT DISTINCT
+      spriden_id as "Student_Number",
+      spriden_last_name as "Surname",
+      spriden_first_name as "Forename",
+      saradap_program_1 as "Course",
+      saraatt_atts_code as "Entry_Stage",
+      sarchrt_chrt_code as "Cohort_Code",
+      s1.sarappd_apdc_code as "Application_Decision",
+      sornote_summary as "Credit_Note",
+      sornote_creation_date as "Credit_Note_Date"
+FROM
+    spriden 
+    JOIN saradap  ON (spriden_pidm = saradap_pidm)
+    JOIN sarappd s1 ON (saradap_pidm = sarappd_pidm AND saradap_term_code_entry = sarappd_term_code_entry AND saradap_appl_no = sarappd_appl_no)
+    LEFT JOIN sornote ON (spriden_pidm = sornote_pidm)
+    LEFT JOIN saraatt ON (saradap_pidm = saraatt_pidm AND saradap_appl_no = saraatt_appl_no)
+    LEFT JOIN sarchrt ON (saradap_pidm = sarchrt_pidm AND saradap_appl_no = sarchrt_appl_no)
+WHERE
+    1=1
+    AND spriden_change_ind is null
+    AND saradap_term_code_entry = '201909'
+    AND s1.sarappd_apdc_code in ('UT', 'UF')
+    AND saradap_apst_code != 'W'
+    AND saraatt_atts_code in ('S2', 'X2', 'XH', 'XM')
+    AND s1.sarappd_seq_no = (
+        SELECT MAX(s2.sarappd_seq_no)
+        FROM sarappd s2
+        WHERE s2.sarappd_pidm = s1.sarappd_pidm AND s2.sarappd_appl_no = s1.sarappd_appl_no)
+    AND (sornote_ntcg_code = 'CRED' OR sornote_ntcg_code IS NULL)
+    AND spriden_id NOT IN (
+        SELECT ae_dt509.field1 FROM otgmgr.ae_dt509 WHERE ae_dt509.field10 = 'M103'
+    )
+
+select * from otgmgr.ae_dt509 where field10 = 'M103'
+
+
+/*
+
+Academic Adviser Queries
+
+*/
+
+-- Gives total number of advisees for each adviser. MIGHT NEED TO ADD STUDY PATH STATUS
+
+select a.SPRIDEN_ID as Advisor_ID, a.SPRIDEN_LAST_NAME||', '|| a.SPRIDEN_FIRST_NAME as Advisor, COUNT(s.spriden_id) as TotalStudents
+from sgradvr, spriden a, spriden s, sorlcur
+where 1=1
+and sgradvr_advr_pidm = a.spriden_pidm
+and sgradvr_pidm = s.spriden_pidm
+and sgradvr_pidm = sorlcur_pidm
+and sorlcur_lmod_code = 'LEARNER'
+AND sorlcur_term_code_end IS NULL
+and sorlcur.sorlcur_levl_code = 'UG'
+AND a.SPRIDEN_CHANGE_IND IS NULL
+AND s.SPRIDEN_CHANGE_IND IS NULL
+GROUP BY a.SPRIDEN_ID, A.SPRIDEN_LAST_NAME, a.SPRIDEN_FIRST_NAME
+;
+
+-- Lists students and their adviser. Can be used to see all of an adviser's current students. MIGHT NEED TO ADD STUDY PATH STATUS
+
+select s.SPRIDEN_ID as Student_ID, s.SPRIDEN_LAST_NAME||', '|| s.SPRIDEN_FIRST_NAME as Student, a.SPRIDEN_ID as Advisor_ID, a.SPRIDEN_LAST_NAME ||', '|| a.SPRIDEN_FIRST_NAME as Advisor, SGRADVR_TERM_CODE_EFF as Term, SGRADVR_ADVR_CODE, SGRADVR_PRIM_IND
+from sgradvr, sorlcur, spriden s, spriden a
+where 1=1
+AND SGRADVR_PIDM = SORLCUR_PIDM
+AND SGRADVR_PIDM = s.SPRIDEN_PIDM
+and SGRADVR_ADVR_PIDM = a.SPRIDEN_PIDM
+and sorlcur_lmod_code = 'LEARNER'
+AND sorlcur.sorlcur_term_code_end IS NULL
+and sorlcur.sorlcur_levl_code = 'UG'
+AND s.SPRIDEN_CHANGE_IND IS NULL
+AND a.SPRIDEN_CHANGE_IND IS NULL
+---AND SGRADVR_ADVR_CODE = 'T001'
+---OR SGRADVR_ADVR_CODE = 'R004'
+ORDER BY s.SPRIDEN_PIDM, SGRADVR_ADVR_CODE
+;
+
+/*
+
+This query identifies Study Paths where the latest current / active SORLCUR record has an end date  
+but the Study Path is still flagged as ACTIVE
+
+*/
+
+SELECT
+    d1.spriden_id,
+    a1.sgrstsp_pidm,
+    a1.sgrstsp_key_seqno,
+    a1.sgrstsp_term_code_eff,
+    a1.sgrstsp_stsp_code,
+    b1.sorlcur_key_seqno,
+    b1.sorlcur_priority_no,
+    b1.sorlcur_end_date,
+    b1.sorlcur_term_code,
+    b1.sorlcur_term_code_end,
+    b1.sorlcur_curr_rule,
+    b1.sorlcur_current_cde,
+    b1.sorlcur_cact_code,
+    b1.sorlcur_program,
+    c1.sorlfos_csts_code
+FROM
+    sgrstsp a1
+    JOIN sorlcur b1 ON (a1.sgrstsp_pidm = b1.sorlcur_pidm AND a1.sgrstsp_key_seqno = b1.sorlcur_key_seqno)
+    JOIN sorlfos c1 ON (b1.sorlcur_pidm = c1.sorlfos_pidm AND b1.sorlcur_seqno = c1.sorlfos_lcur_seqno)
+    JOIN spriden d1 ON (a1.sgrstsp_pidm = d1.spriden_pidm)
+WHERE
+    1=1
+
+-- CURRENT STUDENT NUMBER
+    AND d1.spriden_change_ind IS NULL
+
+-- IDENTIFY ACTIVE STUDY PATHS
+    AND a1.sgrstsp_term_code_eff = (
+        SELECT MAX(a2.sgrstsp_term_code_eff)
+        FROM sgrstsp a2
+        WHERE a1.sgrstsp_pidm = a2.sgrstsp_pidm AND a1.sgrstsp_key_seqno = a2.sgrstsp_key_seqno
+    )
+    AND a1.sgrstsp_stsp_code = 'AS'
+
+-- RETURN RECORDS WHERE MAX TERM EFFECTIVE SORLCUR RECORD HAS AN END TERM
+    AND b1.sorlcur_lmod_code = 'LEARNER'
+    AND b1.sorlcur_term_code = (
+        SELECT MAX(b2.sorlcur_term_code)
+        FROM sorlcur b2
+        WHERE b1.sorlcur_pidm = b2.sorlcur_pidm AND b1.sorlcur_key_seqno = b2.sorlcur_key_seqno
+    )
+    AND sorlcur_term_code_end is not null
+
+-- ONLY INCLUDE PROPER SORLCUR RECORDS
+    AND c1.SORLFOS_csts_code = 'INPROGRESS'
+
+-- ONLY CURRENT SORLCUR
+   AND b1.sorlcur_current_cde = 'Y'
+
+ORDER BY
+    sorlcur_end_date ASC
+
+
+/*
+
+Extract AAs from ACADEMIC_ADVISERS table
+
+*/
+
+    SELECT
+      academic_advisers.*, smrprle_program_desc, smrprle_coll_code
+    FROM
+        academic_advisers
+        JOIN smrprle ON aa_programme = smrprle_program
+    ORDER BY
+        aa_programme
+
+/*
+
+Check for orphan SORLFOS records
+
+*/
+
+select sorlfos_pidm,sorlfos_lcur_seqno,SORLFOS_SEQNO
+from sorlfos
+where 1=1  --696211
+minus
+select sorlfos_pidm,sorlfos_lcur_seqno,SORLFOS_SEQNO
+from sorlfos
+,sorlcur
+where 1=1
+and sorlfos_pidm=sorlcur_pidm
+and sorlfos_lcur_seqno=sorlcur_seqno  --696211
