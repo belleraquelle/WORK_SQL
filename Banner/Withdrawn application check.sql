@@ -17,5 +17,5 @@ where a1.SARAPPD_pidm = b.SARAPPD_pidm and b.SARAPPD_APPL_NO = a1.SARAPPD_APPL_N
 and SARADAP_TERM_CODE_ENTRY = 201909
 --and SARADAP_APST_CODE not in ('I','W')
 and exists (select 1 from sorlcur where sorlcur_pidm = saradap_pidm and SORLCUR_LMOD_CODE = 'LEARNER' )
-AND spriden_pidm IN (SELECT glbextr_key FROM glbextr WHERE glbextr_selection = 'NEW_ENRL' AND glbextr_user_id = 'BANSECR_SCLARKE')
-AND GOREMAL_EMAL_CODE = 'PERS' AND GOREMAL_PREFERRED_IND = 'Y'
+--AND spriden_pidm IN (SELECT glbextr_key FROM glbextr WHERE glbextr_selection = 'NEW_ENRL' AND glbextr_user_id = 'BANSECR_SCLARKE')
+--AND GOREMAL_EMAL_CODE = 'PERS' AND GOREMAL_PREFERRED_IND = 'Y'

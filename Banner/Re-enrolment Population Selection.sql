@@ -6,22 +6,27 @@ Re-enrolment Population Selection
 
 SELECT
     d1.spriden_id,
-    a1.sgrstsp_pidm,
-    a1.sgrstsp_key_seqno,
-    a1.sgrstsp_term_code_eff,
-    a1.sgrstsp_stsp_code,
-    b1.sorlcur_key_seqno,
-    b1.sorlcur_priority_no,
-    b1.sorlcur_end_date,
-    b1.sorlcur_term_code,
-    b1.sorlcur_term_code_end,
-    b1.sorlcur_curr_rule,
-    c1.sorlfos_csts_code
+    t1.sgrstsp_pidm,
+    t1.sgrstsp_key_seqno,
+    t1.sgrstsp_term_code_eff,
+    t1.sgrstsp_stsp_code,
+    t2.sorlcur_key_seqno,
+    t2.sorlcur_priority_no,
+    t2.sorlcur_end_date,
+    t2.sorlcur_term_code,
+    t2.sorlcur_term_code_end,
+    t2.sorlcur_curr_rule,
+    t3.sorlfos_csts_code,
+    t4.sgbstdn_term_code_eff,
+    t4.acenrol_status_1,
+    t4.finenrol_status_1,
+    t4.overall_enrol_status_1
 FROM
-    sgrstsp a1
-    JOIN sorlcur b1 ON (a1.sgrstsp_pidm = b1.sorlcur_pidm AND a1.sgrstsp_key_seqno = b1.sorlcur_key_seqno)
-    JOIN sorlfos c1 ON (b1.sorlcur_pidm = c1.sorlfos_pidm AND b1.sorlcur_seqno = c1.sorlfos_lcur_seqno)
-    JOIN spriden d1 ON (a1.sgrstsp_pidm = d1.spriden_pidm)
+    sgrstsp t1
+    JOIN sorlcur t2 ON (t1.sgrstsp_pidm = t2.sorlcur_pidm AND t1.sgrstsp_key_seqno = t2.sorlcur_key_seqno)
+    JOIN sorlfos t3 ON (t2.sorlcur_pidm = t3.sorlfos_pidm AND t2.sorlcur_seqno = t3.sorlfos_lcur_seqno)
+    JOIN spriden d1 ON (t1.sgrstsp_pidm = d1.spriden_pidm)
+    JOIN sgbstdn_add t4 ON (t1.sgrstsp_pidm = t4.sgbstdn_pidm)
 WHERE
     1=1
 
@@ -29,38 +34,45 @@ WHERE
     AND d1.spriden_change_ind IS NULL
 
 -- IDENTIFY STUDENTS WITH ACTIVE STUDY PATHS
-    AND a1.sgrstsp_term_code_eff = (
+    AND t1.sgrstsp_term_code_eff = (
         SELECT MAX(a2.sgrstsp_term_code_eff)
         FROM sgrstsp a2
-        WHERE a1.sgrstsp_pidm = a2.sgrstsp_pidm AND a1.sgrstsp_key_seqno = a2.sgrstsp_key_seqno
-        AND a1.sgrstsp_stsp_code = 'AS'
+        WHERE t1.sgrstsp_pidm = a2.sgrstsp_pidm AND t1.sgrstsp_key_seqno = a2.sgrstsp_key_seqno
+        AND t1.sgrstsp_stsp_code = 'AS'
     )
 
 
 -- ONLY INCLUDE STUDY PATHS WITH A COMPLETION DATE BEYOND MASTERS DISSERTATION SUBMISSION DEADLINE
-    AND b1.sorlcur_term_code = (
+    AND t2.sorlcur_term_code = (
         SELECT MAX(b2.sorlcur_term_code)
         FROM sorlcur b2
-        WHERE b1.sorlcur_pidm = b2.sorlcur_pidm AND b1.sorlcur_key_seqno = b2.sorlcur_key_seqno
-        AND b1.sorlcur_lmod_code = 'LEARNER' AND sorlcur_end_date >= '01-OCT-2019'
+        WHERE t2.sorlcur_pidm = b2.sorlcur_pidm AND t2.sorlcur_key_seqno = b2.sorlcur_key_seqno
+        AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '01-OCT-2019'
+    )
+    AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '01-OCT-2019'
+
+-- LIMIT TO CURRENT SGBSTDN RECORD
+    AND t4.sgbstdn_term_code_eff = (
+        SELECT MAX(e2.sgbstdn_term_code_eff)
+        FROM sgbstdn e2
+        WHERE t4.sgbstdn_pidm = e2.sgbstdn_pidm
     )
 
-    AND b1.sorlcur_lmod_code = 'LEARNER' AND sorlcur_end_date >= '01-OCT-2019'
-
-    AND (b1.sorlcur_term_code != b1.sorlcur_term_code_end or b1.sorlcur_term_code_end is null)
-
--- ONLY INCLUDE PROPER SORLCUR RECORDS
-    AND c1.SORLFOS_csts_code = 'INPROGRESS'
+-- ONLY INCLUDE MAX PROPER SORLCUR RECORDS
+    AND t3.SORLFOS_csts_code = 'INPROGRESS'
+    AND t2.sorlcur_current_cde = 'Y'
+    AND t2.sorlcur_term_code_end IS NULL
 
 -- EXCLUDE STUDENTS WHO ARE ALREADY EN/AT/UT/WD FOR THE TERM
-    AND a1.sgrstsp_pidm NOT IN (
+    AND t1.sgrstsp_pidm NOT IN (
         SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '201909' AND sfrensp_ests_code in ('AT', 'EN', 'UT', 'WD')
     )
 
 -- EXCLUDE NEW STUDENTS
-    AND b1.sorlcur_term_code_admit != '201909'
+    AND t2.sorlcur_term_code_admit != '201909'
 
 --AND d1.spriden_id = '18013434'
+AND t4.acenrol_status_1 IS NULL
 
 ORDER BY
     sorlcur_end_date ASC
