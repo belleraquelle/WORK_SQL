@@ -1,7 +1,8 @@
 SELECT
     sgbstdn_term_code_admit,
-    spriden_id, spriden_last_name || ', ' || spriden_first_name AS "StudentName", 
-    sgbstdn_program_1,  
+    spriden_id, spriden_last_name || ', ' || spriden_first_name AS "StudentName",
+    sgbstdn_program_1,
+    sgbstdn_camp_code,
     a.gorsdav_value.accessVARCHAR2() as "Admit"
 FROM
     sgbstdn
