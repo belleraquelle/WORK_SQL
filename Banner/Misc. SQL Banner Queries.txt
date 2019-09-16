@@ -207,9 +207,7 @@ AND s.SPRIDEN_CHANGE_IND IS NULL
 GROUP BY a.SPRIDEN_ID, A.SPRIDEN_LAST_NAME, a.SPRIDEN_FIRST_NAME
 ;
 
--- Lists students and their adviser. Can be used to see all of an adviser's current students. MIGHT NEED TO ADD STUDY PATH STATUS
-
-select s.SPRIDEN_ID as Student_ID, s.SPRIDEN_LAST_NAME||', '|| s.SPRIDEN_FIRST_NAME as Student, a.SPRIDEN_ID as Advisor_ID, a.SPRIDEN_LAST_NAME ||', '|| a.SPRIDEN_FIRST_NAME as Advisor, SGRADVR_TERM_CODE_EFF as Term, SGRADVR_ADVR_CODE, SGRADVR_PRIM_IND
+select sorlcur_term_code_admit as "Admit Term", sorlcur_program as "Programme", s.SPRIDEN_ID as Student_ID, s.SPRIDEN_LAST_NAME||', '|| s.SPRIDEN_FIRST_NAME as Student, a.SPRIDEN_ID as Advisor_ID, a.SPRIDEN_LAST_NAME ||', '|| a.SPRIDEN_FIRST_NAME as Advisor, SGRADVR_TERM_CODE_EFF as Term, SGRADVR_ADVR_CODE, SGRADVR_PRIM_IND
 from sgradvr, sorlcur, spriden s, spriden a
 where 1=1
 AND SGRADVR_PIDM = SORLCUR_PIDM
@@ -219,9 +217,10 @@ and sorlcur_lmod_code = 'LEARNER'
 AND sorlcur.sorlcur_term_code_end IS NULL
 and sorlcur.sorlcur_levl_code = 'UG'
 AND s.SPRIDEN_CHANGE_IND IS NULL
-AND a.SPRIDEN_CHANGE_IND IS NULL
----AND SGRADVR_ADVR_CODE = 'T001'
+AND a.SPRIDEN_id like 'P%'
+AND SGRADVR_ADVR_CODE = 'T001'
 ---OR SGRADVR_ADVR_CODE = 'R004'
+AND a.spriden_id = 'P0043417'
 ORDER BY s.SPRIDEN_PIDM, SGRADVR_ADVR_CODE
 ;
 

@@ -1,4 +1,4 @@
--- By admit term
+-- By admit term    
 SELECT
     spriden_id, sorlcur.*
 FROM
