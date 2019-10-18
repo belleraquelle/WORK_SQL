@@ -24,7 +24,7 @@ WHERE
     1=1
     AND ssbsect_camp_code != sorlcur_camp_code
     AND ssbsect_subj_code != 'FEE'
-    AND sfrstcr_rsts_code 
+    AND sfrstcr_rsts_code IN ('RE','RW') 
 ORDER BY 
     spriden_id
 ;
