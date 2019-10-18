@@ -48,6 +48,9 @@ WHERE
         SELECT MAX(v2.sorlcur_term_code)
         FROM sorlcur v2
         WHERE v2.sorlcur_pidm = v1.sorlcur_pidm AND v2.sorlcur_key_seqno = v1.sorlcur_key_seqno)
+
+    -- Limit to Term Code of 201906 and beyond
+    AND sfbetrm_term_code >= '201906'
     
 ORDER BY
     spriden_id
