@@ -43,10 +43,10 @@ WHERE
     AND sfbetrm_term_code = '201909'
     AND sfrensp_term_code = '201909'
 
-    --Select maximum sorlcur record for each study path and limit to those with future end dates
+    --Select maximum term sorlcur record for each study path and limit to those with future end dates
     AND t1.sorlcur_lmod_code = 'LEARNER'
-    AND t1.sorlcur_key_seqno = (
-        SELECT MAX(t2.sorlcur_key_seqno)
+    AND t1.sorlcur_term_code = (
+        SELECT MAX(t2.sorlcur_term_code)
         FROM sorlcur t2
         WHERE t2.sorlcur_pidm = t1.sorlcur_pidm AND t2.sorlcur_key_seqno = t1.sorlcur_key_seqno)
     AND t1.sorlcur_current_cde = 'Y'
