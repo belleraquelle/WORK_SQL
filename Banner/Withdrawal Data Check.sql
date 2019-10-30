@@ -22,7 +22,8 @@ FROM
     JOIN spriden ON sfbetrm_pidm = spriden_pidm AND spriden_change_ind IS NULL
     JOIN sgrstsp s1 ON s1.sgrstsp_pidm = sfrensp_pidm AND s1.sgrstsp_key_seqno = sfrensp_key_seqno
     JOIN sgbstdn t1 ON t1.sgbstdn_pidm = sfbetrm_pidm
-    JOIN sorlcur v1 ON v1.sorlcur_pidm = sgrstsp_pidm AND v1.sorlcur_key_seqno = sgrstsp_key_seqno AND sorlcur_lmod_code = 'LEARNER' AND sorlcur_current_cde = 'Y'
+    JOIN sorlcur v1 ON v1.sorlcur_pidm = sgrstsp_pidm AND v1.sorlcur_key_seqno = sgrstsp_key_seqno 
+        AND sorlcur_lmod_code = 'LEARNER' AND sorlcur_current_cde = 'Y' AND sorlcur_term_code_end IS NULL
     JOIN sorlfos ON sorlfos_pidm = v1.sorlcur_pidm AND sorlfos_lcur_seqno = sorlcur_seqno
 WHERE
 
