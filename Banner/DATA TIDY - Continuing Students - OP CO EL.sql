@@ -1,3 +1,9 @@
+/*
+This query will return students who don't match on the specified ADMIT TERM (i.e they started before and thus are continuing) 
+who have an OP status on the academic enrolment SDE AND who have an overall enrolment status for the term of EL. This indicates 
+that 1) they haven't engaged with online enrolment and 2) they haven't been 'enrolled'
+*/
+
 SELECT DISTINCT
     spriden_id, 
     spriden_last_name || ', ' || spriden_first_name AS "StudentName",
@@ -14,9 +20,8 @@ SELECT DISTINCT
     sfbetrm_ests_code,
     sfrensp_key_seqno,
     sfrensp_ests_code,
-    s1.sgrstsp_stsp_code,
-    sgrsatt_atts_code,
-    sgrchrt_chrt_code
+    s1.sgrstsp_stsp_code
+    
 FROM
     sgbstdn
     JOIN spriden ON sgbstdn_pidm = spriden_pidm AND spriden_change_ind IS NULL
@@ -33,14 +38,11 @@ FROM
     JOIN sfbetrm ON sgbstdn_pidm = sfbetrm_pidm
     JOIN sfrensp ON sgbstdn_pidm = sfrensp_pidm AND sorlcur_key_seqno = sfrensp_key_seqno
     JOIN sgrstsp s1 ON sorlcur_pidm = sgrstsp_pidm AND sorlcur_key_seqno = sgrstsp_key_seqno
-    LEFT JOIN sgrsatt ON sgrsatt_pidm = sorlcur_pidm AND sgrsatt_stsp_key_sequence = sorlcur_key_seqno AND sgrsatt_term_code_eff = sorlcur_term_code_admit
-    LEFT JOIN sgrchrt ON sgrchrt_pidm = sorlcur_pidm AND sgrchrt_stsp_key_sequence = sorlcur_key_seqno AND sgrchrt_term_code_eff = sorlcur_term_code_admit
-
 WHERE
     1=1
     
     --Limit to current students
-    AND sgbstdn_STST_CODE = 'AS'
+    AND sgbstdn_stst_code = 'AS'
     
     --Limit to students who have completed online enrolment ***This will need adapting in future to look at max sgbstdn record for the statuses***
 --    AND (a.gorsdav_VALUE.accessVARCHAR2() = 'CO'
@@ -52,7 +54,6 @@ WHERE
     AND sfrensp_term_code = '201909'
 
     --Select maximum term sorlcur record for each study path and limit to those with future end dates
-    
     AND t1.sorlcur_term_code = (
         SELECT MAX(t2.sorlcur_term_code)
         FROM sorlcur t2
@@ -71,23 +72,13 @@ WHERE
         WHERE s2.sgrstsp_pidm = s1.sgrstsp_pidm AND s2.sgrstsp_key_seqno = s1.sgrstsp_key_seqno)
     AND s1.sgrstsp_stsp_code = 'AS'
     
-    
-    AND sorlcur_term_code_admit = '201909'
+    -- Limit to new students with an overall status of EL and an academic enrolment SDE of OP
     AND sfbetrm_ests_code = 'EL'
-    AND a.gorsdav_value.accessVARCHAR2() = 'CO'
-    AND b.gorsdav_value.accessVARCHAR2() = 'CO'
-    --AND c.gorsdav_value.accessVARCHAR2() IS NULL
+    AND a.gorsdav_value.accessVARCHAR2() = 'OP'
     
-    AND sorlcur_camp_code != 'AIE'
+    -- Exclude students with an admit term in the current term
+    AND sorlcur_term_code_admit != '201909'
     
 ORDER BY
       spriden_last_name || ', ' || spriden_first_name
 ;
-
-SELECT
-    *
-FROM
-    sorlcur
-    JOIN spriden on sorlcur_pidm = spriden_pidm and spriden_change_ind IS NULL
-WHERE
-    spriden_id = '19038464' AND sorlcur_lmod_code = 'LEARNER'

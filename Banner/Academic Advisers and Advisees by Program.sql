@@ -32,7 +32,7 @@ WHERE
     AND sorlcur_lmod_code = 'LEARNER'
     AND sorlcur_term_code_end IS NULL
     AND sorlcur_end_date > sysdate
-    AND sorlcur_program IN ('BSCH-PX') -- Enter programme codes here!
+    AND (sorlcur_program IN ('BSCH-PX') OR sorlcur_program LIKE '%PX%') -- Enter programme codes here!
 
     -- Max Advisor Record
     AND t1.sgradvr_term_code_eff = (

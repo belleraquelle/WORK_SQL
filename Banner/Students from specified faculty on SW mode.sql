@@ -49,7 +49,9 @@ WHERE
         1=1
         AND t2.sgrsatt_pidm = t1.sgrsatt_pidm 
         AND t2.sgrsatt_stsp_key_sequence = t1.sgrsatt_stsp_key_sequence
-        AND t2.sgrsatt_term_code_eff <= '201909')
+        AND t2.sgrsatt_term_code_eff <= 
+            (SELECT stvterm_code FROM stvterm WHERE SYSDATE BETWEEN stvterm_start_date AND stvterm_end_date)
+        )
         
 ORDER BY
     sorlcur_program,
