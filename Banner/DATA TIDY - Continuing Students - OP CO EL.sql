@@ -77,7 +77,7 @@ WHERE
     AND a.gorsdav_value.accessVARCHAR2() = 'OP'
     
     -- Exclude students with an admit term in the current term
-    AND sorlcur_term_code_admit != '201909'
+    AND sorlcur_term_code_admit < '201909'
     
 ORDER BY
       spriden_last_name || ', ' || spriden_first_name
