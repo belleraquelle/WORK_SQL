@@ -18,8 +18,8 @@ SELECT
 FROM
     sorlcur
     JOIN spriden s1 ON sorlcur_pidm = s1.spriden_pidm
-    JOIN sgradvr t1 ON sorlcur_pidm = t1.sgradvr_pidm
-    JOIN spriden s2 ON sgradvr_advr_pidm = s2.spriden_pidm
+    LEFT JOIN sgradvr t1 ON sorlcur_pidm = t1.sgradvr_pidm
+    LEFT JOIN spriden s2 ON sgradvr_advr_pidm = s2.spriden_pidm
 
 WHERE
     1=1
