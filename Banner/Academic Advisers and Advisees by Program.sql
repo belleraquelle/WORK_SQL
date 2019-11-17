@@ -36,7 +36,8 @@ WHERE
             SELECT MAX(t2.sgradvr_term_code_eff)
             FROM sgradvr t2
             WHERE t2.sgradvr_pidm = t1.sgradvr_pidm)
-        OR t1.sgradvr_advr_code IS NULL)
+        OR t1.sgradvr_advr_code IS NULL -- Return students who are missing an AA
+        )
         
     
 ORDER BY
