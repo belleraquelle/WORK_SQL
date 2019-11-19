@@ -1,8 +1,6 @@
 /*
-This query will return students who don't match on the specified ADMIT TERM (i.e they started before and thus are continuing) 
-who have a CO status on the academic enrolment SDE, have an OP or NULL value in the financial enrolment SDE 
-AND who have an overall enrolment status for the term of EL. This indicates that 1) they have engaged with online enrolment 
-but 2) haven't completed financial enrolment
+This will return any student with the specified combination of enrolment SDEs but 
+who hasn't got a registration status for the specified term AT ALL
 */
 
 SELECT DISTINCT
@@ -36,9 +34,9 @@ FROM
         AND c.gorsdav_attr_name = 'OVERALL_ENROL_STATUS'
         AND c.gorsdav_PK_PARENTTAB=sgbstdn_PIDM||CHR(1)||sgbstdn_TERM_CODE_EFF
     JOIN sorlcur t1 ON sgbstdn_pidm = sorlcur_pidm
-    JOIN sfbetrm ON sgbstdn_pidm = sfbetrm_pidm
-    JOIN sfrensp ON sgbstdn_pidm = sfrensp_pidm AND sorlcur_key_seqno = sfrensp_key_seqno
-    JOIN sgrstsp s1 ON sorlcur_pidm = sgrstsp_pidm AND sorlcur_key_seqno = sgrstsp_key_seqno
+    LEFT JOIN sfbetrm ON sgbstdn_pidm = sfbetrm_pidm
+    LEFT JOIN sfrensp ON sgbstdn_pidm = sfrensp_pidm AND sorlcur_key_seqno = sfrensp_key_seqno
+    LEFT JOIN sgrstsp s1 ON sorlcur_pidm = sgrstsp_pidm AND sorlcur_key_seqno = sgrstsp_key_seqno
 WHERE
     1=1
     
@@ -50,10 +48,12 @@ WHERE
 --        AND b.gorsdav_VALUE.accessVARCHAR2() = 'CO'
 --        AND c.gorsdav_VALUE.accessVARCHAR2() IN ('CP','CO','OK'))
         
-    --Limit to specific enrolment terms
-    AND sfbetrm_term_code = '201909'
-    AND sfrensp_term_code = '201909'
+    -- Pick up student without a TERM or STUDY PATH registration record for specified term
+    AND (sgbstdn_pidm NOT IN (SELECT sfbetrm_pidm FROM sfbetrm WHERE sfbetrm_term_code = '201909')
+        OR sgbstdn_pidm NOT IN (SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '201909'))
 
+    AND ((sfbetrm_term_code = '201909' OR sfbetrm_term_code IS NULL) OR (sfrensp_term_code = '201909' OR sfrensp_term_code IS NULL))
+    
     --Select maximum term sorlcur record for each study path and limit to those with future end dates
     AND t1.sorlcur_term_code = (
         SELECT MAX(t2.sorlcur_term_code)
@@ -74,12 +74,12 @@ WHERE
     AND s1.sgrstsp_stsp_code = 'AS'
     
     -- Limit to new students with an overall status of EL and an academic enrolment SDE of OP
-    AND sfbetrm_ests_code = 'EL'
-    AND a.gorsdav_value.accessVARCHAR2() = 'CO'
-    AND (b.gorsdav_value.accessVARCHAR2() = 'OP' OR b.gorsdav_value.accessVARCHAR2() IS NULL)
+    -- AND sfbetrm_ests_code = 'EL'
+    -- AND a.gorsdav_value.accessVARCHAR2() = 'CO'
+    -- AND (b.gorsdav_value.accessVARCHAR2() = 'OP' OR b.gorsdav_value.accessVARCHAR2() IS NULL)
     
-    -- Exclude students with an admit term in the current term
-    AND sorlcur_term_code_admit = '201909'
+    -- Exclude students with an admit term less than the current term
+    AND sorlcur_term_code_admit < '201909'
     
 ORDER BY
       spriden_last_name || ', ' || spriden_first_name
