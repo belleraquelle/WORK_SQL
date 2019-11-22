@@ -74,7 +74,8 @@ WHERE
     AND s1.sgrstsp_stsp_code = 'AS'
     
     -- Limit to new students with an overall status of EL and an academic enrolment SDE of OP
-    AND sfbetrm_ests_code = 'EL'
+    AND s
+    
     AND a.gorsdav_value.accessVARCHAR2() = 'CO'
     AND (b.gorsdav_value.accessVARCHAR2() = 'OP' OR b.gorsdav_value.accessVARCHAR2() IS NULL)
     
