@@ -4,7 +4,7 @@ Re-enrolment Population Selection
 
 */
 
-SELECT
+SELECT DISTINCT
     d1.spriden_id,
     t1.sgrstsp_pidm,
     t1.sgrstsp_key_seqno,
@@ -12,6 +12,7 @@ SELECT
     t1.sgrstsp_stsp_code,
     t2.sorlcur_key_seqno,
     t2.sorlcur_priority_no,
+    t2.sorlcur_program,
     t2.sorlcur_end_date,
     t2.sorlcur_term_code,
     t2.sorlcur_term_code_end,
@@ -21,12 +22,14 @@ SELECT
     t4.acenrol_status_1,
     t4.finenrol_status_1,
     t4.overall_enrol_status_1
+
 FROM
     sgrstsp t1
     JOIN sorlcur t2 ON (t1.sgrstsp_pidm = t2.sorlcur_pidm AND t1.sgrstsp_key_seqno = t2.sorlcur_key_seqno)
     JOIN sorlfos t3 ON (t2.sorlcur_pidm = t3.sorlfos_pidm AND t2.sorlcur_seqno = t3.sorlfos_lcur_seqno)
     JOIN spriden d1 ON (t1.sgrstsp_pidm = d1.spriden_pidm)
     JOIN sgbstdn_add t4 ON (t1.sgrstsp_pidm = t4.sgbstdn_pidm)
+
 WHERE
     1=1
 
@@ -47,7 +50,7 @@ WHERE
         SELECT MAX(b2.sorlcur_term_code)
         FROM sorlcur b2
         WHERE t2.sorlcur_pidm = b2.sorlcur_pidm AND t2.sorlcur_key_seqno = b2.sorlcur_key_seqno
-        AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '31-JAN-2020'
+        AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '01-FEB-2020'
     )
     AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '01-FEB-2020'
 
@@ -76,9 +79,16 @@ WHERE
 
 -- EXCLUDE NEW STUDENTS
     AND t2.sorlcur_term_code_admit != '202001'
+    
+-- ONLY INCLUDE STUDENTS WHO HAVE NOT BEEN OPENED FOR ENROLMENT YET
+AND T4.acenrol_status_1 IS NULL
 
 --AND d1.spriden_id = '18013434'
+
+-- STUDENT HASN'T BEEN INVITED TO ENROL YET
 AND t4.acenrol_status_1 IS NULL
 
 ORDER BY
+    sorlcur_program,
     sorlcur_end_date ASC
+;
