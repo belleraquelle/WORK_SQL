@@ -44,6 +44,7 @@ WHERE
     AND saradap_program_1 = sorlcur_program
     AND SMRPRLE_PROGRAM_DESC != 'DO NOT USE'
     AND SMRPRLE_PROGRAM_DESC != 'NOT IN USE'
+    AND SORLFOS_MAJR_CODE != 'PGA'
     --AND saradap_pidm = '1239915'
     --AND saradap_pidm in (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = 'SRC_LINK')
 ORDER BY
