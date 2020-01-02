@@ -22,14 +22,12 @@ SELECT DISTINCT
     t4.acenrol_status_1,
     t4.finenrol_status_1,
     t4.overall_enrol_status_1
-
 FROM
     sgrstsp t1
     JOIN sorlcur t2 ON (t1.sgrstsp_pidm = t2.sorlcur_pidm AND t1.sgrstsp_key_seqno = t2.sorlcur_key_seqno)
     JOIN sorlfos t3 ON (t2.sorlcur_pidm = t3.sorlfos_pidm AND t2.sorlcur_seqno = t3.sorlfos_lcur_seqno)
     JOIN spriden d1 ON (t1.sgrstsp_pidm = d1.spriden_pidm)
     JOIN sgbstdn_add t4 ON (t1.sgrstsp_pidm = t4.sgbstdn_pidm)
-
 WHERE
     1=1
 
@@ -69,24 +67,20 @@ WHERE
 
 -- EXCLUDE STUDENTS WHO ARE ALREADY EN/AT/UT/WD FOR THE ENROLMENT TERM
     AND t1.sgrstsp_pidm NOT IN (
-        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202001' AND sfrensp_ests_code in ('AT', 'EN', 'UT', 'WD')
+        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202001' AND sfrensp_ests_code IN ('AT', 'EN', 'UT', 'WD')
     )
 
 -- EXCLUDE STUDENTS WHO DON'T HAVE A FINAL STATUS FOR PREVIOUS TERM
     AND t1.sgrstsp_pidm NOT IN (
-        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '201909' AND sfrensp_ests_code = 'EL'
+        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '201909' AND (sfrensp_ests_code NOT IN ('AT', 'EN', 'UT') OR sfrensp_ests_code IS NULL)
     )
 
 -- EXCLUDE NEW STUDENTS
     AND t2.sorlcur_term_code_admit != '202001'
-    
+
 -- ONLY INCLUDE STUDENTS WHO HAVE NOT BEEN OPENED FOR ENROLMENT YET
-AND T4.acenrol_status_1 IS NULL
-
---AND d1.spriden_id = '18013434'
-
--- STUDENT HASN'T BEEN INVITED TO ENROL YET
-AND t4.acenrol_status_1 IS NULL
+-- AND T4.acenrol_status_1 IS NULL
+-- AND t4.acenrol_status_1 IS NULL
 
 ORDER BY
     sorlcur_program,
