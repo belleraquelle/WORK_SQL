@@ -13,6 +13,7 @@ SELECT DISTINCT
     SARCHRT_CHRT_CODE AS "COHORT_CODE",
     SORLCUR_PROGRAM AS "CURRICULUM_PROGRAMME_CODE",
     SORLCUR_CURR_RULE AS "CURRICULUM_RULE",
+    SORLCUR_START_DATE AS "CURRICULUM_START_DATE",
     SOBCURR_PROGRAM AS "SOBCURR_PROGRAMME",
     SORLFOS_MAJR_CODE AS "MAJOR",
     SMRPRLE_PROGRAM_DESC AS "PROGRAMME_DESCRIPTION"
@@ -34,17 +35,14 @@ WHERE
         WHERE s2.sarappd_pidm = s1.sarappd_pidm and s2.sarappd_appl_no = s1.sarappd_appl_no)
     AND SARAPPD_APDC_CODE = 'UT'
     AND SARADAP_APST_CODE != 'W'
-    AND SARADAP_TERM_CODE_ENTRY = '201909'
+    AND SARADAP_TERM_CODE_ENTRY = '202001'
     AND spriden_change_ind is null
     AND sorlcur_current_cde = 'Y'
-    AND SARADAP_RESD_CODE != '0'
-    AND saraatt_atts_code is not null
-    AND sorlcur_curr_rule is not null
-    AND sobcurr_program != 'DO NOT USE'
-    AND saradap_program_1 = sorlcur_program
-    AND SMRPRLE_PROGRAM_DESC != 'DO NOT USE'
-    AND SMRPRLE_PROGRAM_DESC != 'NOT IN USE'
-    AND SORLFOS_MAJR_CODE != 'PGA'
+    --AND SARADAP_RESD_CODE != '0'
+    --AND saraatt_atts_code is not null
+    --AND sorlcur_curr_rule is not null
+    --AND sobcurr_program != 'DO NOT USE'
+    --AND saradap_program_1 = sorlcur_program
     --AND saradap_pidm = '1239915'
     --AND saradap_pidm in (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = 'SRC_LINK')
 ORDER BY

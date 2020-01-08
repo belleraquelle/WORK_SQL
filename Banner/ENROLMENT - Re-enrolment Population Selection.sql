@@ -60,7 +60,7 @@ WHERE
     )
     AND sgbstdn_stst_code = 'AS'
 
--- ONLY INCLUDE MAX PROPER SORLCUR RECORDS
+-- ONLY INCLUDE PROPER SORLCUR RECORDS
     AND t3.SORLFOS_csts_code = 'INPROGRESS'
     AND t2.sorlcur_current_cde = 'Y'
     AND t2.sorlcur_term_code_end IS NULL
@@ -79,7 +79,6 @@ WHERE
     AND t2.sorlcur_term_code_admit != '202001'
 
 -- ONLY INCLUDE STUDENTS WHO HAVE NOT BEEN OPENED FOR ENROLMENT YET
--- AND T4.acenrol_status_1 IS NULL
 -- AND t4.acenrol_status_1 IS NULL
 
 ORDER BY
