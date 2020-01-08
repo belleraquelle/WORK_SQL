@@ -1,8 +1,3 @@
-/* 
-The query below pulls through all of the student + components that are missing a mark/grade where the module is flagged as L7DS in SCRATTR
-and ends between October and December and so may be considered at the December Committees 
-*/
-
 SELECT 
     shrmrks_term_code, 
     shrmrks_crn, 
