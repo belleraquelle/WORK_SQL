@@ -51,6 +51,7 @@ WHERE
         AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '01-FEB-2020'
     )
     AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '01-FEB-2020'
+    AND t2.sorlcur_camp_code NOT IN ('AIE')
 
 -- LIMIT TO CURRENT SGBSTDN RECORD
     AND t4.sgbstdn_term_code_eff = (
