@@ -7,13 +7,22 @@ SELECT DISTINCT
     ssbsect_camp_code,
     ssbsect_ptrm_code,
     ssbsect_ptrm_start_date,
-    ssbsect_ptrm_end_date
+    ssbsect_ptrm_end_date,
+    ssbsect_score_open_date,
+    ssbsect_score_cutoff_date,
+    ssbsect_reas_score_open_date,
+    ssbsect_reas_score_ctof_date,
+    ssbssec_final_grde_pub_date,
+    ssbssec_det_grde_pub_date,
+    ssbssec_reas_grde_pub_date,
+    ssbssec_reas_det_grde_pub_date
 
 FROM
     shrmrks
     JOIN ssbsect ON shrmrks_crn = ssbsect_crn AND shrmrks_term_code = ssbsect_term_code
     JOIN scbcrse c1 ON ssbsect_subj_code = c1.scbcrse_subj_code AND ssbsect_crse_numb = c1.scbcrse_crse_numb AND c1.scbcrse_eff_term = (SELECT MAX(c2.scbcrse_eff_term) FROM scbcrse c2 WHERE c2.scbcrse_subj_code = c1.scbcrse_subj_code AND c2.scbcrse_crse_numb = c1.scbcrse_crse_numb) -- Issue here with courses that have changed name over time. Would need to return the title that the section's term code falls within
     JOIN sfrstcr ON shrmrks_term_code = sfrstcr_term_code AND shrmrks_crn = sfrstcr_crn AND shrmrks_pidm = sfrstcr_pidm
+    LEFT JOIN ssbssec ON ssbsect_crn = ssbssec_crn AND ssbsect_term_code = ssbssec_term_code
     
 WHERE
     1=1
