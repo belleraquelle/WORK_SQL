@@ -119,7 +119,7 @@ WHERE
 
 --SILVER BOOK SELECTION
 SELECT DISTINCT
-	spriden_pidm, spriden_id
+	spriden_pidm
 FROM
 	spriden
 WHERE
