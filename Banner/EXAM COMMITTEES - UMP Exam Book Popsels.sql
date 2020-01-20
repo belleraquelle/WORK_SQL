@@ -27,6 +27,7 @@ WHERE
 			AND t1.sorlcur_lmod_code = 'LEARNER'
 			AND (ump_1 = 'Y' OR (sorlcur_program IN ('CHEU', 'DHEU') AND sorlcur_camp_code IN ('OBO','OBS')))
 			AND sorlcur_end_date BETWEEN '01-DEC-2019' AND '20-JAN-2020'
+			AND sorlcur_term_code_admit < '201909'
 			
 		)
 		--UMP students with a pending award status
