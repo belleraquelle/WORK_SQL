@@ -115,6 +115,8 @@ WHERE
 			)
 			AND t1.sgbstdn_stst_code = 'AS'
 			AND sorlcur_term_code_admit != '202001'
+			AND sorlcur_end_date > = '01-DEC-2019'
+            AND sorlcur_term_code_end IS NULL
 	)
 ;
 
