@@ -116,6 +116,7 @@ WHERE
 			AND t1.sgbstdn_stst_code = 'AS'
 			AND sorlcur_term_code_admit != '202001'
 	)
+;
 
 --SILVER BOOK SELECTION
 SELECT DISTINCT
