@@ -1,6 +1,6 @@
 /*
 
-Returns students with a mark of zero on a component but not component comment.
+Returns students with a mark of zero on a component but no component comment.
 Chase up with ML to check if NOT ATTEMPTED should be entered.
 
 */
