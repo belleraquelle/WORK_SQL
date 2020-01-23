@@ -1,13 +1,13 @@
 SELECT
-    spriden_id,
-    spriden_first_name ||' ' || spriden_last_name,
-    shrtckn_term_code,
-    shrtckn_ptrm_code,
-    shrtckn_crn,
-    shrtckn_subj_code,
-    shrtckn_crse_numb,
-    shrtckn_crse_title,
-    shrtckg_grde_code_final
+    spriden_id AS "Student_Number",
+    spriden_first_name ||' ' || spriden_last_name AS "Student_Name",
+    shrtckn_term_code AS "Term_Code",
+    shrtckn_ptrm_code AS "Part_of_Term",
+    shrtckn_crn AS "CRN",
+    shrtckn_subj_code AS "Subject",
+    shrtckn_crse_numb AS "Course_Number",
+    shrtckn_crse_title AS "Module_Title",
+    shrtckg_grde_code_final AS "Final_Grade"
 
 FROM
     shrtckg s1
@@ -35,7 +35,7 @@ WHERE
 
             -- You can remove the NOT in the following section of the query to bring through UMP modules
 
-            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb NOT IN (
+            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb IN (
                 SELECT gorsdav_pk_parenttab
                 FROM gorsdav
                 WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
@@ -61,5 +61,6 @@ WHERE
 ORDER BY
     shrtckn_term_code, 
     shrtckn_subj_code, 
-    shrtckn_crse_numb
+    shrtckn_crse_numb,
+    spriden_first_name ||' ' || spriden_last_name
 ;
