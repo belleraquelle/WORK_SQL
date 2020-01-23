@@ -13,14 +13,12 @@ SELECT
     scbcrse_title,
     ssbsect_camp_code,
     ssbsect_ptrm_code,
-    ssbsect_ptrm_start_date,
-    ssbsect_ptrm_end_date,
-    sfrstcr_rsts_code,
+    s1.spriden_id,
+    s1.spriden_last_name || ', ' || s1.spriden_first_name AS "Student_Name",
+    --sfrstcr_rsts_code,
     shrgcom_name, 
     shrgcom_description,
     shrgcom_weight, 
-    s1.spriden_id,
-    s1.spriden_last_name || ', ' || s1.spriden_first_name AS "Student_Name",
     shrmrks_score, 
     shrmrks_percentage, 
     shrmrks_grde_code, 
@@ -52,7 +50,7 @@ WHERE
 
             -- You can remove the NOT in the following section of the query to bring through UMP modules
 
-            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb NOT IN (
+            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb IN (
                 SELECT gorsdav_pk_parenttab
                 FROM gorsdav
                 WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
