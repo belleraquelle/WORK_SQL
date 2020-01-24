@@ -1,14 +1,21 @@
 SELECT DISTINCT
     sorlcur_coll_code AS "Faculty_Code",
+    CASE
+        WHEN sorlcur_coll_code IN ('BH','BL','BT','HH','HT','LT') THEN '# Cross Faculty Joint Programme'
+        WHEN sorlcur_coll_code = 'BU' THEN 'Oxford Brookes Business School'
+        WHEN sorlcur_coll_code = 'HL' THEN 'Faculty of Health and Life Sciences'
+        WHEN sorlcur_coll_code = 'HS' THEN 'Faculty of Humanities and Social Sciences'
+        WHEN sorlcur_coll_code = 'TD' THEN 'Faculty of Technology, Design and Environment'
+    END AS "Faculty",
 	shrapsp_pidm AS "Student_PIDM",
     spriden_id AS "Student_ID",
     spriden_last_name || ', ' || spriden_first_name AS "Student_Name",
     t1.sorlcur_program AS "Programme_of_Study",
     s1.sgrsatt_atts_code AS "Current_Stage",
     CASE
-        WHEN shrapsp_pidm IN (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = '202001_GOLD') THEN 'Gold'
-        WHEN shrapsp_pidm IN (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = '202001_SILVER') THEN 'Grey'
-        WHEN shrapsp_pidm IN (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = '202001_PINK') THEN 'Pink'
+        WHEN shrapsp_pidm IN (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = '202001_GOLD') THEN '3. Gold'
+        WHEN shrapsp_pidm IN (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = '202001_SILVER') THEN '2. Grey'
+        WHEN shrapsp_pidm IN (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = '202001_PINK') THEN '1. Pink'
     END AS "Exam_Book",
     --s1.sgrsatt_term_code_eff,
     --shrapsp_astd_code_end_of_term,
@@ -47,6 +54,7 @@ WHERE
     AND t1.sorlcur_current_cde = 'Y'
     AND t1.sorlcur_cact_code = 'ACTIVE'
 ORDER BY
+    "Faculty",
     "Faculty_Code",
     "Programme_of_Study",
     "Exam_Book",
@@ -54,5 +62,3 @@ ORDER BY
     "Progression_Decision",
     "Additional_Decision"
 ;
-
-select * from sorlcur;
