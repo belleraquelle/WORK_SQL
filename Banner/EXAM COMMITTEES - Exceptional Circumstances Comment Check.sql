@@ -1,39 +1,45 @@
 /*
 
-This report will bring back any modules from academic history where the student has either a DD comment against a component or
-a DD overall grade. 
-
-Various controls will limit the report to certain module selections (e.g. UMP vs non-UMP).
-
-Can be used to ensure consistency between component comments and final grades.
+This report will output all assessment components on modules that meet the criteria (term, attribute, ump/non-ump)
+that currently have an Exceptional Circumstances comment against them. This can be used to check for any marks that might need
+to be zeroed out.
 
 */
 
-SELECT DISTINCT
+SELECT 
     shrmrks_term_code, 
     shrmrks_crn, 
     ssbsect_subj_code, 
     ssbsect_crse_numb,
+    scbcrse_title,
     ssbsect_camp_code,
+    --ssbsect_ptrm_code,
+    --ssbsect_ptrm_start_date,
+    --ssbsect_ptrm_end_date,
+    --sfrstcr_rsts_code,
+    shrgcom_name, 
+    shrgcom_description,
+    shrgcom_weight, 
     s1.spriden_id,
     s1.spriden_last_name || ', ' || s1.spriden_first_name AS "Student_Name",
-    CASE 
-        WHEN s1.spriden_id||shrtckn_term_code||shrtckn_crn IN (
-            SELECT spriden_id||shrmrks_term_code||shrmrks_crn 
-            FROM shrmrks JOIN spriden ON shrmrks_pidm = spriden_pidm
-            WHERE shrmrks_comments = 'Deferred Disciplinary'
-        ) THEN 'DD component comment'
-        ELSE 'No DD component comment'
-        END AS "DD_Comment",
-    shrtckg_grde_code_final
+    shrmrks_score, 
+    shrmrks_percentage, 
+    shrmrks_grde_code, 
+    shrmrks_comments, 
+    shrmrks_completed_date, 
+    shrmrks_roll_date, 
+    shrmrks_data_origin,
+    s2.spriden_last_name || ', ' || s2.spriden_first_name AS "Module_Leader"
 
 FROM
     shrmrks
     JOIN shrgcom ON shrmrks_term_code = shrgcom_term_code AND shrmrks_crn = shrgcom_crn  AND shrmrks_gcom_id = shrgcom_id
     JOIN ssbsect ON shrmrks_crn = ssbsect_crn AND shrmrks_term_code = ssbsect_term_code
+    JOIN scbcrse c1 ON ssbsect_subj_code = c1.scbcrse_subj_code AND ssbsect_crse_numb = c1.scbcrse_crse_numb AND c1.scbcrse_eff_term = (SELECT MAX(c2.scbcrse_eff_term) FROM scbcrse c2 WHERE c2.scbcrse_subj_code = c1.scbcrse_subj_code AND c2.scbcrse_crse_numb = c1.scbcrse_crse_numb) -- Issue here with courses that have changed name over time. Would need to return the title that the section's term code falls within
     JOIN spriden s1 ON shrmrks_pidm = s1.spriden_pidm and s1.spriden_change_ind IS NULL
-    JOIN shrtckn ON shrmrks_pidm = shrtckn_pidm AND shrtckn_term_code = shrmrks_term_code AND shrtckn_crn = shrmrks_crn
-    JOIN shrtckg t1 ON shrtckn_seq_no = shrtckg_tckn_seq_no AND shrtckn_pidm = t1.shrtckg_pidm AND shrtckn_term_code = t1.shrtckg_term_code
+    JOIN sfrstcr ON shrmrks_term_code = sfrstcr_term_code AND shrmrks_crn = sfrstcr_crn AND shrmrks_pidm = sfrstcr_pidm
+    LEFT JOIN sirasgn ON sirasgn_term_code = ssbsect_term_code AND sirasgn_crn = ssbsect_crn AND sirasgn_primary_ind = 'Y'
+    LEFT JOIN spriden s2 ON sirasgn_pidm = s2.spriden_pidm AND s2.spriden_change_ind IS NULL
     
 WHERE
     1=1
@@ -53,7 +59,7 @@ WHERE
                 FROM gorsdav
                 WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
             )
-            
+
             -- Use this clause to control whether or not you see modules with particular attributes
             AND CONCAT(ssbsect_subj_code, ssbsect_crse_numb) NOT IN (
                 SELECT CONCAT(scrattr_subj_code, scrattr_crse_numb)
@@ -73,13 +79,16 @@ WHERE
                     AND ssbsect_ptrm_code IN ('S1', 'T1', 'A2', 'A3', 'A4', 'B1', 'D1'))
                 )
         )
+	
+    -- Only include students who are still registered on the module
+    AND sfrstcr_rsts_code IN ('RE','RW')
     
-    -- Pick the latest grade for each module in Academic History
-    AND t1.shrtckg_seq_no = (SELECT MAX(t2.shrtckg_seq_no) FROM shrtckg t2 WHERE t2.shrtckg_pidm = t1.shrtckg_pidm AND t2.shrtckg_term_code = t1.shrtckg_term_code AND t2.shrtckg_tckn_seq_no = t1.shrtckg_tckn_seq_no)
+    -- Limit to 'off-campus' campuses
+    --AND ssbsect_camp_code NOT IN ('OBO', 'OBS')
 
-    -- Only include rows with a deferred disciplinary comment OR a DD grade
-    AND (shrmrks_comments IN ('Deferred Disciplinary') OR shrtckg_grde_code_final = 'DD')
+    -- Only include rows with a comment of 'Exceptional Circumstances'
+    AND shrmrks_comments IN ('Exceptional Circumstances')
 
 ORDER BY
-    shrmrks_crn
+    shrmrks_term_code, ssbsect_subj_code, ssbsect_crse_numb, s1.spriden_last_name || ', ' || s1.spriden_first_name
 ;
