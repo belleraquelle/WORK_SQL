@@ -53,6 +53,8 @@ WHERE
         WHERE t2.sorlcur_pidm = t1.sorlcur_pidm AND t2.sorlcur_key_seqno = t1.sorlcur_key_seqno AND t2.sorlcur_lmod_code = 'LEARNER')
     AND t1.sorlcur_current_cde = 'Y'
     AND t1.sorlcur_cact_code = 'ACTIVE'
+    AND t1.sorlcur_lmod_code = 'LEARNER'
+
 ORDER BY
     "Faculty",
     "Faculty_Code",
