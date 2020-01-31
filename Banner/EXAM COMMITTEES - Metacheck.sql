@@ -84,10 +84,7 @@ WHERE
     AND t1.sorlcur_lmod_code = 'LEARNER'
     
     -- Limit to current EC decisions and pending awards
-    -- AND ((shrapsp_term_code = '201909' AND shrapsp_activity_date >= '01-JAN-2020') OR (shrdgmr_degs_code = 'PN' AND shrapsp_term_code IS NULL))
-
-    -- OR Limit to all Gold Book students
-    AND t1.sorlcur_pidm IN (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = '202001_GOLD')
+    AND ((shrapsp_term_code = '201909' AND shrapsp_activity_date >= '01-JAN-2020') OR (shrdgmr_degs_code = 'PN' AND shrapsp_term_code IS NULL))
     
 ORDER BY
     "Exam_Book",
