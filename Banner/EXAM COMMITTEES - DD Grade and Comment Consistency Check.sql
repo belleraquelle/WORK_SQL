@@ -5,7 +5,7 @@ a DD overall grade.
 
 Various controls will limit the report to certain module selections (e.g. UMP vs non-UMP).
 
-Can be used to ensure consistency between component comments and final grades.
+Can be used to ensure consistency between component comments and final grades and exam committee decision.
 
 */
 
@@ -25,7 +25,8 @@ SELECT DISTINCT
         ) THEN 'DD component comment'
         ELSE 'No DD component comment'
         END AS "DD_Comment",
-    shrtckg_grde_code_final
+    shrtckg_grde_code_final,
+    shrapsp_astd_code_end_of_term
 
 FROM
     shrmrks
@@ -34,6 +35,7 @@ FROM
     JOIN spriden s1 ON shrmrks_pidm = s1.spriden_pidm and s1.spriden_change_ind IS NULL
     JOIN shrtckn ON shrmrks_pidm = shrtckn_pidm AND shrtckn_term_code = shrmrks_term_code AND shrtckn_crn = shrmrks_crn
     JOIN shrtckg t1 ON shrtckn_seq_no = shrtckg_tckn_seq_no AND shrtckn_pidm = t1.shrtckg_pidm AND shrtckn_term_code = t1.shrtckg_term_code
+    LEFT JOIN shrapsp ON shrmrks_pidm = shrapsp_pidm AND shrapsp_term_code = '201909'
     
 WHERE
     1=1
