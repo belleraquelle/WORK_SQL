@@ -32,6 +32,7 @@ FROM
     JOIN sfbetrm ON sgbstdn_pidm = sfbetrm_pidm
     JOIN sfrensp ON sgbstdn_pidm = sfrensp_pidm AND sorlcur_key_seqno = sfrensp_key_seqno
     JOIN sgrstsp s1 ON sorlcur_pidm = sgrstsp_pidm AND sorlcur_key_seqno = sgrstsp_key_seqno
+    
 WHERE
     1=1
     
