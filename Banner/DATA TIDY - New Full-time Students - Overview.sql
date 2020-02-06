@@ -67,7 +67,7 @@ WHERE
         WHERE s2.sgrstsp_pidm = s1.sgrstsp_pidm AND s2.sgrstsp_key_seqno = s1.sgrstsp_key_seqno)
     AND s1.sgrstsp_stsp_code = 'AS'
     
-    -- Limit to students with an overall status of EL and an academic enrolment SDE of OP
+    -- Limit to students with an overall status of EL
     AND sfbetrm_ests_code = 'EL'
     --AND a.gorsdav_value.accessVARCHAR2() = 'CO'
     --AND (b.gorsdav_value.accessVARCHAR2() = 'CO' OR b.gorsdav_value.accessVARCHAR2() IS NULL)
