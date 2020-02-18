@@ -78,7 +78,7 @@ WHERE
     -- Only include students who are still registered on the module
     AND sfrstcr_rsts_code IN ('RE','RW')
 
-    -- Limit to 'off-campus' campuses
+    -- Limit to 'on-campus' campuses
     AND ssbsect_camp_code IN ('OBO', 'OBS')
 
     AND shrgcom_description LIKE '%Exam%'
