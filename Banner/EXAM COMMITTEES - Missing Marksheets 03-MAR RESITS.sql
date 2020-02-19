@@ -1,3 +1,10 @@
+
+/*
+
+THIS IS NOT READY. IT DOES NOT DO WHAT THE TITLE IMPLIES IT DOES.
+
+*/
+
 SELECT 
     shrmrks_term_code, 
     shrmrks_crn, 
