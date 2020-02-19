@@ -9,7 +9,7 @@ FROM
     JOIN registrations reg on sus.regn_id = reg.regn_id
 WHERE
     1=1
-    AND grade LIKE 'R%'
+    AND grade IN ('RC', 'RE', 'RB', 'DC', 'DE', 'DB', 'ZE', 'ZB', 'ZC')
     AND ui.end_date > '01-MAY-19'
     AND u.level_code = '7'
 ORDER BY
