@@ -1,3 +1,9 @@
+/*
+
+Students with a TWD / temporary withdrawal status for last term and an enrolled status for the current term
+
+*/
+
 SELECT
     spriden_id, s1.sfbetrm_pidm, sgbstdn_program_1
 FROM
