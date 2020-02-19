@@ -7,7 +7,7 @@ FROM
     JOIN sorlcur ON sfrensp_pidm = sorlcur_pidm AND sfrensp_key_seqno = sorlcur_key_seqno AND sorlcur_lmod_code = 'LEARNER'
 WHERE
     1=1
-    AND sfbetrm_term_code = '201909'
+    AND sfbetrm_term_code = '202001'
     AND sfbetrm_ests_code = 'EN'
     AND sfbetrm_pidm NOT IN (
         SELECT DISTINCT sfrstcr_pidm
@@ -15,19 +15,18 @@ WHERE
         WHERE 
             1=1
             AND (
-                (ssbsect_term_code = '201901' 
-                    AND ssbsect_ptrm_code IN ('S21', 'T21', 'T31', 'E10', 'E12', 'F10', 'G10', 'I8'))
-                OR
-                (ssbsect_term_code = '201906' 
-                    AND ssbsect_ptrm_code IN ('S31', 'T41', 'J5','J7', 'K5'))
-                OR
-                (ssbsect_term_code = '201909')
+                -- Modules ending in current semester
+                (ssbsect_ptrm_end_date BETWEEN '01-JAN-20' AND '31-MAY-20') OR 
+                
+                -- Modules starting before or within current semester and extending past the end of the current semester
+                (ssbsect_ptrm_start_date BETWEEN '01-SEP-19' AND '31-MAY-20' AND ssbsect_ptrm_end_date BETWEEN '01-JUN-20' AND '31-AUG-20')
+                
                 )
             AND sfrstcr_rsts_code IN ('RE','RW')
             )
     AND sorlcur_camp_code IN ('OBO','OBS','DL')
     AND sorlcur_levl_code != 'RD'
-    AND sorlcur_term_code_admit = '201909'
+    --AND sorlcur_term_code_admit = '201909'
     --AND spriden_id = '15050603'
 ORDER BY
     sorlcur_program
