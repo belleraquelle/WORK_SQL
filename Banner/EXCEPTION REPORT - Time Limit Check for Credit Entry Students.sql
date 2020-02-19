@@ -34,6 +34,8 @@ WHERE
         )
         
     AND sorlcur_term_code_end IS NULL
+    AND sorlcur_levl_code IN ('FD','UG','PG')
+    AND sorlcur_camp_code IN ('OBO','OBS','DL')
     
     AND d1.sgrstsp_term_code_eff = (
         SELECT MAX(d2.sgrstsp_term_code_eff)
