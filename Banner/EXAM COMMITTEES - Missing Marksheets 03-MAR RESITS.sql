@@ -1,7 +1,7 @@
 
 /*
 
-THIS IS NOT READY. IT DOES NOT DO WHAT THE TITLE IMPLIES IT DOES.
+This will return both entered resit marks AND students who were eligible for a resit.
 
 */
 
@@ -22,6 +22,7 @@ SELECT
     shrmrks_score, 
     shrmrks_percentage, 
     shrmrks_grde_code, 
+    shrmrks_gchg_code,
     shrtckg_grde_code_final,
     shrmrks_comments, 
     shrmrks_completed_date, 
@@ -54,47 +55,51 @@ WHERE
         WHERE
             1=1
 
-            -- You can remove the NOT in the following section of the query to bring through UMP modules
+             -- You can remove the NOT in the following section of the query to bring through UMP modules
 
---            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb IN (
---                SELECT gorsdav_pk_parenttab
---                FROM gorsdav
---                WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
---            )
---
---            AND CONCAT(ssbsect_subj_code, ssbsect_crse_numb) NOT IN (
---                SELECT CONCAT(scrattr_subj_code, scrattr_crse_numb)
---                FROM scrattr
---                WHERE scrattr_attr_code = 'L7DS'
---            )
+            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb NOT IN (
+                SELECT gorsdav_pk_parenttab
+                FROM gorsdav
+                WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
+            )
+
+            AND CONCAT(ssbsect_subj_code, ssbsect_crse_numb) IN (
+                SELECT CONCAT(scrattr_subj_code, scrattr_crse_numb)
+                FROM scrattr
+                WHERE scrattr_attr_code = 'L7DS'
+            )
+            
             AND (
+                (ssbsect_term_code = '201809' 
+                    AND ssbsect_ptrm_code IN ('S13','T14','D10'))
+                OR
                 (ssbsect_term_code = '201901' 
-                    AND ssbsect_ptrm_code IN ('S21', 'T21', 'T31', 'E10', 'E12', 'F10', 'G10', 'I8'))
+                    AND ssbsect_ptrm_code IN ('E8', 'S23','T24','T34','E9','G7','I5'))
                 OR
                 (ssbsect_term_code = '201906' 
-                    AND ssbsect_ptrm_code IN ('S31', 'T41', 'J5','J7', 'K5'))
-                OR
-                (ssbsect_term_code = '201909' 
-                    AND ssbsect_ptrm_code IN ('S1', 'T1', 'A2', 'A3', 'A4', 'B1', 'D1'))
+                    AND ssbsect_ptrm_code IN ('J3','S3','T4','K3'))
                 )
         )
-
-    -- Only include rows from the marks table where the score is equal to zero and no component comment has been entered
-    AND (shrmrks_comments IS NULL OR shrmrks_comments = 'Exceptional Circumstances')
-
+        
     -- Only include students who are still registered on the module
     AND sfrstcr_rsts_code IN ('RE','RW')
-
+    
     -- Limit to 'on-campus' campuses
-    AND ssbsect_camp_code IN ('OBO', 'OBS')
+    --AND ssbsect_camp_code IN ('OBO', 'OBS')
+    
+    -- Exclude anyone with a DR grade
+    AND shrtckg_grde_code_final != 'DR'
 
-    AND shrgcom_description LIKE '%Exam%'
-
-
-    AND (shrmrks_grde_code IN ('F', 'FAIL') OR shrmrks_comments = 'Exceptional Circumstances')
-
-    -- Only include instances where either the overall grade is a fail OR the student has exceptional circumstances for the component
-    AND (shrtckg_grde_code_final IN ('F','FAIL') OR shrmrks_comments = 'Exceptional Circumstances')
-
+    AND (
+            -- Either include students who are eligible for a resit...
+            (
+                (shrmrks_comments IS NULL OR shrmrks_comments = 'Exceptional Circumstances')
+                AND (shrmrks_grde_code IN ('F', 'FAIL') OR shrmrks_comments = 'Exceptional Circumstances')
+                AND (shrtckg_grde_code_final IN ('F','FAIL') OR shrmrks_comments = 'Exceptional Circumstances')
+            )
+            -- ...Or students who have had a resit grade entered
+            OR (shrmrks_gchg_code IN ('RE', 'UR'))
+        )
 ORDER BY
     shrmrks_crn, shrgcom_name, shrgcom_description, s1.spriden_last_name, s1.spriden_id
+;
