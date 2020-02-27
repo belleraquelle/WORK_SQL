@@ -50,8 +50,8 @@ WHERE
 --        AND c.gorsdav_VALUE.accessVARCHAR2() IN ('CP','CO','OK'))
         
     --Limit to specific enrolment terms
-    AND sfbetrm_term_code = '201909'
-    AND sfrensp_term_code = '201909'
+    AND sfbetrm_term_code = '202001'
+    AND sfrensp_term_code = '202001'
 
     --Select maximum term sorlcur record for each study path and limit to those with future end dates
     AND t1.sorlcur_term_code = (
@@ -74,10 +74,10 @@ WHERE
     
     -- Limit to new students with an overall status of EL and an academic enrolment SDE of OP
     AND sfbetrm_ests_code = 'EL'
-    AND a.gorsdav_value.accessVARCHAR2() = 'OP'
+    --AND a.gorsdav_value.accessVARCHAR2() = 'OP'
     
     -- Exclude students with an admit term in the current term
-    AND sorlcur_term_code_admit < '201909'
+    AND sorlcur_term_code_admit < '202001'
     
 ORDER BY
       spriden_last_name || ', ' || spriden_first_name
