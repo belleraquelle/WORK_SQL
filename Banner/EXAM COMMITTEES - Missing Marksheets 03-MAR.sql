@@ -39,7 +39,7 @@ WHERE
         SELECT
             ssbsect_crn
         FROM
-            ssbsect
+            ssbsec
         WHERE
             1=1
 
@@ -56,15 +56,16 @@ WHERE
                 FROM scrattr
                 WHERE scrattr_attr_code = 'L7DS'
             )
+            
             AND (
                 (ssbsect_term_code = '201901' 
-                    AND ssbsect_ptrm_code IN ('S21', 'T21', 'T31', 'E10', 'E12', 'F10', 'G10', 'I8'))
+                    AND ssbsect_ptrm_code IN ('S21', 'T21', 'T31', 'E10', 'E12', 'F10', 'G6', 'G10', 'I8'))
                 OR
                 (ssbsect_term_code = '201906' 
                     AND ssbsect_ptrm_code IN ('S31', 'T41', 'J5','J7', 'K5'))
                 OR
                 (ssbsect_term_code = '201909' 
-                    AND ssbsect_ptrm_code IN ('S1', 'T1', 'A2', 'A3', 'A4', 'B1', 'D1'))
+                    AND ssbsect_ptrm_code IN ('S1', 'T1', 'A2', 'A3', 'A4', 'A6', 'B1', 'D1'))
                 )
         )
 
