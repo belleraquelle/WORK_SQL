@@ -5,7 +5,7 @@ SELECT
     sorlcur_term_code_end,
     sorlcur_program,
     sorlcur_styp_code,
-    SUM(s1.sfrstcr_credit_hr)
+    SUM(s1.sfrstcr_credit_hr) AS "Credit"
     
 FROM
     sfrstcr s1
