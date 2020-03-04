@@ -66,9 +66,11 @@ WHERE
         WHERE c1.shrapsp_pidm = c2.shrapsp_pidm AND c1.shrapsp_stsp_key_sequence = c2.shrapsp_stsp_key_sequence AND (c2.shrapsp_astd_code_end_of_term IS NOT NULL OR c2.shrapsp_prev_code IS NOT NULL)
         )
         OR c1.shrapsp_term_code IS NULL)
+
+    -- Only include decisions recorded after stipulated date
+    AND (shrapsp_activity_date >= '20-FEB-2020' OR shrapsp_activity_date IS NULL)
     
     -- Limit to max sgrstsp term effective record and only return it if it is active
-    
     AND d1.sgrstsp_term_code_eff = (
         SELECT MAX(d2.sgrstsp_term_code_eff)
         FROM sgrstsp d2
