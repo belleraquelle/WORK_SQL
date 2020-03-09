@@ -1,4 +1,5 @@
 SELECT DISTINCT
+    spriden_id,
 	shrapsp_pidm,
     shrapsp_term_code,
     shrapsp_astd_code_end_of_term,
@@ -7,6 +8,7 @@ FROM
 	shrapsp
 	JOIN sorlcur ON shrapsp_stsp_key_sequence = sorlcur_key_seqno AND shrapsp_pidm = sorlcur_pidm
 	JOIN sobcurr_add ON sorlcur_curr_rule = sobcurr_curr_rule
+    JOIN spriden ON shrapsp_pidm = spriden_pidm AND spriden_change_ind IS NULL
 WHERE
     1=1
 	--AND shrapsp_astd_code_end_of_term = 'G3'
