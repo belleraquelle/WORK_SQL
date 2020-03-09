@@ -3,7 +3,11 @@ SELECT DISTINCT
 	shrapsp_pidm,
     shrapsp_term_code,
     shrapsp_astd_code_end_of_term,
-    shrapsp_prev_code
+    shrapsp_prev_code,
+    CASE
+        WHEN shrapsp_pidm IN (SELECT gorvisa_pidm FROM gorvisa WHERE gorvisa_vtyp_code = 'T4') THEN 'Y'
+        ELSE 'N' 
+    END AS "Tier_4"
 FROM
 	shrapsp
 	JOIN sorlcur ON shrapsp_stsp_key_sequence = sorlcur_key_seqno AND shrapsp_pidm = sorlcur_pidm
