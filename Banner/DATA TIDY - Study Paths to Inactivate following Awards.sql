@@ -1,4 +1,5 @@
 SELECT 
+
     spriden1.spriden_id AS "StudentNumber",
     shrdgmr1.shrdgmr_pidm AS "AwardPidm",
     shrdgmr1.shrdgmr_degs_code AS "AwardStatus",
@@ -12,7 +13,9 @@ SELECT
         WHEN sorlcur1.sorlcur_end_date BETWEEN '01-MAY-19' AND '31-AUG-19' THEN '201909'
         WHEN sorlcur1.sorlcur_end_date BETWEEN '01-SEP-19' AND '31-DEC-19' THEN '202001'
         WHEN sorlcur1.sorlcur_end_date BETWEEN '01-JAN-20' AND '31-MAY-20' THEN '202006'
+        ELSE '202001'
     END AS "InactivateStudyPathTermEffective" 
+    
 FROM
 
     shrdgmr shrdgmr1
@@ -30,7 +33,9 @@ FROM
         ON shrdgmr1.shrdgmr_pidm = sgrstsp1.sgrstsp_pidm 
         AND shrdgmr1.shrdgmr_stsp_key_sequence = sgrstsp1.sgrstsp_key_seqno 
         AND sgrstsp1.sgrstsp_term_code_eff = (SELECT MAX(sgrstsp2.sgrstsp_term_code_eff) FROM sgrstsp sgrstsp2 WHERE sgrstsp1.sgrstsp_pidm = sgrstsp2.sgrstsp_pidm AND sgrstsp1.sgrstsp_key_seqno = sgrstsp2.sgrstsp_key_seqno)
+
 WHERE
+
     1=1
     AND shrdgmr1.shrdgmr_degs_code = 'AW'
     AND sgrstsp1.sgrstsp_stsp_code = 'AS'
