@@ -32,12 +32,3 @@ WHERE
 ORDER BY
 	s1.sfrensp_pidm
 ;
-
-
-
-
-SELECT sfrensp_pidm || sfrensp_key_seqno FROM sfrensp WHERE sfrensp_ests_code = 'WD';
-
-SELECT * FROM sfbetrm;
-
-SELECT * FROM sorlcur;
