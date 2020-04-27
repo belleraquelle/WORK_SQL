@@ -14,4 +14,6 @@ WHERE
     AND sfrstcr_rsts_code IN ('RE', 'RW')
     AND shrmrks_gcom_id IS NULL
     AND sfrstcr_crn||sfrstcr_term_code IN (SELECT DISTINCT shrgcom_crn||shrgcom_term_code FROM shrgcom)
+ORDER BY
+	spriden_id
 ;
