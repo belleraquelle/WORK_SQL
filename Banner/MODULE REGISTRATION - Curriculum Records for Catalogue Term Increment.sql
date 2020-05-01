@@ -7,12 +7,12 @@ WHERE
 	1=1
 	-- Pull through all students who have an X2 attribute starting on the given term
 	AND s1.sgrsatt_term_code_eff = :term_code
-	AND s1.sgrsatt_atts_code = 'X2'
+	AND s1.sgrsatt_atts_code = :attribute
 	-- Exclude students who have already progressed onto X2 in an earlier term
 	AND s1.sgrsatt_pidm || s1.sgrsatt_stsp_key_sequence || s1.sgrsatt_atts_code NOT IN (
 		SELECT s2.sgrsatt_pidm || s2.sgrsatt_stsp_key_sequence || s2.sgrsatt_atts_code
 		FROM sgrsatt s2
-		WHERE s2.sgrsatt_term_code_eff < :term_code AND s1.sgrsatt_atts_code = 'X2'
+		WHERE s2.sgrsatt_term_code_eff < :term_code AND s1.sgrsatt_atts_code = :attribute
 	)
 	-- Return details of the maximum sorlcur record for the study path
 	AND c1.sorlcur_lmod_code = 'LEARNER'
