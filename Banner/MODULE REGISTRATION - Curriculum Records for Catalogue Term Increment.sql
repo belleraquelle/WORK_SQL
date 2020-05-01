@@ -32,5 +32,3 @@ WHERE
 			AND c2.sorlcur_term_code_end IS NULL
 	)
 ;
-
-SELECT * FROM sorlcur
