@@ -30,58 +30,47 @@ FROM
     JOIN sgbstdn_add t4 ON (t1.sgrstsp_pidm = t4.sgbstdn_pidm)
 WHERE
     1=1
-
--- CURRENT STUDENT NUMBER
+	-- CURRENT STUDENT NUMBER
     AND d1.spriden_change_ind IS NULL
-
--- IDENTIFY STUDENTS WITH ACTIVE STUDY PATHS
+	-- IDENTIFY STUDENTS WITH ACTIVE STUDY PATHS
     AND t1.sgrstsp_term_code_eff = (
         SELECT MAX(a2.sgrstsp_term_code_eff)
         FROM sgrstsp a2
         WHERE t1.sgrstsp_pidm = a2.sgrstsp_pidm AND t1.sgrstsp_key_seqno = a2.sgrstsp_key_seqno
         AND t1.sgrstsp_stsp_code = 'AS'
     )
-
-
--- ONLY INCLUDE STUDY PATHS WITH A COMPLETION DATE BEYOND MASTERS DISSERTATION SUBMISSION DEADLINE
+	-- ONLY INCLUDE STUDY PATHS WITH A COMPLETION DATE BEYOND MASTERS DISSERTATION SUBMISSION DEADLINE
     AND t2.sorlcur_term_code = (
         SELECT MAX(b2.sorlcur_term_code)
         FROM sorlcur b2
         WHERE t2.sorlcur_pidm = b2.sorlcur_pidm AND t2.sorlcur_key_seqno = b2.sorlcur_key_seqno
-        AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '01-FEB-2020'
+        AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '31-MAY-2021'
     )
-    AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '01-FEB-2020'
+    AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '31-MAY-2021'
     AND t2.sorlcur_camp_code NOT IN ('AIE')
-
--- LIMIT TO CURRENT SGBSTDN RECORD
+	-- LIMIT TO CURRENT SGBSTDN RECORD
     AND t4.sgbstdn_term_code_eff = (
         SELECT MAX(e2.sgbstdn_term_code_eff)
         FROM sgbstdn e2
         WHERE t4.sgbstdn_pidm = e2.sgbstdn_pidm
     )
     AND sgbstdn_stst_code = 'AS'
-
--- ONLY INCLUDE PROPER SORLCUR RECORDS
+	-- ONLY INCLUDE PROPER SORLCUR RECORDS
     AND t3.SORLFOS_csts_code = 'INPROGRESS'
     AND t2.sorlcur_current_cde = 'Y'
     AND t2.sorlcur_term_code_end IS NULL
-
--- EXCLUDE STUDENTS WHO ARE ALREADY EN/AT/UT/WD FOR THE ENROLMENT TERM
+	-- EXCLUDE STUDENTS WHO ARE ALREADY EN/AT/UT/WD FOR THE ENROLMENT TERM
     AND t1.sgrstsp_pidm NOT IN (
-        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202001' AND sfrensp_ests_code IN ('AT', 'EN', 'UT', 'WD')
+        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202006' AND sfrensp_ests_code IN ('AT', 'EN', 'UT', 'WD')
     )
-
--- EXCLUDE STUDENTS WHO DON'T HAVE A FINAL STATUS FOR PREVIOUS TERM
+	-- EXCLUDE STUDENTS WHO DON'T HAVE A FINAL STATUS FOR PREVIOUS TERM
     AND t1.sgrstsp_pidm NOT IN (
-        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '201909' AND (sfrensp_ests_code NOT IN ('AT', 'EN', 'UT') OR sfrensp_ests_code IS NULL)
+        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202001' AND (sfrensp_ests_code NOT IN ('AT', 'EN', 'UT') OR sfrensp_ests_code IS NULL)
     )
-
--- EXCLUDE NEW STUDENTS
-    AND t2.sorlcur_term_code_admit != '202001'
-
--- ONLY INCLUDE STUDENTS WHO HAVE NOT BEEN OPENED FOR ENROLMENT YET
--- AND t4.acenrol_status_1 IS NULL
-
+	-- EXCLUDE NEW STUDENTS
+    AND t2.sorlcur_term_code_admit != '202006'
+	-- ONLY INCLUDE STUDENTS WHO HAVE NOT BEEN OPENED FOR ENROLMENT YET
+	-- AND t4.acenrol_status_1 IS NULL
 ORDER BY
     sorlcur_program,
     sorlcur_end_date ASC
