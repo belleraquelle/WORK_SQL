@@ -44,9 +44,9 @@ WHERE
         SELECT MAX(b2.sorlcur_term_code)
         FROM sorlcur b2
         WHERE t2.sorlcur_pidm = b2.sorlcur_pidm AND t2.sorlcur_key_seqno = b2.sorlcur_key_seqno
-        AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '31-MAY-2021'
+        AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= :next_pg_dissertation_deadline
     )
-    AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= '31-MAY-2021'
+    AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= :end_date_of_current_term
     AND t2.sorlcur_camp_code NOT IN ('AIE')
 	-- LIMIT TO CURRENT SGBSTDN RECORD
     AND t4.sgbstdn_term_code_eff = (
@@ -61,14 +61,14 @@ WHERE
     AND t2.sorlcur_term_code_end IS NULL
 	-- EXCLUDE STUDENTS WHO ARE ALREADY EN/AT/UT/WD FOR THE ENROLMENT TERM
     AND t1.sgrstsp_pidm NOT IN (
-        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202006' AND sfrensp_ests_code IN ('AT', 'EN', 'UT', 'WD')
+        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_for_enrolment AND sfrensp_ests_code IN ('AT', 'EN', 'UT', 'WD')
     )
 	-- EXCLUDE STUDENTS WHO DON'T HAVE A FINAL STATUS FOR PREVIOUS TERM
     AND t1.sgrstsp_pidm NOT IN (
-        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202001' AND (sfrensp_ests_code NOT IN ('AT', 'EN', 'UT') OR sfrensp_ests_code IS NULL)
+        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_before_term_for_enrolment AND (sfrensp_ests_code NOT IN ('AT', 'EN', 'UT') OR sfrensp_ests_code IS NULL)
     )
 	-- EXCLUDE NEW STUDENTS
-    AND t2.sorlcur_term_code_admit != '202006'
+    AND t2.sorlcur_term_code_admit != :term_for_enrolment
 	-- ONLY INCLUDE STUDENTS WHO HAVE NOT BEEN OPENED FOR ENROLMENT YET
 	-- AND t4.acenrol_status_1 IS NULL
 ORDER BY
