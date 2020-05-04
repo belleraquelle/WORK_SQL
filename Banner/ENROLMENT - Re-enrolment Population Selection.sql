@@ -46,7 +46,7 @@ WHERE
         WHERE t2.sorlcur_pidm = b2.sorlcur_pidm AND t2.sorlcur_key_seqno = b2.sorlcur_key_seqno
         AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= :next_pg_dissertation_deadline
     )
-    AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= :end_date_of_current_term
+    AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date > :completion_date_is_greater_than
     AND t2.sorlcur_camp_code NOT IN ('AIE')
 	-- LIMIT TO CURRENT SGBSTDN RECORD
     AND t4.sgbstdn_term_code_eff = (
@@ -63,14 +63,15 @@ WHERE
     AND t1.sgrstsp_pidm NOT IN (
         SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_for_enrolment AND sfrensp_ests_code IN ('AT', 'EN', 'UT', 'WD')
     )
-	-- EXCLUDE STUDENTS WHO DON'T HAVE A FINAL STATUS FOR PREVIOUS TERM
-    AND t1.sgrstsp_pidm NOT IN (
-        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_before_term_for_enrolment AND (sfrensp_ests_code NOT IN ('AT', 'EN', 'UT') OR sfrensp_ests_code IS NULL)
+	-- LIMIT TO STUDENTS WHO HAVE A FINAL STATUS FOR PREVIOUS TERM
+    AND t1.sgrstsp_pidm IN (
+        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_before_term_for_enrolment AND sfrensp_ests_code IN ('AT', 'EN', 'UT')
     )
 	-- EXCLUDE NEW STUDENTS
     AND t2.sorlcur_term_code_admit != :term_for_enrolment
 	-- ONLY INCLUDE STUDENTS WHO HAVE NOT BEEN OPENED FOR ENROLMENT YET
 	-- AND t4.acenrol_status_1 IS NULL
+	--AND spriden_id = '17088151'
 ORDER BY
     sorlcur_program,
     sorlcur_end_date ASC
