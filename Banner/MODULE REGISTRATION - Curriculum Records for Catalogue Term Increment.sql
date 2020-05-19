@@ -1,8 +1,9 @@
 SELECT
-	sorlcur_seqno, sorlcur_lmod_code, sorlcur_term_code, sorlcur_term_code_ctlg, s1.*
+	spriden_id, sorlcur_seqno, sorlcur_lmod_code, sorlcur_term_code, sorlcur_term_code_ctlg, s1.*
 FROM 
 	sgrsatt s1
 	JOIN sorlcur c1 ON s1.sgrsatt_pidm = c1.sorlcur_pidm AND s1.sgrsatt_stsp_key_sequence = c1.sorlcur_key_seqno
+	JOIN spriden ON s1.sgrsatt_pidm = spriden_pidm AND spriden_change_ind IS NULL
 WHERE 
 	1=1
 	-- Pull through all students who have an X2 attribute starting on the given term
