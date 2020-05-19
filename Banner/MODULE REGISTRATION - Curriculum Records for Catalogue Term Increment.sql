@@ -3,6 +3,7 @@ SELECT
 FROM 
 	sgrsatt s1
 	JOIN sorlcur c1 ON s1.sgrsatt_pidm = c1.sorlcur_pidm AND s1.sgrsatt_stsp_key_sequence = c1.sorlcur_key_seqno
+	JOIN sgbstdn d1 ON s1.sgrsatt_pidm = d1.sgbstdn_pidm
 	JOIN spriden ON s1.sgrsatt_pidm = spriden_pidm AND spriden_change_ind IS NULL
 WHERE 
 	1=1
@@ -32,4 +33,15 @@ WHERE
 			AND c2.sorlcur_current_cde = 'Y'
 			AND c2.sorlcur_term_code_end IS NULL
 	)
+	-- Limit to the maximum learner record
+	AND d1.sgbstdn_term_code_eff = (
+		SELECT MAX (d2.sgbstdn_term_code_eff)
+		FROM sgbstdn d2
+		WHERE d2.sgbstdn_pidm = d1.sgbstdn_pidm
+		)
+	-- Limit to students who are 'Active'
+	AND sgbstdn_stst_code = 'AS'
 ;
+
+
+SELECT * FROM sgbstdn;
