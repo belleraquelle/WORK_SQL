@@ -58,6 +58,7 @@ WHERE
 -- Limit to students who are currently enrolled
 	AND sfbetrm_ests_code = 'EN'
 	
+-- If SW attribute is being checked, then only include students who have an active SW cohort
 	AND CASE
 			WHEN :future_attribute = 'SW' AND sgrsatt_pidm || sgrsatt_stsp_key_sequence IN (
 				SELECT 
