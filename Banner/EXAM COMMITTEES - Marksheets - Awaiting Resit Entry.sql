@@ -60,10 +60,10 @@ WHERE
             1=1
 
             -- Specify UMP / Non-UMP Modules
-            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb IN (
+            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb :IN_FOR_UMP_NOT_IN_FOR_NON_UMP (
                 SELECT gorsdav_pk_parenttab
                 FROM gorsdav
-                WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = :ENTER_Y_FOR_UMP
+                WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
             )
             
             -- Limit to modules that end between specified dates
