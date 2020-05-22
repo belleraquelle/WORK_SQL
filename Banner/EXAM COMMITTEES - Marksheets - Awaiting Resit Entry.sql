@@ -1,7 +1,7 @@
 
 /*
 
-This will return both entered resit marks AND students who were eligible for a resit.
+This will return students who were eligible for a resit on modules that ended between the specified dates. This can be used to identify components we are still expecting resit results for.
 
 */
 
@@ -48,41 +48,31 @@ WHERE
 
     -- Only return module runs that meet these criteria
     AND shrmrks_crn IN (
-        SELECT
+    
+    	SELECT
             ssbsect_crn
+            
         FROM
             ssbsect
+            JOIN sobptrm ON ssbsect_term_code = sobptrm_term_code AND ssbsect_ptrm_code = sobptrm_ptrm_code
+            
         WHERE
             1=1
 
-             -- You can remove the NOT in the following section of the query to bring through UMP modules
-
-            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb NOT IN (
+            -- Specify UMP / Non-UMP Modules
+            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb IN (
                 SELECT gorsdav_pk_parenttab
                 FROM gorsdav
-                WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
-            )
-
-            AND CONCAT(ssbsect_subj_code, ssbsect_crse_numb) IN (
-                SELECT CONCAT(scrattr_subj_code, scrattr_crse_numb)
-                FROM scrattr
-                WHERE scrattr_attr_code = 'L7DS'
+                WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = :ENTER_Y_FOR_UMP
             )
             
-            AND (
-                (ssbsect_term_code = '201809' 
-                    AND ssbsect_ptrm_code IN ('S13','T14','D10'))
-                OR
-                (ssbsect_term_code = '201901' 
-                    AND ssbsect_ptrm_code IN ('E8', 'S23','T24','T34','E9','G7','I5'))
-                OR
-                (ssbsect_term_code = '201906' 
-                    AND ssbsect_ptrm_code IN ('J3','S3','T4','K3'))
-                )
+            -- Limit to modules that end between specified dates
+            AND sobptrm_end_date BETWEEN :MODULE_END_DATE_RANGE_START AND :MODULE_END_DATE_RANGE_END
+    	
         )
         
     -- Only include students who are still registered on the module
-    AND sfrstcr_rsts_code IN ('RE','RW')
+    AND sfrstcr_rsts_code IN ('RE','RW', 'RC')
     
     -- Limit to 'on-campus' campuses
     --AND ssbsect_camp_code IN ('OBO', 'OBS')
@@ -91,14 +81,14 @@ WHERE
     AND shrtckg_grde_code_final != 'DR'
 
     AND (
-            -- Either include students who are eligible for a resit...
+            -- Limit to components that are eligible for a resit
             (
-                (shrmrks_comments IS NULL OR shrmrks_comments = 'Exceptional Circumstances')
-                AND (shrmrks_grde_code IN ('F', 'FAIL') OR shrmrks_comments = 'Exceptional Circumstances')
-                AND (shrtckg_grde_code_final IN ('F','FAIL') OR shrmrks_comments = 'Exceptional Circumstances')
+                (shrmrks_comments IS NULL OR shrmrks_comments = 'Exceptional Circumstances') -- Student has a null comment (i.e. they've attempted) or the comment is Exceptional Circumstances
+                AND (shrmrks_grde_code IN ('F', 'FAIL') OR shrmrks_comments = 'Exceptional Circumstances') -- Student has failed a component or the comment is Exceptional Circumstances
+                AND (shrtckg_grde_code_final IN ('F','FAIL') OR shrmrks_comments = 'Exceptional Circumstances') -- Student has failed the module overall or the comment is Exceptional Circumstances
             )
-            -- ...Or students who have had a resit grade entered
-            OR (shrmrks_gchg_code IN ('RE', 'UR'))
+            -- And exclude students who have had a resit grade entered
+            AND (shrmrks_gchg_code NOT IN ('RE', 'UR', 'CR'))
         )
 ORDER BY
     shrmrks_crn, shrgcom_name, shrgcom_description, s1.spriden_last_name, s1.spriden_id
