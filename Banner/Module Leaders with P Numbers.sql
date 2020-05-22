@@ -20,7 +20,7 @@ WHERE
             ssbsect
         WHERE
             1=1
-            AND ssbsect_term_code IN ('201901','201906','201909','202001','202006')
+            AND ssbsect_term_code IN ('201909','202001','202006')
         )
 	
     -- Only include students who are still registered on the module
@@ -29,5 +29,5 @@ WHERE
     AND s2.spriden_id LIKE 'P%'
     
     -- Limit to 'off-campus' campuses
-    -- AND ssbsect_camp_code NOT IN ('OBO', 'OBS')
+    AND ssbsect_camp_code IN ('OBO', 'OBS', 'DL')
 ;

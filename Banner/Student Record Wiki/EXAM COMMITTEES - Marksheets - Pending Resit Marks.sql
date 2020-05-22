@@ -66,6 +66,13 @@ WHERE
                 WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
             )
             
+            -- Specify L7 Dissertation 
+            AND CONCAT(ssbsect_subj_code, ssbsect_crse_numb) :IN_FOR_L7_DIS_NOT_IN_FOR_NOT_L7_DIS (
+                SELECT CONCAT(scrattr_subj_code, scrattr_crse_numb)
+                FROM scrattr
+                WHERE scrattr_attr_code = 'L7DS'
+            )
+            
             -- Limit to modules that end between specified dates
             AND sobptrm_end_date BETWEEN :MODULE_END_DATE_RANGE_START AND :MODULE_END_DATE_RANGE_END
     	
