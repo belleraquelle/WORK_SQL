@@ -8,19 +8,7 @@ SELECT DISTINCT
     ssbsect_ptrm_code,
     ssbsect_ptrm_start_date,
     ssbsect_ptrm_end_date,
---    sfrstcr_rsts_code,
---    shrgcom_name, 
---    shrgcom_description,
---    shrgcom_weight, 
     COUNT(s1.spriden_id),
---    s1.spriden_last_name || ', ' || s1.spriden_first_name AS "Student_Name",
---    shrmrks_score, 
---    shrmrks_percentage, 
---    shrmrks_grde_code, 
---    shrmrks_comments, 
---    shrmrks_completed_date, 
---    shrmrks_roll_date, 
---    shrmrks_data_origin,
     s2.spriden_last_name || ', ' || s2.spriden_first_name AS "Module_Leader",
     s2.spriden_id
 FROM
@@ -39,43 +27,41 @@ WHERE
 
     -- Only return module runs that meet these criteria
     AND shrmrks_crn IN (
-        SELECT
+        
+    	SELECT
             ssbsect_crn
+            
         FROM
             ssbsect
+            JOIN sobptrm ON ssbsect_term_code = sobptrm_term_code AND ssbsect_ptrm_code = sobptrm_ptrm_code
+            
         WHERE
             1=1
 
-            -- You can remove the NOT in the following section of the query to bring through UMP modules
-
-            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb IN (
+            -- Specify UMP / Non-UMP Modules
+            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb :IN_FOR_UMP_NOT_IN_FOR_NON_UMP (
                 SELECT gorsdav_pk_parenttab
                 FROM gorsdav
                 WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
             )
-
-            AND CONCAT(ssbsect_subj_code, ssbsect_crse_numb) NOT IN (
+            
+            -- Specify L7 Dissertation 
+            AND CONCAT(ssbsect_subj_code, ssbsect_crse_numb) :IN_FOR_L7_DIS_NOT_IN_FOR_NOT_L7_DIS (
                 SELECT CONCAT(scrattr_subj_code, scrattr_crse_numb)
                 FROM scrattr
                 WHERE scrattr_attr_code = 'L7DS'
             )
-            AND (
-                (ssbsect_term_code = '201901' 
-                    AND ssbsect_ptrm_code IN ('S21', 'T21', 'T31', 'E10', 'E12', 'F10', 'G10', 'I8'))
-                OR
-                (ssbsect_term_code = '201906' 
-                    AND ssbsect_ptrm_code IN ('S31', 'T41', 'J5','J7', 'K5'))
-                OR
-                (ssbsect_term_code = '201909' 
-                    AND ssbsect_ptrm_code IN ('S1', 'T1', 'A2', 'A3', 'A4', 'B1', 'D1'))
-                )
+            
+            -- Limit to modules that end between specified dates
+            AND sobptrm_end_date BETWEEN :MODULE_END_DATE_RANGE_START AND :MODULE_END_DATE_RANGE_END
+    
         )
 
     -- Only include rows from the marks table where either the score or the grade is null
     AND (shrmrks_score IS NULL OR shrmrks_grde_code IS NULL)
 	
     -- Only include students who are still registered on the module
-    AND sfrstcr_rsts_code IN ('RE','RW')
+    AND sfrstcr_rsts_code IN ('RE','RW', 'RC')
     
     -- Limit to 'off-campus' campuses
     -- AND ssbsect_camp_code NOT IN ('OBO', 'OBS')
