@@ -72,8 +72,8 @@ WHERE
     -- Only include students who are still registered on the module
     AND sfrstcr_rsts_code IN ('RE','RW', 'RC')
     
-    -- Limit to 'off-campus' campuses
-    -- AND ssbsect_camp_code NOT IN ('OBO', 'OBS')
+    -- Limit to Brookes / Collaborative Provision
+    AND ssbsect_camp_code :IN_FOR_BROOKES_NOT_IN_FOR_ACP ('OBO', 'OBS', 'DL')
 
 ORDER BY
     shrmrks_crn, shrgcom_name, shrgcom_description, s1.spriden_last_name, s1.spriden_id
