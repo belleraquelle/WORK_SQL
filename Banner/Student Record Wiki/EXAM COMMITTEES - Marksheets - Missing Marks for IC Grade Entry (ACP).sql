@@ -38,13 +38,6 @@ WHERE
             
         WHERE
             1=1
-
-            -- Specify UMP / Non-UMP Modules
-            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb IN (
-                SELECT gorsdav_pk_parenttab
-                FROM gorsdav
-                WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
-            )
             
             -- Limit to modules that end between specified dates
             AND sobptrm_end_date BETWEEN :MODULE_END_DATE_RANGE_START AND :MODULE_END_DATE_RANGE_END
@@ -58,7 +51,7 @@ WHERE
     AND sfrstcr_rsts_code IN ('RE','RW', 'RC')
     
     -- Limit to Brookes / Collaborative Provision
-    AND ssbsect_camp_code IN ('OBO', 'OBS', 'DL')
+    AND ssbsect_camp_code NOT IN ('OBO', 'OBS', 'DL')
 
 ORDER BY
     shrmrks_crn, shrgcom_name, shrgcom_description, s1.spriden_last_name, s1.spriden_id

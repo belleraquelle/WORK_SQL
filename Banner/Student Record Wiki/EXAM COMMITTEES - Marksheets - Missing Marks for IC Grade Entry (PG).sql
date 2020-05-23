@@ -40,10 +40,17 @@ WHERE
             1=1
 
             -- Specify UMP / Non-UMP Modules
-            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb IN (
+            AND ssbsect_subj_code||chr(1)||ssbsect_crse_numb NOT IN (
                 SELECT gorsdav_pk_parenttab
                 FROM gorsdav
                 WHERE gorsdav_table_name = 'SCBCRKY' AND gorsdav_attr_name = 'UMP' AND sys.ANYDATA.accessvarchar2(gorsdav_value) = 'Y'
+            )
+            
+            -- Specify L7 Dissertation 
+            AND CONCAT(ssbsect_subj_code, ssbsect_crse_numb) NOT IN (
+                SELECT CONCAT(scrattr_subj_code, scrattr_crse_numb)
+                FROM scrattr
+                WHERE scrattr_attr_code = 'L7DS'
             )
             
             -- Limit to modules that end between specified dates
