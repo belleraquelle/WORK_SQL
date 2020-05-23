@@ -72,7 +72,7 @@ WHERE
     AND a1.sorlcur_current_cde = 'Y'
     
     -- Limit to students from specified courses or specified faculty
-    AND (a1.sorlcur_program IN :LIST_OF_PROGRAMMES OR a1.sorlcur_coll_code = :FACULTY_CODE)
+    AND (a1.sorlcur_program IN :PROGRAMME_LIST OR a1.sorlcur_coll_code = :FACULTY_CODE)
 
 ORDER BY
     shrmrks_crn, shrgcom_name, shrgcom_description, s1.spriden_last_name, s1.spriden_id
