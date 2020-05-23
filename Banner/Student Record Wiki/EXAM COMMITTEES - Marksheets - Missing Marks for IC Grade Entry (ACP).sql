@@ -21,8 +21,10 @@ FROM
     JOIN scbcrse c1 ON ssbsect_subj_code = c1.scbcrse_subj_code AND ssbsect_crse_numb = c1.scbcrse_crse_numb AND c1.scbcrse_eff_term = (SELECT MAX(c2.scbcrse_eff_term) FROM scbcrse c2 WHERE c2.scbcrse_subj_code = c1.scbcrse_subj_code AND c2.scbcrse_crse_numb = c1.scbcrse_crse_numb) -- Issue here with courses that have changed name over time. Would need to return the title that the section's term code falls within
     JOIN spriden s1 ON shrmrks_pidm = s1.spriden_pidm and s1.spriden_change_ind IS NULL
     JOIN sfrstcr ON shrmrks_term_code = sfrstcr_term_code AND shrmrks_crn = sfrstcr_crn AND shrmrks_pidm = sfrstcr_pidm
+    JOIN sorlcur a1 ON sfrstcr_pidm = a1.sorlcur_pidm AND sfrstcr_stsp_key_sequence = a1.sorlcur_key_seqno
     LEFT JOIN sirasgn ON sirasgn_term_code = ssbsect_term_code AND sirasgn_crn = ssbsect_crn AND sirasgn_primary_ind = 'Y'
     LEFT JOIN spriden s2 ON sirasgn_pidm = s2.spriden_pidm AND s2.spriden_change_ind IS NULL
+    
 WHERE
     1=1
 
@@ -52,6 +54,25 @@ WHERE
     
     -- Limit to Brookes / Collaborative Provision
     AND ssbsect_camp_code NOT IN ('OBO', 'OBS', 'DL')
+    
+     -- Pull through max SORLCUR record
+    AND a1.sorlcur_term_code = (
+    	SELECT MAX (a2.sorlcur_term_code)
+    	FROM sorlcur a2
+    	WHERE 
+    		1=1
+    		AND a1.sorlcur_pidm = a2.sorlcur_pidm
+    		AND a1.sorlcur_key_seqno = a2.sorlcur_key_seqno
+    		AND a2.sorlcur_lmod_code = 'LEARNER'
+    		AND a2.sorlcur_cact_code = 'ACTIVE'
+    		AND a2.sorlcur_current_cde = 'Y'
+    )
+    AND a1.sorlcur_lmod_code = 'LEARNER'
+    AND a1.sorlcur_cact_code = 'ACTIVE'
+    AND a1.sorlcur_current_cde = 'Y'
+    
+    -- Limit to students from specified courses or specified faculty
+    AND (a1.sorlcur_program IN :LIST_OF_PROGRAMMES OR a1.sorlcur_coll_code = :FACULTY_CODE)
 
 ORDER BY
     shrmrks_crn, shrgcom_name, shrgcom_description, s1.spriden_last_name, s1.spriden_id
