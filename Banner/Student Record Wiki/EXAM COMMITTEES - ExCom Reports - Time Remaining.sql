@@ -1,7 +1,5 @@
 /*
- * This query will return all of the students with an UT status recorded at either the student or study path level against the term specified.
  * 
- * If the columns "Enrolment_Code" and "SP_Enrolment_Code" don't match, then there may be an issue with the record.
  * 
  */
 
@@ -19,10 +17,8 @@ SELECT DISTINCT
 	c1.sfbetrm_term_code AS "Term_Code",
 	c1.sfbetrm_ests_code AS "Enrolment_Code",
 	d1.sfrensp_ests_code AS "SP_Enrolment_Code",
-	h1.sfbetrm_term_code AS "Last_Term_With_UT_Status"
-	
-	--b1.sorlcur_leav_from_date AS "TWD_Start_Date",
-	--b1.sorlcur_leav_to_date AS "TWD_End_Date"
+	b1.sorlcur_start_date AS "Start_Date",
+	MONTHS_BETWEEN(b1.sorlcur_start_date, sysdate)
 	
 FROM
 	spriden a1 -- Person Record
@@ -32,7 +28,6 @@ FROM
 	JOIN sobcurr_add e1 ON b1.sorlcur_program = e1.sobcurr_program -- Course record (SOACURR)
 	JOIN sgbstdn f1 ON a1.spriden_pidm = f1.sgbstdn_pidm -- Learner Record
 	JOIN sgrstsp g1 ON b1.sorlcur_pidm = g1.sgrstsp_pidm AND b1.sorlcur_key_seqno = sgrstsp_key_seqno -- Study Path Record
-	JOIN sfbetrm h1 ON a1.spriden_pidm = h1.sfbetrm_pidm -- Second join to sfbetrm to bring through maximum term with status
 	
 WHERE
 	1=1
@@ -76,26 +71,16 @@ WHERE
 	
 	)
 	
-	-- Select Maximum Term with a UT status
-	AND h1.sfbetrm_term_code = ( 
-	
-		SELECT MAX(h2.sfbetrm_term_code)
-		FROM sfbetrm h2
-		WHERE h1.sfbetrm_pidm = h2.sfbetrm_pidm AND h2.sfbetrm_ests_code = 'UT'
-	
-	)
-	
 	-- Limit to active students
 	AND f1.sgbstdn_stst_code = 'AS'
 	
 	-- Limit to active study paths
 	AND g1.sgrstsp_stsp_code = 'AS'
 	
-	-- Pick a term to check for status
+	-- Pick a term
 	AND c1.sfbetrm_term_code = :term_code
 	
-	-- Limit to students with 'AT' status for study path OR term
-	AND (c1.sfbetrm_ests_code = 'UT' OR d1.sfrensp_ests_code = 'UT')
+	
 	
 ORDER BY
 	"UMP",
