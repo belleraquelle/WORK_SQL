@@ -1,9 +1,8 @@
 /*
- * This query will return all of the students with an AT status recorded at either the student or study path level against the term specified.
+ * This query will return all of the students with an UT status recorded at either the student or study path level against the term specified.
  * 
- * If the columns "Enrolment_Code" and "SP_Enrolment_Code" don't match, then there may be an issue with the record.
- * If the columns "TWD_Start_Date" and "TWD_End_Date" are empty, then there may be an a gap in the data recorded for the student's ATWD. Check their record.
- * The TWD_End_Date and the Last_Term_With_AT_Status should correspond. If they don't, they may be an issue with the record that needs addressing.
+ * 		If the columns "Enrolment_Code" and "SP_Enrolment_Code" don't match, then there may be an issue with the record.
+ * 
  */
 
 
@@ -20,9 +19,10 @@ SELECT DISTINCT
 	c1.sfbetrm_term_code AS "Term_Code",
 	c1.sfbetrm_ests_code AS "Enrolment_Code",
 	d1.sfrensp_ests_code AS "SP_Enrolment_Code",
-	b1.sorlcur_leav_from_date AS "TWD_Start_Date",
-	b1.sorlcur_leav_to_date AS "TWD_End_Date",
-	h1.sfbetrm_term_code AS "Last_Term_With_AT_Status"
+	h1.sfbetrm_term_code AS "Last_Term_With_UT_Status"
+	
+	--b1.sorlcur_leav_from_date AS "TWD_Start_Date",
+	--b1.sorlcur_leav_to_date AS "TWD_End_Date"
 	
 FROM
 	spriden a1 -- Person Record
@@ -76,12 +76,12 @@ WHERE
 	
 	)
 	
-	-- Select Maximum Term with a AT status
+	-- Select Maximum Term with a UT status
 	AND h1.sfbetrm_term_code = ( 
 	
 		SELECT MAX(h2.sfbetrm_term_code)
 		FROM sfbetrm h2
-		WHERE h1.sfbetrm_pidm = h2.sfbetrm_pidm AND h2.sfbetrm_ests_code = 'AT'
+		WHERE h1.sfbetrm_pidm = h2.sfbetrm_pidm AND h2.sfbetrm_ests_code = 'UT'
 	
 	)
 	
@@ -95,7 +95,7 @@ WHERE
 	AND c1.sfbetrm_term_code = :term_code
 	
 	-- Limit to students with 'AT' status for study path OR term
-	AND (c1.sfbetrm_ests_code = 'AT' OR d1.sfrensp_ests_code = 'AT')
+	AND (c1.sfbetrm_ests_code = 'UT' OR d1.sfrensp_ests_code = 'UT')
 	
 ORDER BY
 	"UMP",
