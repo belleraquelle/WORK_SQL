@@ -18,7 +18,7 @@ SELECT DISTINCT
 	c1.sfbetrm_ests_code AS "Enrolment_Code",
 	d1.sfrensp_ests_code AS "SP_Enrolment_Code",
 	b1.sorlcur_start_date AS "Start_Date",
-	MONTHS_BETWEEN(b1.sorlcur_start_date, sysdate)
+	MONTHS_BETWEEN(sysdate, b1.sorlcur_start_date)
 	
 FROM
 	spriden a1 -- Person Record
@@ -80,7 +80,11 @@ WHERE
 	-- Pick a term
 	AND c1.sfbetrm_term_code = :term_code
 	
-	
+	AND CASE
+		WHEN b1.sorlcur_levl_code = 'PG' AND MONTHS_BETWEEN(sysdate, b1.sorlcur_start_date) > 48 THEN 1
+		WHEN b1.sorlcur_levl_code = 'UG' AND MONTHS_BETWEEN(sysdate, b1.sorlcur_start_date) > 84 THEN 1
+		ELSE 0
+	END = 1
 	
 ORDER BY
 	"UMP",
