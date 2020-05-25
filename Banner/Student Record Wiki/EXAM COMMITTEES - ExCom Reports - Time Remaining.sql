@@ -21,6 +21,9 @@ SELECT DISTINCT
 	d1.sfrensp_ests_code AS "SP_Enrolment_Code",
 	h1.sfbetrm_term_code AS "Last_Term_With_UT_Status"
 	
+	--b1.sorlcur_leav_from_date AS "TWD_Start_Date",
+	--b1.sorlcur_leav_to_date AS "TWD_End_Date"
+	
 FROM
 	spriden a1 -- Person Record
 	JOIN sorlcur b1 ON a1.spriden_pidm = b1.sorlcur_pidm -- Curriculum Record
