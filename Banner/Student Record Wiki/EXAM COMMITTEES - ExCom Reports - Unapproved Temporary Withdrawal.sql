@@ -1,7 +1,7 @@
 /*
  * This query will return all of the students with an UT status recorded at either the student or study path level against the term specified.
  * 
- * 		If the columns "Enrolment_Code" and "SP_Enrolment_Code" don't match, then there may be an issue with the record.
+ * If the columns "Enrolment_Code" and "SP_Enrolment_Code" don't match, then there may be an issue with the record.
  * 
  */
 
