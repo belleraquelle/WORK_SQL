@@ -1,5 +1,7 @@
 /*
- * 
+ * This will list out all students who are approaching / breached their maximum duration.
+ * It will identify Postgraduate students where more than 48 months have elapsed since their start date.
+ * It will identify Undergraduate students where more than 84 months have elapsed since their start date.
  * 
  */
 
@@ -80,6 +82,7 @@ WHERE
 	-- Pick a term
 	AND c1.sfbetrm_term_code = :term_code
 	
+	-- Limit to PG students who have been on study path greater than 48 months and UG students who have been on study path greater than 84 months
 	AND CASE
 		WHEN b1.sorlcur_levl_code = 'PG' AND MONTHS_BETWEEN(sysdate, b1.sorlcur_start_date) > 48 THEN 1
 		WHEN b1.sorlcur_levl_code = 'UG' AND MONTHS_BETWEEN(sysdate, b1.sorlcur_start_date) > 84 THEN 1
