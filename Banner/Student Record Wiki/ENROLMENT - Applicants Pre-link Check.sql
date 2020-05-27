@@ -103,7 +103,7 @@ WHERE
         WHERE s2.sarappd_pidm = s1.sarappd_pidm and s2.sarappd_appl_no = s1.sarappd_appl_no)
     AND SARAPPD_APDC_CODE = 'UT'
     AND SARADAP_APST_CODE != 'W'
-    AND SARADAP_TERM_CODE_ENTRY = '202006'
+    AND SARADAP_TERM_CODE_ENTRY :term_code
     AND spriden_change_ind is null
     AND sorlcur_current_cde = 'Y'
     AND ((goremal_emal_code = 'PERS' AND goremal_preferred_ind = 'Y') OR goremal_emal_code IS NULL)
