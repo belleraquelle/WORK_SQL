@@ -6,13 +6,13 @@ In theory, these should be ready to roll to academic history.
 */
 
 SELECT DISTINCT
-    shrmrks_term_code, 
-    ssbsect_ptrm_code,
-    shrmrks_crn, 
-    ssbsect_subj_code, 
-    ssbsect_crse_numb,
-    scbcrse_title,
-    ssbsect_camp_code
+    shrmrks_term_code AS "Term_Code", 
+    ssbsect_ptrm_code AS "Part_of_Term",
+    shrmrks_crn AS "CRN", 
+    ssbsect_subj_code AS "Subject_Code", 
+    ssbsect_crse_numb AS "Course_Number",
+    scbcrse_title AS "Module_Title",
+    ssbsect_camp_code AS "Campuse_Code"
     
 FROM
     shrmrks

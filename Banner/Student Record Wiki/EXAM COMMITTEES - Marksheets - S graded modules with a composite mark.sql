@@ -15,7 +15,7 @@ FROM
 WHERE
     1=1
     AND shrtckg_grde_code_final = 'S'
-    AND shrcmrk_percentage > 1
+    AND shrcmrk_percentage IS NOT NULL
 ORDER BY
     shrtckn_subj_code, shrtckn_crse_numb
 ;

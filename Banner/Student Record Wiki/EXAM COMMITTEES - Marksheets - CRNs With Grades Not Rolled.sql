@@ -5,12 +5,12 @@ CRNS with grades that haven't been rolled
 */
 
 SELECT DISTINCT
-    shrmrks_term_code, 
-    shrmrks_crn, 
-    ssbsect_subj_code, 
-    ssbsect_crse_numb,
-    scbcrse_title,
-    ssbsect_camp_code
+    shrmrks_term_code AS "Term_Code", 
+    shrmrks_crn AS "CRN", 
+    ssbsect_subj_code AS "Subject_Code", 
+    ssbsect_crse_numb AS "Course_Number",
+    scbcrse_title AS "Module_Title",
+    ssbsect_camp_code AS "Campus_Code"
     
 FROM
     shrmrks

@@ -1,18 +1,18 @@
 SELECT 
-	ssbsect_term_code,
-    ssbsect_crn,
-    sfrstcr_pidm,
-    ssbsect_subj_code, 
-    ssbsect_crse_numb,
-    scbcrse_title,
-    ssbsect_camp_code,
-    ssbsect_ptrm_code,
-    ssbsect_ptrm_start_date,
-    ssbsect_ptrm_end_date,
-    sfrstcr_rsts_code,
-    s1.spriden_id,
+	ssbsect_term_code AS "Term_Code",
+    ssbsect_crn AS "CRN",
+    sfrstcr_pidm AS "PIDM",
+    ssbsect_subj_code AS "Subject_Code", 
+    ssbsect_crse_numb AS "Course_Number",
+    scbcrse_title AS "Module_Title",
+    ssbsect_camp_code AS "Campus_Code",
+    ssbsect_ptrm_code AS "Part_of_Term",
+    ssbsect_ptrm_start_date AS "Module_Start_Date",
+    ssbsect_ptrm_end_date AS "Module_End_Date",
+    sfrstcr_rsts_code AS "Registration_Status",
+    s1.spriden_id AS "Student_Number",
     s1.spriden_last_name || ', ' || s1.spriden_first_name AS "Student_Name",
-    sfrstcr_grde_code
+    sfrstcr_grde_code AS "Component_Grade"
     
 FROM
     shrmrks
