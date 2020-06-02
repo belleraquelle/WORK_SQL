@@ -8,8 +8,8 @@
 
 SELECT DISTINCT
 	b1.sorlcur_coll_code AS "Faculty",
-	b1.sorlcur_program AS "Programme_Code",
 	b1.sorlcur_camp_code AS "Campus",
+	b1.sorlcur_program AS "Programme_Code",
 	j1.smrprle_program_desc AS "Programme_Description",
 	COUNT(DISTINCT sorlcur_pidm) AS "Student_Count"
 	
@@ -71,7 +71,7 @@ WHERE
 
 
 	-- Limit to records in specified popsel
-	AND spriden_pidm in (SELECT glbextr_key FROM glbextr WHERE glbextr_selection = '202006_GREY' AND glbextr_user_id = 'BANSECR_SCLARKE')
+	AND spriden_pidm in (SELECT glbextr_key FROM glbextr WHERE glbextr_selection = :popsel_name AND glbextr_user_id = :popsel_user)
 
 GROUP BY 
 	b1.sorlcur_program,
@@ -85,8 +85,3 @@ ORDER BY
 	b1.sorlcur_camp_code
 	
 ;
-
-
-SELECT * FROM glbextr;
-
-SELECT * FROM smrprle;
