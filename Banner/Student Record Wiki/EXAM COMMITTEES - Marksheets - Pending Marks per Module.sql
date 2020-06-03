@@ -8,7 +8,7 @@ SELECT DISTINCT
     ssbsect_ptrm_code,
     ssbsect_ptrm_start_date,
     ssbsect_ptrm_end_date,
-    COUNT(s1.spriden_id) AS "Student_Count",
+    COUNT(s1.spriden_id) AS "Number_of_Missing_Component_Marks",
     s2.spriden_last_name || ', ' || s2.spriden_first_name AS "Module_Leader",
     s2.spriden_id
 FROM
