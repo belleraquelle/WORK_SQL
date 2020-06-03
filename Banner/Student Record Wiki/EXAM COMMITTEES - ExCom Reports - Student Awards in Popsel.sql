@@ -1,7 +1,7 @@
 /*
- * This report gives a list of all of the programmes broken out by faculty/campus amongst the students in the specified POPSEL.
+ * This report gives a list of all of the status PN and status AW awards against students in the specified popsel.
  * 
- * It can be used to generate a checking list of programmes to log progress through mark-up and exam committees.
+ * It can be used to generate a list of awards following the committee for checking and verification purposes.
  * 
  */
 
