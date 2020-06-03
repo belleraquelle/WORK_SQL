@@ -1,4 +1,6 @@
 SELECT
+	b1.sorlcur_pidm AS "PIDM",
+	b1.sorlcur_key_seqno AS "Study_Path",
 	a1.spriden_id AS "Student_ID",
 	g1.sgrstsp_key_seqno AS "Study_Path",
 	b1.sorlcur_program AS "Programme_of_Study",
@@ -40,6 +42,7 @@ WHERE
 	AND b1.sorlcur_lmod_code = 'LEARNER'
 	AND b1.sorlcur_current_cde = 'Y'
 	AND b1.sorlcur_cact_code = 'ACTIVE'
+	AND b1.sorlcur_term_code_end IS NULL
 	AND b1.sorlcur_term_code = (
 	
 		SELECT MAX(b2.sorlcur_term_code)
@@ -51,6 +54,7 @@ WHERE
 			AND b2.sorlcur_lmod_code = 'LEARNER'
 			AND b2.sorlcur_current_cde = 'Y'
 			AND b2.sorlcur_cact_code = 'ACTIVE'
+			AND b2.sorlcur_term_code_end IS NULL
 	
 	)
 	
@@ -96,10 +100,21 @@ WHERE
 	-- Only include FNDIPs
 	AND b1.sorlcur_program LIKE 'F%'
 	
+	-- Limit to students without errors
+	AND NOT EXISTS ( 
+	
+		SELECT obustrd_messages_pidm
+		FROM obustrd_messages 
+		WHERE obustrd_messages_pidm = b1.sorlcur_pidm AND obustrd_messages_study_path = b1.sorlcur_key_seqno AND obustrd_messages_severity = 'E' AND obustrd_messages_atts_code = 'S1'
+	
+	)
+	
+	
 GROUP BY 
 	a1.spriden_id,
 	g1.sgrstsp_key_seqno,
 	b1.sorlcur_program
+	--m1.obustrd_messages_severity
 	--h1.shrtckn_term_code,
 	--h1.shrtckn_subj_code,
 	--h1.shrtckn_crse_numb,
@@ -117,7 +132,7 @@ ORDER BY
 ;
 
 
-SELECT * FROM shrtckn;
+SELECT * FROM sorlcur;
 
 SELECT * FROM SHRTCKL;
 
@@ -125,3 +140,6 @@ SELECT * FROM shrtckg;
 
 SELECT * FROM shrgrde;
 
+SELECT * FROM shrapsp;
+
+SELECT * FROM obustrd_messages;

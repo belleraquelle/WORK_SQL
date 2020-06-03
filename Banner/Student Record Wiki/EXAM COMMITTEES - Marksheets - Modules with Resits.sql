@@ -87,6 +87,7 @@ WHERE
             -- ... or where the student has already had a resit grade entered
             OR (shrmrks_gchg_code IN ('RE', 'UR', 'CR'))
         )
+        
 GROUP BY
 	shrmrks_term_code, 
     shrmrks_crn, 
@@ -100,4 +101,7 @@ GROUP BY
     ssbsect_ptrm_end_date,
     s2.spriden_last_name || ', ' || s2.spriden_first_name,
     s2.spriden_id
+   
+ ORDER BY 
+ 	ssbsect_subj_code
 ;
