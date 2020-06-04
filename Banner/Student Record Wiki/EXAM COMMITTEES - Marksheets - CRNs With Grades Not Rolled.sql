@@ -63,6 +63,9 @@ WHERE
 	-- Only include CRNs with grades that need to be rolled
 	AND shrtckn_crn IS NULL
 	
+	-- Limit to Brookes / Collaborative Provision
+    AND ssbsect_camp_code :IN_FOR_BROOKES_NOT_IN_FOR_ACP ('OBO', 'OBS', 'DL')
+	
 ORDER BY
 	ssbsect_subj_code,
 	ssbsect_crse_numb,
