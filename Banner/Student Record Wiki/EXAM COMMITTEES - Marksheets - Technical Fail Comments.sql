@@ -1,4 +1,4 @@
-SELECT 
+SELECT DISTINCT
     shrmrks_term_code, 
     shrmrks_crn, 
     ssbsect_subj_code, 
@@ -11,14 +11,7 @@ SELECT
     sfrstcr_rsts_code,
     s1.spriden_id,
     s1.spriden_last_name || ', ' || s1.spriden_first_name AS "Student_Name",
-    shrmrks_score, 
-    shrmrks_percentage, 
-    shrmrks_grde_code,
     sfrstcr_gcmt_code,
-    shrmrks_comments, 
-    shrmrks_completed_date, 
-    shrmrks_roll_date, 
-    shrmrks_data_origin,
     s2.spriden_last_name || ', ' || s2.spriden_first_name AS "Module_Leader"
 
 FROM
