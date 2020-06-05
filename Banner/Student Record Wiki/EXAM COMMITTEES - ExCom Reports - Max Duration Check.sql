@@ -20,7 +20,7 @@ SELECT DISTINCT
 	c1.sfbetrm_ests_code AS "Enrolment_Code",
 	d1.sfrensp_ests_code AS "SP_Enrolment_Code",
 	b1.sorlcur_start_date AS "Start_Date",
-	MONTHS_BETWEEN(sysdate, b1.sorlcur_start_date)
+	MONTHS_BETWEEN(sysdate, b1.sorlcur_start_date) AS "Month_Count"
 	
 FROM
 	spriden a1 -- Person Record
