@@ -20,7 +20,7 @@ WHERE
     -- Pick the latest grade for each module in Academic History
     AND s1.shrtckg_seq_no = (SELECT MAX(s2.shrtckg_seq_no) FROM shrtckg s2 WHERE s2.shrtckg_pidm = s1.shrtckg_pidm AND s2.shrtckg_term_code = s1.shrtckg_term_code AND s2.shrtckg_tckn_seq_no = s1.shrtckg_tckn_seq_no)
 
-    -- Limit to grades of IC
+    -- Limit to grades of DD
     AND s1.shrtckg_grde_code_final = 'DD'
     
     -- Limit to students in specified popsel
