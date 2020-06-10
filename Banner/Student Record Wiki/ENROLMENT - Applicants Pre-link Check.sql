@@ -106,7 +106,7 @@ WHERE
     AND SARADAP_TERM_CODE_ENTRY = :term_code
     AND spriden_change_ind is null
     AND sorlcur_current_cde = 'Y'
-    AND ((goremal_emal_code = 'PERS' AND goremal_preferred_ind = 'Y') OR goremal_emal_code IS NULL)
+    AND (goremal_preferred_ind = 'Y' OR goremal_emal_code IS NULL)
     --AND SARADAP_RESD_CODE != '0'
     --AND saraatt_atts_code is not null
     --AND sorlcur_curr_rule is not null
