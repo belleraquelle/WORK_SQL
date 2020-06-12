@@ -26,8 +26,7 @@ WHERE
     -- Limit to students in specified popsel
     AND spriden_pidm in (SELECT glbextr_key FROM glbextr WHERE glbextr_selection = :popsel_name AND glbextr_user_id = :popsel_user)
 
-ORDER BY
-    shrtckn_term_code, 
+ORDER BY 
     shrtckn_subj_code, 
     shrtckn_crse_numb,
     spriden_first_name ||' ' || spriden_last_name
