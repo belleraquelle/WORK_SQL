@@ -22,14 +22,6 @@ WHERE
 	1=1
 	AND glbextr_selection = '202006-UG-GRADUATING'
 	AND glbextr_user_id = 'P0076032'
-	AND (
-		szrprop_term_code IS NULL 
-		OR szrprop_atts_code IS NULL
-		OR szrprop_camp_code IS NULL
-		OR szrprop_coll_code IS NULL
-		OR szrprop_prog_code IS NULL
-		OR szrprop_majr_code IS NULL
-		)
 		
 		-- Select Maximum Study Path Record
 	AND g1.sgrstsp_term_code_eff = ( 
@@ -61,14 +53,14 @@ WHERE
 	
 	)
 	
-	AND b1.sorlcur_end_date BETWEEN '01-JAN-20' AND '31-JUL-20'
+	--AND b1.sorlcur_end_date BETWEEN '01-JAN-20' AND '31-JUL-20'
 	
-	--AND spriden_id = '19035933'
+	AND spriden_id = '13125889'
 ;
 
 SELECT * FROM szrprop JOIN spriden ON pidm = spriden_pidm WHERE spriden_id = '16032150';
 
-SELECT glbextr.* FROM glbextr JOIN spriden ON glbextr_key = spriden_pidm WHERE spriden_id = '18065284' AND glbextr_application = 'EXAM';
+SELECT glbextr.* FROM glbextr JOIN spriden ON glbextr_key = spriden_pidm WHERE spriden_id = '13125889' AND glbextr_application = 'EXAM';
 
 SELECT * FROM spriden WHERE spriden_pidm = '1260331';
 
