@@ -12,16 +12,16 @@ SELECT
 	szrprop_prog_code,
 	szrprop_majr_code
 FROM 
-	szrprop
-	JOIN spriden ON pidm = spriden_pidm AND spriden_change_ind IS NULL
-	JOIN glbextr ON pidm = glbextr_key
-	JOIN sgrstsp g1 ON pidm = g1.sgrstsp_pidm AND study_path = sgrstsp_key_seqno
-	JOIN sorlcur b1 ON pidm = b1.sorlcur_pidm AND g1.sgrstsp_key_seqno = b1.sorlcur_key_seqno
+	glbextr
+	JOIN spriden ON glbextr_key = spriden_pidm AND spriden_change_ind IS NULL
+	LEFT JOIN szrprop ON pidm = glbextr_key AND glbextr_selection = population
+	JOIN sgrstsp g1 ON glbextr_key = g1.sgrstsp_pidm AND study_path = sgrstsp_key_seqno
+	JOIN sorlcur b1 ON glbextr_key = b1.sorlcur_pidm AND g1.sgrstsp_key_seqno = b1.sorlcur_key_seqno
 	
 WHERE
 	1=1
-	AND glbextr_selection = '202006-UG-GRADUATING'
-	AND glbextr_user_id = 'P0076032'
+	--AND glbextr_selection = '202006-UG-GRADUATING'
+	--AND glbextr_user_id = 'P0076032'
 		
 		-- Select Maximum Study Path Record
 	AND g1.sgrstsp_term_code_eff = ( 
@@ -55,12 +55,12 @@ WHERE
 	
 	--AND b1.sorlcur_end_date BETWEEN '01-JAN-20' AND '31-JUL-20'
 	
-	AND spriden_id = '17072787'
+	AND spriden_id = '19025828'
 ;
 
-SELECT * FROM szrprop JOIN spriden ON pidm = spriden_pidm WHERE spriden_id = '16032150';
+SELECT * FROM szrprop JOIN spriden ON pidm = spriden_pidm WHERE spriden_id = '19041526';
 
-SELECT glbextr.* FROM glbextr JOIN spriden ON glbextr_key = spriden_pidm WHERE spriden_id = '17072787' AND glbextr_application = 'EXAM';
+SELECT glbextr.* FROM glbextr JOIN spriden ON glbextr_key = spriden_pidm WHERE spriden_id = '18054305' AND glbextr_application = 'EXAM';
 
 SELECT * FROM spriden WHERE spriden_pidm = '1260331';
 
