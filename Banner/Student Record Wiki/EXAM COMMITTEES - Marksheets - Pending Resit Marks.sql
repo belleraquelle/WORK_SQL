@@ -19,6 +19,7 @@ SELECT
     shrgcom_name, 
     shrgcom_description,
     shrgcom_weight, 
+    shrmrks_gcom_id,
     shrmrks_score, 
     shrmrks_percentage, 
     shrmrks_grde_code, 
@@ -97,6 +98,18 @@ WHERE
             -- And exclude students who have had a resit grade entered
             AND (shrmrks_gchg_code NOT IN ('RE', 'UR', 'CR'))
         )
+        
+    -- Limit to capped resits
+    AND shrmrks_comments IS NULL
+        
+ 	AND shrmrks_pidm || shrmrks_term_code || shrmrks_crn NOT IN (
+ 	
+ 		SELECT shrmrks_pidm || shrmrks_term_code || shrmrks_crn
+ 		FROM shrmrks
+ 		WHERE shrmrks_comments = 'Not Attempted'
+ 	
+ 	)
+ 	
 ORDER BY
     shrmrks_crn, shrgcom_name, shrgcom_description, s1.spriden_last_name, s1.spriden_id
 ;
