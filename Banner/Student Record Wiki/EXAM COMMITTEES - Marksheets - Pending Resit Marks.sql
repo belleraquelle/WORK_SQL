@@ -100,8 +100,9 @@ WHERE
         )
         
     -- Limit to capped resits
-    AND shrmrks_comments IS NULL
-        
+    --AND shrmrks_comments IS NULL
+     
+    -- Exclude students who have a Not Attempted comment on ANY component for that CRN
  	AND shrmrks_pidm || shrmrks_term_code || shrmrks_crn NOT IN (
  	
  		SELECT shrmrks_pidm || shrmrks_term_code || shrmrks_crn
