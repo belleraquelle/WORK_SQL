@@ -1,5 +1,5 @@
 SELECT DISTINCT
-	subj_coord_1,
+	UPPER(subj_coord_1),
 	spriden_last_name,
 	spriden_first_name
 	
