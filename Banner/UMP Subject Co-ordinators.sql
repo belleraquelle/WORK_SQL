@@ -1,8 +1,15 @@
 SELECT DISTINCT
-    subj_coord_1
+	subj_coord_1,
+	spriden_last_name,
+	spriden_first_name
+	
 FROM
-    sobcurr_add
-WHERE 
-    ump_1 = 'Y'
-    AND valstatus_1 IN ('CA', 'CL')
+	sobcurr_add
+	LEFT JOIN spriden ON UPPER(subj_coord_1) = spriden_id
+	
+WHERE
+	1=1
+	
+	AND ump_1 = 'Y'
+	AND valstatus_1 IN ('CA', 'CL')
 ;
