@@ -27,7 +27,7 @@ FROM
 	JOIN sgrstsp g1 ON b1.sorlcur_pidm = g1.sgrstsp_pidm AND b1.sorlcur_key_seqno = sgrstsp_key_seqno -- Study Path Record
 	JOIN smrprle j1 ON b1.sorlcur_program = j1.smrprle_program -- Programme Record for Title
 	LEFT JOIN shrdgmr k1 ON b1.sorlcur_pidm = k1.shrdgmr_pidm AND b1.sorlcur_key_seqno = k1.shrdgmr_stsp_key_sequence -- Award Record
-	LEFT JOIN sorlcur l1 ON k1.shrdgmr_pidm = l1.sorlcur_pidm AND k1.shrdgmr_seq_no = l1.sorlcur_key_seqno AND l1.sorlcur_lmod_code = 'OUTCOME' AND l1.sorlcur_term_code_end IS NULL -- Award Curriculum Record
+	LEFT JOIN sorlcur l1 ON k1.shrdgmr_pidm = l1.sorlcur_pidm AND k1.shrdgmr_seq_no = l1.sorlcur_key_seqno AND l1.sorlcur_lmod_code = 'OUTCOME' AND l1.sorlcur_current_cde = 'Y' -- Award Curriculum Record
 	LEFT JOIN shrdgih m1 ON k1.shrdgmr_pidm = m1.shrdgih_pidm AND k1.shrdgmr_seq_no = m1.shrdgih_dgmr_seq_no -- Classification Record
 	LEFT JOIN smrprle n1 ON l1.sorlcur_program = n1.smrprle_program -- Programme Record for Title
 	
