@@ -55,7 +55,7 @@ WHERE
 	
 	--AND b1.sorlcur_end_date BETWEEN '01-JAN-20' AND '31-JUL-20'
 	
-	AND spriden_id = '16051850'
+	AND spriden_id = '16076865'
 ;
 
 SELECT * FROM szrprop JOIN spriden ON pidm = spriden_pidm WHERE spriden_id = '19041526';
@@ -97,4 +97,6 @@ WHEN MATCHED THEN UPDATE SET A.GLBEXTR_ACTIVITY_DATE= B.c6;
  
  ;
 
- SELECT * FROM spriden WHERE spriden_id = '15050630'
+ SELECT * FROM szrprop WHERE szrprop_award LIKE '%PN%' AND average_mark IS NULL AND POPULATION = '202006-UG-GRADUATING'
+ ;
+ 
