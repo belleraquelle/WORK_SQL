@@ -14,6 +14,7 @@ SELECT DISTINCT
 		WHEN szrcmnt_crn IS NOT NULL OR crn IS NOT NULL THEN 'Y'
 		ELSE NULL
 	END AS "Moderations?",
+	scbcrse_coll_code AS "Faculty",
     shrmrks_term_code AS "Term_Code", 
     shrmrks_crn AS "CRN", 
     ssbsect_subj_code AS "Subject_Code", 
@@ -81,6 +82,9 @@ WHERE
 	
 	-- Limit to Brookes / Collaborative Provision
     AND ssbsect_camp_code :IN_FOR_BROOKES_NOT_IN_FOR_ACP ('OBO', 'OBS', 'DL')
+    
+    -- Optional faculty filter
+    --AND scbcrse_coll_code = :FACULTY_CODE
 
 ORDER BY
     ssbsect_subj_code, ssbsect_crse_numb
@@ -112,6 +116,7 @@ SELECT DISTINCT
 --		WHEN szrcmnt_crn IS NOT NULL OR crn IS NOT NULL THEN 'Y'
 --		ELSE NULL
 --	END AS "Moderations?",
+	scbcrse_coll_code AS "Faculty",
     shrmrks_term_code AS "Term_Code", 
     shrmrks_crn AS "CRN", 
     ssbsect_subj_code AS "Subject_Code", 
@@ -180,7 +185,13 @@ WHERE
     
     -- Limit to resits
     AND shrmrks_gchg_code IN ('CR','UR','RE')
+    
+    -- Optional faculty filter
+    --AND scbcrse_coll_code = :FACULTY_CODE
 
 ORDER BY
     ssbsect_subj_code, ssbsect_crse_numb
 ;
+
+
+SELECT * FROM scbcrse
