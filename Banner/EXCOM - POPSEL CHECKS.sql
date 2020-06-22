@@ -55,14 +55,19 @@ WHERE
 	
 	--AND b1.sorlcur_end_date BETWEEN '01-JAN-20' AND '31-JUL-20'
 	
-	AND spriden_id = '16076865'
+	AND spriden_id = '16051850'
+	--AND b1.sorlcur_program = 'BSCO-IO'
 ;
 
-SELECT * FROM szrprop JOIN spriden ON pidm = spriden_pidm WHERE spriden_id = '19041526';
+SELECT * FROM szrprop JOIN spriden ON pidm = spriden_pidm WHERE spriden_id = '17065928';
 
-SELECT glbextr.* FROM glbextr JOIN spriden ON glbextr_key = spriden_pidm WHERE spriden_id = '16051850' AND glbextr_application = 'EXAM';
+SELECT * FROM szrprop JOIN spriden ON pidm = spriden_pidm WHERE szrprop_prog_code = 'BSCO-IO';
+
+SELECT glbextr.* FROM glbextr JOIN spriden ON glbextr_key = spriden_pidm WHERE spriden_id = '15072451' AND glbextr_application = 'EXAM';
 
 SELECT * FROM spriden WHERE spriden_pidm = '1260331';
+
+SELECT * FROM szrcmnt;
 
 
 /*
