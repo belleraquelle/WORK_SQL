@@ -77,7 +77,3 @@ WHERE
         "Current_Stage"
     
 ;
-
-SELECT * FROM szrcmnt WHERE szrcmnt_pidm = '1305956';
-
-SELECT MAX(d2.szrcmnt_date) FROM szrcmnt d2 WHERE d2.szrcmnt_group = :popsel_name AND d2.szrcmnt_type = 'EXCOM' AND d2.szrcmnt_pidm = '1305956'

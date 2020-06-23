@@ -17,7 +17,9 @@ SELECT DISTINCT
 	n1.smrprle_program_desc AS "Award_Programme_Description",
 	k1.shrdgmr_degc_code AS "Award_Code",
 	k1.shrdgmr_degs_code AS "Award_Status",
-	m1.shrdgih_honr_code AS "Classification"
+	o1.shrdgcm_comment AS "Average",
+	m1.shrdgih_honr_code AS "Classification",
+	k1.shrdgmr_grad_date AS "Award_Date"
 	
 FROM
 	spriden a1 -- Person Record
@@ -30,6 +32,7 @@ FROM
 	LEFT JOIN sorlcur l1 ON k1.shrdgmr_pidm = l1.sorlcur_pidm AND k1.shrdgmr_seq_no = l1.sorlcur_key_seqno AND l1.sorlcur_lmod_code = 'OUTCOME' AND l1.sorlcur_current_cde = 'Y' -- Award Curriculum Record
 	LEFT JOIN shrdgih m1 ON k1.shrdgmr_pidm = m1.shrdgih_pidm AND k1.shrdgmr_seq_no = m1.shrdgih_dgmr_seq_no -- Classification Record
 	LEFT JOIN smrprle n1 ON l1.sorlcur_program = n1.smrprle_program -- Programme Record for Title
+	LEFT JOIN shrdgcm o1 ON k1.shrdgmr_pidm = o1.shrdgcm_pidm AND k1.shrdgmr_seq_no = o1.shrdgcm_dgmr_seq_no
 	
 WHERE
 	1=1
@@ -85,6 +88,9 @@ WHERE
 	
 	-- Limit to PN or AW awards
 	AND k1.shrdgmr_degs_code IN ('AW','PN')
+	
+	-- Limit to 'future' awards
+	AND shrdgmr_grad_date > sysdate
 
 	
 ORDER BY 
@@ -93,3 +99,8 @@ ORDER BY
 	b1.sorlcur_camp_code
 	
 ;
+
+
+SELECT * FROM shrdgmr;
+
+SELECT * FROM shrdgcm;

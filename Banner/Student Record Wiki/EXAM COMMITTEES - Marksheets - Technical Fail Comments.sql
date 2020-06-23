@@ -73,5 +73,5 @@ WHERE
     AND sfrstcr_gcmt_code IS NOT NULL
     
     -- Exclude anyone who already has a failing grade grade
-    AND shrtckg_grde_code_final NOT IN ('F', 'FAIL')
+    AND shrtckg_grde_code_final NOT IN ('F', 'FAIL', 'CP', 'DD')
 ;
