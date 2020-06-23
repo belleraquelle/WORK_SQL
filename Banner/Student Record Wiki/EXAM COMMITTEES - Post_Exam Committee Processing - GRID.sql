@@ -17,13 +17,17 @@ SELECT DISTINCT
     c1.shrapsp_astd_code_end_of_term AS "Progression_Decision_Code",
     c1.shrapsp_prev_code AS "Additional_Decision_Code",
     b1.szrcmnt_comment AS "Latest_SRCM_Comment",
-    d1.szrcmnt_comment AS "Latest_ExCom_Comment"
+    e1.szrcmnt_comment AS "Latest_ExCom_Comment"
     
 FROM
     sorlcur a1
     LEFT JOIN szrcmnt b1 ON a1.sorlcur_pidm = b1.szrcmnt_pidm AND a1.sorlcur_key_seqno = b1.szrcmnt_stsp_key_seqno
-    LEFT JOIN szrcmnt d1 ON a1.sorlcur_pidm = d1.szrcmnt_pidm AND a1.sorlcur_key_seqno = d1.szrcmnt_stsp_key_seqno
-    LEFT JOIN shrapsp c1 ON a1.sorlcur_pidm = c1.shrapsp_pidm AND a1.sorlcur_key_seqno = c1.shrapsp_stsp_key_sequence
+    	AND b1.szrcmnt_group = :popsel_name AND b1.szrcmnt_type = 'SCENT' AND b1.szrcmnt_date = 
+    		(SELECT MAX(b2.szrcmnt_date) FROM szrcmnt b2 WHERE b1.szrcmnt_pidm = b2.szrcmnt_pidm AND b2.szrcmnt_group = :popsel_name AND b2.szrcmnt_type = 'SCENT')
+    LEFT JOIN szrcmnt e1 ON a1.sorlcur_pidm = e1.szrcmnt_pidm AND a1.sorlcur_key_seqno = e1.szrcmnt_stsp_key_seqno
+    	AND e1.szrcmnt_group = :popsel_name AND e1.szrcmnt_type = 'EXCOM' AND e1.szrcmnt_date = 
+    		(SELECT MAX(e2.szrcmnt_date) FROM szrcmnt e2 WHERE e1.szrcmnt_pidm = e2.szrcmnt_pidm AND e2.szrcmnt_group = :popsel_name AND e2.szrcmnt_type = 'EXCOM')
+    LEFT JOIN shrapsp c1 ON a1.sorlcur_pidm = c1.shrapsp_pidm AND a1.sorlcur_key_seqno = c1.shrapsp_stsp_key_sequence AND shrapsp_term_code = :decision_term_code
     JOIN sobcurr_add ON a1.sorlcur_curr_rule = sobcurr_curr_rule
     JOIN spriden ON a1.sorlcur_pidm = spriden_pidm AND spriden_change_ind IS NULL
     JOIN sgrsatt s1 ON a1.sorlcur_pidm = sgrsatt_pidm AND a1.sorlcur_key_seqno = sgrsatt_stsp_key_sequence 
@@ -34,16 +38,6 @@ WHERE
     1=1
     -- Limit to students from exam committee population
     AND a1.sorlcur_pidm IN (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = :popsel_name)
-    
--- Limit to latest Student Central comments
-    AND (
-    	(b1.szrcmnt_group = :popsel_name AND b1.szrcmnt_type = 'SCENT' AND b1.szrcmnt_date = 
-    		(SELECT MAX(b2.szrcmnt_date) FROM szrcmnt b2 WHERE b1.szrcmnt_pidm = b2.szrcmnt_pidm AND b2.szrcmnt_group = :popsel_name AND b2.szrcmnt_type = 'SCENT')) OR b1.szrcmnt_comment IS NULL)
---    		
--- Limit to latest Exam Committee comments
-    AND (
-    	(d1.szrcmnt_group = :popsel_name AND d1.szrcmnt_type = 'EXCOM' AND d1.szrcmnt_date = 
-    		(SELECT MAX(d2.szrcmnt_date) FROM szrcmnt d2 WHERE d1.szrcmnt_pidm = d2.szrcmnt_pidm AND d2.szrcmnt_group = :popsel_name AND d2.szrcmnt_type = 'EXCOM')) OR d1.szrcmnt_comment IS NULL)
     
     -- Limit to max sorlcur learner record
     AND a1.sorlcur_term_code = (
@@ -63,7 +57,7 @@ WHERE
         OR c1.shrapsp_term_code IS NULL)
 
     -- Only include decisions recorded against specified term
-    AND (shrapsp_term_code = :decision_term_code OR shrapsp_activity_date IS NULL)
+    --AND (shrapsp_term_code = :decision_term_code OR shrapsp_term_code IS NULL)
     
     -- Limit to max sgrstsp term effective record and only return it if it is active
     AND d1.sgrstsp_term_code_eff = (
@@ -72,9 +66,9 @@ WHERE
         WHERE d2.sgrstsp_pidm = d1.sgrstsp_pidm AND d2.sgrstsp_key_seqno = d1.sgrstsp_key_seqno)
     AND d1.sgrstsp_stsp_code = 'AS'
         
-    AND NOT (c1.shrapsp_astd_code_end_of_term IS NULL AND c1.shrapsp_prev_code IS NULL AND b1.szrcmnt_comment IS NULL AND d1.szrcmnt_comment IS NULL)
+    AND NOT (c1.shrapsp_astd_code_end_of_term IS NULL AND c1.shrapsp_prev_code IS NULL AND b1.szrcmnt_comment IS NULL AND e1.szrcmnt_comment IS NULL)
     
-    --AND b1.szrcmnt_comment IS NOT NULL
+    --AND a1.sorlcur_pidm = '1255910'
         
     ORDER BY
         "Faculty",
@@ -83,3 +77,7 @@ WHERE
         "Current_Stage"
     
 ;
+
+SELECT * FROM szrcmnt WHERE szrcmnt_pidm = '1305956';
+
+SELECT MAX(d2.szrcmnt_date) FROM szrcmnt d2 WHERE d2.szrcmnt_group = :popsel_name AND d2.szrcmnt_type = 'EXCOM' AND d2.szrcmnt_pidm = '1305956'
