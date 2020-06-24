@@ -1,7 +1,9 @@
 /*
- * This report gives a list of all of the status PN and status AW awards against students in the specified popsel.
+ * This report gives a list of all of the status PN and status AW awards against students in the specified popsel who are 
+ * 	- in the exit velocity bracket
+ * 	- have an S graded module against the term specified or later
  * 
- * It can be used to generate a list of awards following the committee for checking and verification purposes.
+ *
  * 
  */
 
@@ -17,7 +19,7 @@ SELECT DISTINCT
 	n1.smrprle_program_desc AS "Award_Programme_Description",
 	k1.shrdgmr_degc_code AS "Award_Code",
 	k1.shrdgmr_degs_code AS "Award_Status",
-	o1.shrdgcm_comment AS "Average",
+	TO_NUMBER(o1.shrdgcm_comment) AS "Average",
 	m1.shrdgih_honr_code AS "Classification",
 	k1.shrdgmr_grad_date AS "Award_Date"
 	
@@ -91,6 +93,29 @@ WHERE
 	
 	-- Limit to 'future' awards
 	AND shrdgmr_grad_date >= '01-MAY-20'
+	
+	AND o1.shrdgcm_comment IS NOT NULL
+	
+	AND k1.shrdgmr_degc_code IN ('BAH', 'BSCH', 'LLBH', 'BENGH')
+	
+	AND (
+		(o1.shrdgcm_comment > '49.5' AND o1.shrdgcm_comment < '50' AND m1.shrdgih_honr_code != 'LOWER')
+		OR (o1.shrdgcm_comment > '59' AND o1.shrdgcm_comment < '60' AND m1.shrdgih_honr_code != 'UPPER')
+		OR (o1.shrdgcm_comment > '68' AND o1.shrdgcm_comment < '70' AND m1.shrdgih_honr_code != 'FIRST')
+		)
+	
+	AND spriden_pidm IN
+		(
+		
+		SELECT s1.shrtckg_pidm
+    	FROM shrtckg s1
+    	WHERE
+    		s1.shrtckg_seq_no = (SELECT MAX(s2.shrtckg_seq_no) FROM shrtckg s2 WHERE s2.shrtckg_pidm = s1.shrtckg_pidm AND s2.shrtckg_term_code = s1.shrtckg_term_code AND s2.shrtckg_tckn_seq_no = s1.shrtckg_tckn_seq_no)
+			AND s1.shrtckg_grde_code_final = 'S'
+			AND s1.shrtckg_term_code >= '201809'
+			AND s1.shrtckg_credit_hours > 0
+		
+		)
 
 	
 ORDER BY 
