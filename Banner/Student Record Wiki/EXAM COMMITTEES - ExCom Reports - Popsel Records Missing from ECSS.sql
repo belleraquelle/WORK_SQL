@@ -6,9 +6,11 @@ SELECT DISTINCT
 	spriden_id,
 	glbextr_key,
 	glbextr_selection,
-	study_path,
+	g1.sgrstsp_key_seqno,
 	g1.sgrstsp_stsp_code,
+	b1.sorlcur_program,
 	population, 
+	study_path,
 	szrprop_term_code, 
 	szrprop_atts_code,
 	szrprop_camp_code,
@@ -18,9 +20,9 @@ SELECT DISTINCT
 FROM 
 	glbextr
 	JOIN spriden ON glbextr_key = spriden_pidm AND spriden_change_ind IS NULL
-	LEFT JOIN szrprop ON glbextr_key = pidm AND glbextr_selection = population
-	JOIN sgrstsp g1 ON glbextr_key = g1.sgrstsp_pidm AND study_path = sgrstsp_key_seqno
+	JOIN sgrstsp g1 ON glbextr_key = g1.sgrstsp_pidm
 	JOIN sorlcur b1 ON glbextr_key = b1.sorlcur_pidm AND g1.sgrstsp_key_seqno = b1.sorlcur_key_seqno
+	LEFT JOIN szrprop ON glbextr_key = pidm AND glbextr_selection = population AND study_path = sgrstsp_key_seqno
 	
 WHERE
 	1=1
@@ -38,7 +40,7 @@ WHERE
 	-- Limit to active study paths
 	AND g1.sgrstsp_stsp_code = 'AS'
 	
-	-- Select Maximum Current SORLCUR record
+-- Select Maximum Current SORLCUR record
 	AND b1.sorlcur_lmod_code = 'LEARNER'
 	AND b1.sorlcur_current_cde = 'Y'
 	AND b1.sorlcur_cact_code = 'ACTIVE'
@@ -56,7 +58,7 @@ WHERE
 	
 	)
 	
-	-- Strip out wonky migrated data and old foundation records
+-- Strip out wonky migrated data and old foundation records
 	AND b1.sorlcur_end_date > '01-JAN-20'
 	AND b1.sorlcur_term_code_end IS NULL
 	
@@ -72,10 +74,19 @@ WHERE
 	
 	)
 	
+	-- Exclude the following courses from the check that shouldn't be in ECSS (not needed in UG ECSS)
+	AND sorlcur_program NOT IN (
+		'UGASSO',
+		'UGASSO-NAMED'
+	)
+	AND sorlcur_program NOT LIKE 'MPHIL%'
+	
+	
+	
 ORDER BY 
-	spriden_id
+	b1.sorlcur_program
 ;
 
-SELECT * FROM szrprop WHERE population = '202007-UG-GRADUATING-RESIT';
-
-SELECT * FROM glbextr WHERE glbextr_selection = '202007-UG-GRADUATING-RESIT';
+SELECT spriden_id, szrprop.* 
+FROM szrprop JOIN spriden ON pidm = spriden_pidm AND spriden_change_ind IS NULL 
+WHERE population = '202007_GOLD' AND szrprop_award LIKE '%(AW)';
