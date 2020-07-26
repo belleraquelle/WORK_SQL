@@ -86,7 +86,3 @@ WHERE
 ORDER BY 
 	b1.sorlcur_program
 ;
-
-SELECT spriden_id, szrprop.* 
-FROM szrprop JOIN spriden ON pidm = spriden_pidm AND spriden_change_ind IS NULL 
-WHERE population = '202007_GOLD' AND szrprop_award LIKE '%(AW)';
