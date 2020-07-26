@@ -18,7 +18,7 @@ SELECT DISTINCT
 FROM 
 	glbextr
 	JOIN spriden ON glbextr_key = spriden_pidm AND spriden_change_ind IS NULL
-	LEFT JOIN szrprop ON pidm = glbextr_key AND glbextr_selection = population
+	LEFT JOIN szrprop ON glbextr_key = pidm AND glbextr_selection = population
 	JOIN sgrstsp g1 ON glbextr_key = g1.sgrstsp_pidm AND study_path = sgrstsp_key_seqno
 	JOIN sorlcur b1 ON glbextr_key = b1.sorlcur_pidm AND g1.sgrstsp_key_seqno = b1.sorlcur_key_seqno
 	
@@ -75,3 +75,7 @@ WHERE
 ORDER BY 
 	spriden_id
 ;
+
+SELECT * FROM szrprop WHERE population = '202007-UG-GRADUATING-RESIT';
+
+SELECT * FROM glbextr WHERE glbextr_selection = '202007-UG-GRADUATING-RESIT';
