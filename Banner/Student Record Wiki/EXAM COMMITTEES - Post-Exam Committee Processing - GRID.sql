@@ -31,7 +31,7 @@ FROM
     JOIN sobcurr_add ON a1.sorlcur_curr_rule = sobcurr_curr_rule
     JOIN spriden ON a1.sorlcur_pidm = spriden_pidm AND spriden_change_ind IS NULL
     JOIN sgrsatt s1 ON a1.sorlcur_pidm = sgrsatt_pidm AND a1.sorlcur_key_seqno = sgrsatt_stsp_key_sequence 
-        AND s1.sgrsatt_term_code_eff = (SELECT MAX(s2.sgrsatt_term_code_eff) FROM sgrsatt s2 WHERE s1.sgrsatt_pidm = s2.sgrsatt_pidm AND s1.sgrsatt_stsp_key_sequence = s2.sgrsatt_stsp_key_sequence AND s2.sgrsatt_term_code_eff <= '202001')
+        AND s1.sgrsatt_term_code_eff = (SELECT MAX(s2.sgrsatt_term_code_eff) FROM sgrsatt s2 WHERE s1.sgrsatt_pidm = s2.sgrsatt_pidm AND s1.sgrsatt_stsp_key_sequence = s2.sgrsatt_stsp_key_sequence AND s2.sgrsatt_term_code_eff <= :decision_term_code)
     JOIN sgrstsp d1 ON a1.sorlcur_pidm = d1.sgrstsp_pidm AND a1.sorlcur_key_seqno = d1.sgrstsp_key_seqno
     
 WHERE
@@ -69,6 +69,7 @@ WHERE
     AND NOT (c1.shrapsp_astd_code_end_of_term IS NULL AND c1.shrapsp_prev_code IS NULL AND b1.szrcmnt_comment IS NULL AND e1.szrcmnt_comment IS NULL)
     
     --AND a1.sorlcur_pidm = '1255910'
+    --AND spriden_id = '19044377'
         
     ORDER BY
         "Faculty",
