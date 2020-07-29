@@ -16,6 +16,7 @@ SELECT DISTINCT
 		ELSE NULL
 		END AS "DD_Grade",
     shrapsp_astd_code_end_of_term AS "Academic_Standing",
+    shrapsp_activity_date AS "Academic_Standing_Date",
     :popsel_name AS "Popsel"
 
 FROM
@@ -63,3 +64,5 @@ WHERE
 ORDER BY 
     spriden_first_name ||' ' || spriden_last_name
 ;
+
+SELECT * FROM shrapsp;

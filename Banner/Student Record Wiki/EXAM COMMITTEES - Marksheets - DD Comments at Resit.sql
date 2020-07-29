@@ -1,4 +1,6 @@
 SELECT 
+	s1.spriden_id AS "Student_Number",
+    s1.spriden_last_name || ', ' || s1.spriden_first_name AS "Student_Name",
     shrmrks_term_code AS "Term_Code", 
     shrmrks_crn AS "CRN", 
     ssbsect_subj_code AS "Subject_Code", 
@@ -11,9 +13,7 @@ SELECT
     sfrstcr_rsts_code AS "Registration_Status",
     shrgcom_name AS "Component_Name", 
     shrgcom_description AS "Component_Description",
-    shrgcom_weight AS "Component_Weight", 
-    s1.spriden_id AS "Student_Number",
-    s1.spriden_last_name || ', ' || s1.spriden_first_name AS "Student_Name",
+    shrgcom_weight AS "Component_Weight",
     shrmrks_score AS "Component_Score", 
     shrmrks_percentage AS "Component_Percentage", 
     shrmrks_grde_code AS "Component_Grade", 
