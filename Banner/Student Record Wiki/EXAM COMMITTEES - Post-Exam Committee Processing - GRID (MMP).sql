@@ -11,9 +11,9 @@ SELECT
 FROM
 	spriden a1
 	JOIN shrtckn b1 ON a1.spriden_pidm = b1.shrtckn_pidm
-	LEFT JOIN szrmrks c1 ON a1.spriden_pidm = c1.pidm AND TO_CHAR(c1.crn) = TO_CHAR(b1.shrtckn_crn) AND c1.activity_date >= '01-MAY-20'
-	LEFT JOIN szrcmnt d1 ON a1.spriden_pidm = d1.szrcmnt_pidm AND TO_CHAR(b1.shrtckn_crn) = TO_CHAR(d1.szrcmnt_crn) AND d1.szrcmnt_type = 'EXCOM' AND d1.szrcmnt_date >= '01-MAY-20'
-	LEFT JOIN szrcmnt e1 ON a1.spriden_pidm = e1.szrcmnt_pidm AND TO_CHAR(b1.shrtckn_crn) = TO_CHAR(e1.szrcmnt_crn) AND e1.szrcmnt_type = 'SCENT' AND e1.szrcmnt_date >= '01-MAY-20'
+	LEFT JOIN szrmrks c1 ON a1.spriden_pidm = c1.pidm AND TO_CHAR(c1.crn) = TO_CHAR(b1.shrtckn_crn) AND c1.activity_date >= '01-JUL-20'
+	LEFT JOIN szrcmnt d1 ON a1.spriden_pidm = d1.szrcmnt_pidm AND TO_CHAR(b1.shrtckn_crn) = TO_CHAR(d1.szrcmnt_crn) AND d1.szrcmnt_type = 'EXCOM' AND d1.szrcmnt_date >= '01-JUL-20'
+	LEFT JOIN szrcmnt e1 ON a1.spriden_pidm = e1.szrcmnt_pidm AND TO_CHAR(b1.shrtckn_crn) = TO_CHAR(e1.szrcmnt_crn) AND e1.szrcmnt_type = 'SCENT' AND e1.szrcmnt_date >= '01-JUL-20'
 	
 WHERE
 	1=1
@@ -27,6 +27,8 @@ WHERE
 	)
 	
 ORDER BY 
-	a1.spriden_id
+	b1.shrtckn_term_code,
+	b1.shrtckn_crn,
+	a1.spriden_last_name || ', ' || a1.spriden_first_name
 
 ;

@@ -1,9 +1,12 @@
 select
 spriden_id,
 --shrtckn_subj_code||shrtckn_crse_numb modulecode,
+--shrtckg.shrtckg_credit_hours,
 --scbcrse.scbcrse_bill_hr_low as valuemod,
 shrtckn.shrtckn_stsp_key_sequence,
-SUM(shrtckg.shrtckg_credit_hours) credit
+SUM(shrtckg.shrtckg_credit_hours) credit,
+b1.sorlcur_program,
+b1.sorlcur_end_date
 --scrattr_attr_code levelcode
 --scbcrse.scbcrse_coll_code,
 --SHRGRDE.SHRGRDE_PASSED_IND passfail,
@@ -16,13 +19,14 @@ scrattr,
 shrtckl,
 shrgrde,
 scbcrse,
-spriden
+spriden,
+sorlcur b1
 where
-    shrtckn.shrtckn_pidm IN (SELECT glbextr_key FROM glbextr WHERE glbextr_selection IN ('202001_PINK','202001_SILVER','202001_GOLD') AND glbextr_user_id = 'BANSECR_SCLARKE')
+    shrtckn.shrtckn_pidm IN (SELECT glbextr_key FROM glbextr WHERE glbextr_selection IN ('202007-UG-STAGE1','202007-UG-STAGEII','202007_GOLD'))
     and shrtckn.shrtckn_pidm NOT IN (SELECT shrapsp_pidm FROM shrapsp WHERE (shrapsp_prev_code = 'W1' OR shrapsp_astd_code_end_of_term = 'G3'))
 and spriden_pidm = shrtckn_Pidm
 and spriden_change_ind is null
-and shrtckn.shrtckn_stsp_key_sequence IN (1, 2, 3, 4)
+and shrtckn.shrtckn_stsp_key_sequence IN (1, 2, 3, 4, 5, 6, 7, 8, 9)
 
 and shrtckl_term_code = shrtckn_term_code
 and shrtckl_pidm = shrtckn_pidm
@@ -48,6 +52,24 @@ and shrtckn.shrtckn_term_code = shrcmrk.shrcmrk_term_code(+)
 
 and shrtckn.shrtckn_crn = shrcmrk.shrcmrk_crn(+)
 and shrtckg.shrtckg_tckn_seq_no = shrtckn.shrtckn_seq_no
+
+AND spriden_pidm = b1.sorlcur_pidm AND shrtckn_stsp_key_sequence = b1.sorlcur_key_seqno
+AND b1.sorlcur_lmod_code = 'LEARNER'
+	AND b1.sorlcur_current_cde = 'Y'
+	AND b1.sorlcur_cact_code = 'ACTIVE'
+	AND b1.sorlcur_term_code = (
+	
+		SELECT MAX(b2.sorlcur_term_code)
+		FROM sorlcur b2
+		WHERE
+			1=1
+			AND b1.sorlcur_pidm = b2.sorlcur_pidm
+			AND b1.sorlcur_key_seqno = b2.sorlcur_key_seqno
+			AND b2.sorlcur_lmod_code = 'LEARNER'
+			AND b2.sorlcur_current_cde = 'Y'
+			AND b2.sorlcur_cact_code = 'ACTIVE'
+	
+	)
 
 and (shrcmrk_rectype_ind = 'F'
 or shrcmrk_rectype_ind is null)
@@ -100,13 +122,31 @@ and a.shrtckg_tckn_seq_no = shrtckn2.shrtckn_seq_no
 and shrtckn.shrtckn_pidm = a.shrtckg_pidm))
 )))
 AND SHRGRDE.SHRGRDE_CODE IN ('F','FAIL','XF')
-AND scrattr_attr_code IN ('L5','L6')
+AND (
+	scrattr_attr_code IN ('L5','L6')
+	OR 
+	(scrattr_attr_code = 'L4' AND shrtckn_subj_code||shrtckn_crse_numb IN ( 
+		SELECT 
+			smrgrul_subj_code || smrgrul_crse_numb_low 
+		FROM 
+			smrgrul
+		WHERE
+			smrgrul_subj_code IS NOT NULL
+			AND smrgrul_group LIKE '%XH'
+			)
+		)
+	)
+
+AND sorlcur_end_date >= sysdate
+
+--AND spriden_id = '15074638'
 
 GROUP BY
 
 spriden_id,
 shrtckn.shrtckn_stsp_key_sequence,
-scrattr_attr_code
+b1.sorlcur_program,
+b1.sorlcur_end_date
 
 HAVING SUM(shrtckg.shrtckg_credit_hours) >= 105
 ;
