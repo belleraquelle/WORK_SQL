@@ -17,8 +17,8 @@ SELECT
 	c1.resit_ind AS "Resit_Moderation",
 	--c1.activity_date AS "Mark_Activity_Date",
 	--d1.szrcmnt_crn AS "Moderation_Comment_CRN",
+	d1.szrcmnt_date AS "Moderation_Comment_Date",
 	d1.szrcmnt_comment AS "Moderation_Comment"
-	--,d1.szrcmnt_date AS "Moderation_Comment_Date",
 	--,e1.szrcmnt_crn AS "SCENT_Comment_CRN"
 	--,e1.szrcmnt_comment AS "SCENT_Comment",
 	--,e1.szrcmnt_date AS "SCENT_Comment_Date"
@@ -48,3 +48,6 @@ ORDER BY
 	b1.shrtckn_term_code,
 	b1.shrtckn_crn
 ;
+
+SELECT * FROM szrcmnt;
+SELECT * FROM
