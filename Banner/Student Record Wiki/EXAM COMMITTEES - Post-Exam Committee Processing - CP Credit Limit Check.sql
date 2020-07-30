@@ -89,7 +89,7 @@ WHERE
 	AND g1.sgrstsp_stsp_code = 'AS'
 	
 	-- Limit to modules from the following levels
-	AND j1.scrattr_attr_code IN ('L4')
+	AND j1.scrattr_attr_code IN ('L3','L4')
 	
 	AND i1.shrtckg_grde_code_final = 'CP'
 	
