@@ -10,6 +10,7 @@ SELECT
 	--c1.crn AS "Component_CRN",
 	--c1.gcom_id AS "Component_ID",
 	f1.shrgcom_name AS "Component_Name",
+	f1.shrgcom_description AS "Component_Description",
 	f1.shrgcom_weight AS "Component_Weight",
 	--f1.shrgcom_seq_no AS "Component_Sequence_Number",
 	c1.mark AS "Mark",
@@ -49,5 +50,5 @@ ORDER BY
 	b1.shrtckn_crn
 ;
 
-SELECT * FROM szrcmnt;
+SELECT * FROM shrgcom;
 SELECT * FROM
