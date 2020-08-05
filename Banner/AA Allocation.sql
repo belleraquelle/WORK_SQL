@@ -5,3 +5,6 @@ t1.aa_ratio =
 AND sorlcur_term_code_admit = :term
 AND sorlcur_pidm = :pidm
 --AND sorlcur_pidm in (SELECT aa_pop_pidm FROM aa_pop)
+;
+
+SELECT * FROM smrprle;

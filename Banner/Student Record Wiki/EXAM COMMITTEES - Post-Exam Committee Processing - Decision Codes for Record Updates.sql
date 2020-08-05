@@ -13,9 +13,11 @@ SELECT DISTINCT
     a1.sorlcur_program AS "Programme_of_Study",
     s1.sgrsatt_atts_code AS "Current_Stage",
     --s1.sgrsatt_term_code_eff,
-    c1.shrapsp_term_code,
+    c1.shrapsp_term_code AS "Decision_Term",
     c1.shrapsp_astd_code_end_of_term AS "Progression_Decision_Code",
+    c1.shrapsp_astd_date_end_of_term AS "Progression Decision_Date",
     c1.shrapsp_prev_code AS "Additional_Decision_Code",
+    c1.shrapsp_prev_date AS "Additional_Decision_Date",
     c1.shrapsp_astd_date_end_of_term AS "Activity_Date"
     
 FROM
@@ -67,7 +69,7 @@ WHERE
     
     )
     
-    --AND a1.sorlcur_pidm = '1255910'
+    AND shrapsp_activity_date >= '01-JUL-20'
         
     ORDER BY
     	"Progression_Decision_Code",
