@@ -29,7 +29,7 @@ WHERE
     AND sorlcur_lmod_code = 'LEARNER'
     AND sorlcur_term_code_end IS NULL
     AND sorlcur_end_date > sysdate
-    AND (sorlcur_program IN ('BSCH-PX') OR sorlcur_program LIKE '%PX%') -- Enter programme codes here!
+    AND sorlcur_program IN ('BSCH-BG','BSCH-EJ','MBIOL-BG') --OR sorlcur_program LIKE '%PX%') -- Enter programme codes here!
 
     -- Max Advisor Record
     AND (t1.sgradvr_term_code_eff = (
@@ -41,6 +41,7 @@ WHERE
         
     
 ORDER BY
+	"Programme",
     s2.spriden_last_name || ', ' || s2.spriden_first_name,
     s1.spriden_last_name || ', ' || s1.spriden_first_name
 ;

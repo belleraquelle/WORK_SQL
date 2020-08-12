@@ -10,10 +10,10 @@ SELECT
     sgrstsp1.sgrstsp_stsp_code AS "StudyPathStatus",
     sgrstsp1.sgrstsp_key_seqno AS "StudyPath",
     CASE
-        WHEN sorlcur1.sorlcur_end_date BETWEEN '01-MAY-19' AND '31-AUG-19' THEN '201909'
+        WHEN sorlcur1.sorlcur_end_date BETWEEN '01-MAY-20' AND '31-AUG-20' THEN '202009'
         WHEN sorlcur1.sorlcur_end_date BETWEEN '01-SEP-19' AND '31-DEC-19' THEN '202001'
         WHEN sorlcur1.sorlcur_end_date BETWEEN '01-JAN-20' AND '31-MAY-20' THEN '202006'
-        ELSE '202001'
+        ELSE '202006'
     END AS "InactivateStudyPathTermEffective" 
     
 FROM
@@ -39,4 +39,69 @@ WHERE
     1=1
     AND shrdgmr1.shrdgmr_degs_code = 'AW'
     AND sgrstsp1.sgrstsp_stsp_code = 'AS'
+    
+    -- Exclude students who have a study path with an end date in the future
+    AND sorlcur1.sorlcur_pidm NOT IN ( 
+    
+    	SELECT x1.sorlcur_pidm
+    	FROM sorlcur x1
+    	WHERE
+    		1=1
+    		AND x1.sorlcur_lmod_code = 'LEARNER'
+    		AND x1.sorlcur_cact_code = 'ACTIVE'
+    		AND x1.sorlcur_current_cde = 'Y'
+    		AND x1.sorlcur_term_code = (
+    			SELECT MAX(x2.sorlcur_term_code)
+    			FROM sorlcur x2
+    			WHERE 
+    				x1.sorlcur_pidm = x2.sorlcur_pidm
+    				AND x1.sorlcur_key_seqno = x2.sorlcur_key_seqno
+    				AND x2.sorlcur_lmod_code = 'LEARNER'
+    				AND x2.sorlcur_cact_code = 'ACTIVE'
+    				AND x2.sorlcur_current_cde = 'Y'
+    		)
+    		AND x1.sorlcur_end_date > '01-SEP-20'
+    		
+    )
+    
+    
 ;
+
+
+SELECT DISTINCT
+	spriden_id, spriden_pidm
+FROM 
+	spriden
+	JOIN sgbstdn a1 ON spriden_pidm = a1.sgbstdn_pidm
+WHERE
+
+	1=1
+	
+	-- No active study paths
+	AND spriden_pidm NOT IN ( 
+		SELECT sgrstsp_pidm
+		FROM sgrstsp sgrstsp1
+		WHERE 
+			1=1
+			AND sgrstsp1.sgrstsp_term_code_eff = (
+				SELECT MAX(sgrstsp2.sgrstsp_term_code_eff) 
+				FROM sgrstsp sgrstsp2 
+				WHERE 
+					sgrstsp1.sgrstsp_pidm = sgrstsp2.sgrstsp_pidm 
+					AND sgrstsp1.sgrstsp_key_seqno = sgrstsp2.sgrstsp_key_seqno
+				)
+			AND sgrstsp_stsp_code = 'AS'
+		) 
+	
+	-- Max learner record is Active
+	AND  a1.sgbstdn_term_code_eff = ( 
+		SELECT MAX(a2.sgbstdn_term_code_eff)
+		FROM sgbstdn a2
+		WHERE a1.sgbstdn_pidm = a2.sgbstdn_pidm
+	)
+	AND sgbstdn_stst_code = 'AS'
+;
+
+
+SELECT spriden_id FROM spriden WHERE spriden_pidm = '1331689'
+	
