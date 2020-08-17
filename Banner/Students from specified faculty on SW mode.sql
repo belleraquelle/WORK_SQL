@@ -32,14 +32,14 @@ WHERE
     AND sorlcur_end_date > SYSDATE
     
     -- Only return study paths which have an SW cohort code
-    AND sgrchrt_chrt_code = 'SW'
+    --AND sgrchrt_chrt_code = 'SW'
     
     -- Exclude students who have had the SW cohort code inactivated
-    AND sorlcur_pidm NOT IN (
-        SELECT sgrchrt_pidm
-        FROM sgrchrt
-        WHERE sgrchrt_chrt_code = 'SW' AND sgrchrt_active_ind = 'Y'
-    )
+    --AND sorlcur_pidm NOT IN (
+        --SELECT sgrchrt_pidm
+        --FROM sgrchrt
+        --WHERE sgrchrt_chrt_code = 'SW' AND sgrchrt_active_ind = 'Y'
+    --)
     
     -- Restrict to only include current student attribute for the study path
     AND t1.sgrsatt_term_code_eff = (
@@ -53,9 +53,13 @@ WHERE
             (SELECT stvterm_code FROM stvterm WHERE SYSDATE BETWEEN stvterm_start_date AND stvterm_end_date)
         )
         
+   --AND spriden_id = '16099909'
+   
 ORDER BY
     sorlcur_program,
     sorlcur_term_code_admit,
     spriden_last_name,
     spriden_first_name
 ;
+
+-- Why IS 16099909 and 16022234 NOT showing? 
