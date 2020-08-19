@@ -32,6 +32,7 @@ WHERE
     1=1
 	-- CURRENT STUDENT NUMBER
     AND d1.spriden_change_ind IS NULL
+    
 	-- IDENTIFY STUDENTS WITH ACTIVE STUDY PATHS
     AND t1.sgrstsp_term_code_eff = (
         SELECT MAX(a2.sgrstsp_term_code_eff)
@@ -48,6 +49,7 @@ WHERE
     )
     AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date > :completion_date_is_greater_than
     AND t2.sorlcur_camp_code NOT IN ('AIE')
+    
 	-- LIMIT TO CURRENT SGBSTDN RECORD
     AND t4.sgbstdn_term_code_eff = (
         SELECT MAX(e2.sgbstdn_term_code_eff)
@@ -55,18 +57,22 @@ WHERE
         WHERE t4.sgbstdn_pidm = e2.sgbstdn_pidm
     )
     AND sgbstdn_stst_code = 'AS'
+    
 	-- ONLY INCLUDE PROPER SORLCUR RECORDS
     AND t3.SORLFOS_csts_code = 'INPROGRESS'
     AND t2.sorlcur_current_cde = 'Y'
     AND t2.sorlcur_term_code_end IS NULL
+    
 	-- EXCLUDE STUDENTS WHO ARE ALREADY EN/AT/UT/WD FOR THE ENROLMENT TERM
     AND t1.sgrstsp_pidm NOT IN (
         SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_for_enrolment AND sfrensp_ests_code IN ('AT', 'EN', 'UT', 'WD')
     )
+    
 	-- LIMIT TO STUDENTS WHO HAVE A FINAL STATUS FOR PREVIOUS TERM
     AND t1.sgrstsp_pidm IN (
         SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_before_term_for_enrolment AND sfrensp_ests_code IN ('AT', 'EN', 'UT')
     )
+    
 	-- EXCLUDE NEW STUDENTS
     AND t2.sorlcur_term_code_admit != :term_for_enrolment
 	-- ONLY INCLUDE STUDENTS WHO HAVE NOT BEEN OPENED FOR ENROLMENT YET
