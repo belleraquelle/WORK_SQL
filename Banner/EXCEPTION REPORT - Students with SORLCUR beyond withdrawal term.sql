@@ -21,6 +21,8 @@ WHERE
 	AND sfrensp_ests_code = 'WD'
 	AND sorlcur_lmod_code = 'LEARNER'
 	AND sorlcur_term_code > sfrensp_term_code
+	AND sorlcur_cact_code = 'ACTIVE'
+	AND sorlcur_current_cde = 'Y'
 ORDER BY 
 	sorlcur_coll_code,
 	sorlcur_program

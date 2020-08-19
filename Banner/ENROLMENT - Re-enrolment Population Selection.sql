@@ -18,10 +18,10 @@ SELECT DISTINCT
     t2.sorlcur_term_code_end,
     t2.sorlcur_curr_rule,
     t3.sorlfos_csts_code,
-    t4.sgbstdn_term_code_eff,
-    t4.acenrol_status_1,
-    t4.finenrol_status_1,
-    t4.overall_enrol_status_1
+    t4.sgbstdn_term_code_eff
+    --t4.acenrol_status_1,
+    --t4.finenrol_status_1,
+    --t4.overall_enrol_status_1
 FROM
     sgrstsp t1
     JOIN sorlcur t2 ON (t1.sgrstsp_pidm = t2.sorlcur_pidm AND t1.sgrstsp_key_seqno = t2.sorlcur_key_seqno)
