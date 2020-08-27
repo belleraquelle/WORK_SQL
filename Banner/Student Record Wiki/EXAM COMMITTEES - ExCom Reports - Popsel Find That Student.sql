@@ -62,3 +62,7 @@ WHERE
 	AND spriden_id = :student_id
 	--AND b1.sorlcur_program = 'BSCO-IO'
 ;
+
+
+SELECT spriden_pidm FROM spriden WHERE spriden_id = '17022906';
+SELECT * FROM glbextr WHERE glbextr_key = '1230158'
