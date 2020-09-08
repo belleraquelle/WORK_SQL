@@ -94,7 +94,7 @@ FROM
     JOIN SMRPRLE ON SARADAP_PROGRAM_1 = SMRPRLE_PROGRAM -- Programme Table for description
     JOIN SORLFOS ON SORLCUR_PIDM = SORLFOS_PIDM AND SORLCUR_SEQNO = SORLFOS_LCUR_SEQNO -- SORLFOS for Major
     LEFT JOIN SOBCURR ON SORLCUR_CURR_RULE = SOBCURR_CURR_RULE -- Check that SORLCUR_CURR_RULE is correct
-    LEFT JOIN GOREMAL ON SARADAP_PIDM = GOREMAL_PIDM 
+    LEFT JOIN GOREMAL g1 ON SARADAP_PIDM = g1.GOREMAL_PIDM 
 WHERE
     1=1
     AND s1.sarappd_seq_no = (
@@ -106,15 +106,27 @@ WHERE
     AND SARADAP_TERM_CODE_ENTRY = :term_code
     AND spriden_change_ind is null
     AND sorlcur_current_cde = 'Y'
-    AND (goremal_preferred_ind = 'Y' OR goremal_emal_code IS NULL)
+    AND (
+    	(g1.goremal_emal_code = 'PERS'
+    	AND g1.goremal_activity_date = (
+    		SELECT MAX(g2.goremal_activity_date) 
+    		FROM goremal g2
+    		WHERE
+    			1=1
+    			AND g1.goremal_pidm = g2.goremal_pidm AND g2.goremal_emal_code = 'PERS'
+    		)
+    	)
+    	OR g1.goremal_emal_code IS NULL)
+   
     --AND SARADAP_RESD_CODE != '0'
     --AND saraatt_atts_code is not null
     --AND sorlcur_curr_rule is not null
     --AND sobcurr_program != 'DO NOT USE'
     --AND saradap_program_1 = sorlcur_program
     --AND sorlcur_end_date IS NULL
-    --AND saradap_pidm = '1239915'
+    --AND saradap_pidm = '1701155'
     --AND saradap_pidm in (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = 'SRC_LINK')
 ORDER BY
-      SPRIDEN_ID
+	SARADAP_PROGRAM_1
+      
 ;
