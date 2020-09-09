@@ -87,7 +87,7 @@ SELECT DISTINCT
 FROM
     SARADAP -- Application Table
     JOIN SPRIDEN ON (SARADAP_PIDM = SPRIDEN_PIDM)
-    JOIN SARAPPD s1 ON (SARADAP_PIDM = SARAPPD_PIDM AND SARADAP_APPL_NO = SARAPPD_APPL_NO) -- Application Decision Table
+    JOIN SARAPPD s1 ON (SARADAP_PIDM = s1.SARAPPD_PIDM AND saradap_term_code_entry = s1.sarappd_term_code_entry AND SARADAP_APPL_NO = s1.SARAPPD_APPL_NO) -- Application Decision Table
     LEFT JOIN SARAATT ON (SARADAP_PIDM = SARAATT_PIDM AND SARADAP_APPL_NO = SARAATT_APPL_NO) -- Applicant Attribute Table
     LEFT JOIN SARCHRT ON (SARADAP_PIDM = SARCHRT_PIDM AND SARADAP_APPL_NO = SARCHRT_APPL_NO) -- Applicant Cohort Table
     JOIN SORLCUR ON SARADAP_PIDM = SORLCUR_PIDM AND SARADAP_APPL_NO = SORLCUR_KEY_SEQNO AND SARADAP_TERM_CODE_ENTRY = SORLCUR_TERM_CODE AND SORLCUR_LMOD_CODE = 'ADMISSIONS' -- Curriculum Table
@@ -100,7 +100,7 @@ WHERE
     AND s1.sarappd_seq_no = (
         SELECT MAX(s2.sarappd_seq_no)
         FROM sarappd s2
-        WHERE s2.sarappd_pidm = s1.sarappd_pidm and s2.sarappd_appl_no = s1.sarappd_appl_no)
+        WHERE s2.sarappd_pidm = s1.sarappd_pidm and s2.sarappd_appl_no = s1.sarappd_appl_no AND s1.sarappd_term_code_entry = s2.sarappd_term_code_entry)
     AND SARAPPD_APDC_CODE = 'UT'
     AND SARADAP_APST_CODE != 'W'
     AND SARADAP_TERM_CODE_ENTRY = :term_code
@@ -126,6 +126,7 @@ WHERE
     --AND sorlcur_end_date IS NULL
     --AND saradap_pidm = '1701155'
     --AND saradap_pidm in (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = 'SRC_LINK')
+    --AND spriden_id = '19046115'
 ORDER BY
 	SARADAP_PROGRAM_1
       
