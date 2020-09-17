@@ -1,15 +1,15 @@
 SELECT
-	COUNT(student.spriden_id)
---    s1.sorlcur_term_code_admit AS "Admit Term", 
---    s1.sorlcur_program AS "Programme", 
---    student.SPRIDEN_ID AS Student_ID, 
---    student.SPRIDEN_LAST_NAME||', '|| student.SPRIDEN_FIRST_NAME AS Student, 
---    advisor.SPRIDEN_ID AS Advisor_ID, 
---    advisor.SPRIDEN_LAST_NAME ||', '|| advisor.SPRIDEN_FIRST_NAME AS Advisor, 
---    SGRADVR_TERM_CODE_EFF AS Term, 
---    SGRADVR_ADVR_CODE, 
---    SGRADVR_PRIM_IND,
---    sorlcur_end_date
+	--COUNT(student.spriden_id)
+    s1.sorlcur_term_code_admit AS "Admit Term", 
+    s1.sorlcur_program AS "Programme", 
+    student.SPRIDEN_ID AS Student_ID, 
+    student.SPRIDEN_LAST_NAME||', '|| student.SPRIDEN_FIRST_NAME AS Student, 
+    advisor.SPRIDEN_ID AS Advisor_ID, 
+    advisor.SPRIDEN_LAST_NAME ||', '|| advisor.SPRIDEN_FIRST_NAME AS Advisor, 
+    SGRADVR_TERM_CODE_EFF AS Term, 
+    SGRADVR_ADVR_CODE, 
+    SGRADVR_PRIM_IND,
+    sorlcur_end_date
 FROM 
     sgradvr
     JOIN sorlcur s1 ON sgradvr_pidm = s1.sorlcur_pidm 
@@ -62,11 +62,15 @@ WHERE
     
     AND t1.sgbstdn_stst_code = 'AS'
     
+    -- Limit to current advisor record
+    AND sgradvr_term_code_eff = (SELECT MAX (z1.sgradvr_term_code_eff) FROM sgradvr z1 WHERE sgradvr_pidm = z1.sgradvr_pidm)
+    
 
     --AND advisor.spriden_id LIKE 'P%'
     AND sgradvr_advr_code = 'T001'
-    AND advisor.spriden_id = '19069138'
-    AND s1.sorlcur_program = 'BSCH-NN'
+    AND advisor.spriden_id = '19029684'
+    --AND s1.sorlcur_program = 'BSCH-NN'
+    AND s1.sorlcur_program != 'FNDIP-IFB'
     
     ORDER BY 
         student.spriden_id, 

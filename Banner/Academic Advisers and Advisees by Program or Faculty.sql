@@ -73,8 +73,9 @@ WHERE
     AND sorlcur_program != 'LLM-ILZ'
 
     AND (
-    	sorlcur_program = 'BAH-AL'
-    	OR sorlcur_program LIKE ('%JD%')
+    	--sorlcur_program = 'BSCH-XS'
+    	--OR 
+    	sorlcur_program LIKE ('%MCM%')
     	)
     
     
@@ -89,7 +90,7 @@ WHERE
         OR t1.sgradvr_advr_code IS NULL -- Return students who are missing an AA
         )
         
-    AND a1.sorlcur_term_code_admit = '202009'
+    --AND a1.sorlcur_term_code_admit = '202009'
         
     
 ORDER BY
