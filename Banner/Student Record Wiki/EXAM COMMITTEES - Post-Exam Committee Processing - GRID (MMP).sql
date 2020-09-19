@@ -49,6 +49,3 @@ ORDER BY
 	b1.shrtckn_term_code,
 	b1.shrtckn_crn
 ;
-
-SELECT * FROM shrgcom;
-SELECT * FROM

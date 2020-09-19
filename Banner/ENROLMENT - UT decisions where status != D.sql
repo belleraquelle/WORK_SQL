@@ -18,6 +18,7 @@ WHERE
 	1=1
 	AND a1.saradap_term_code_entry = '202009'
 	--AND a1.saradap_pidm = '1249554'
+	--AND spriden_id = '19069609'
 	AND b1.sarappd_seq_no = (
 		SELECT MAX(b2.sarappd_seq_no) 
 		FROM sarappd b2 
