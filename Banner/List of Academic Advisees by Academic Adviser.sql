@@ -1,4 +1,4 @@
-SELECT
+SELECT DISTINCT
 	--COUNT(student.spriden_id)
     s1.sorlcur_term_code_admit AS "Admit Term", 
     s1.sorlcur_program AS "Programme", 
@@ -6,17 +6,17 @@ SELECT
     student.SPRIDEN_LAST_NAME||', '|| student.SPRIDEN_FIRST_NAME AS Student, 
     advisor.SPRIDEN_ID AS Advisor_ID, 
     advisor.SPRIDEN_LAST_NAME ||', '|| advisor.SPRIDEN_FIRST_NAME AS Advisor, 
-    SGRADVR_TERM_CODE_EFF AS Term, 
-    SGRADVR_ADVR_CODE, 
-    SGRADVR_PRIM_IND,
+    z1.SGRADVR_TERM_CODE_EFF AS Term, 
+    z1.SGRADVR_ADVR_CODE, 
+    z1.SGRADVR_PRIM_IND,
     sorlcur_end_date
 FROM 
-    sgradvr
-    JOIN sorlcur s1 ON sgradvr_pidm = s1.sorlcur_pidm 
-    JOIN spriden student ON sgradvr_pidm = student.spriden_pidm AND student.spriden_change_ind IS NULL
-    JOIN spriden advisor ON sgradvr_advr_pidm = advisor.spriden_pidm --AND advisor.spriden_change_ind IS NULL
-    JOIN sgrstsp p1 ON sgradvr_pidm = p1.sgrstsp_pidm AND sorlcur_key_seqno = p1.sgrstsp_key_seqno
-    JOIN sgbstdn t1 ON sgradvr_pidm = t1.sgbstdn_pidm
+    sgradvr z1
+    JOIN sorlcur s1 ON z1.sgradvr_pidm = s1.sorlcur_pidm 
+    JOIN spriden student ON z1.sgradvr_pidm = student.spriden_pidm AND student.spriden_change_ind IS NULL
+    JOIN spriden advisor ON z1.sgradvr_advr_pidm = advisor.spriden_pidm --AND advisor.spriden_change_ind IS NULL
+    JOIN sgrstsp p1 ON z1.sgradvr_pidm = p1.sgrstsp_pidm AND sorlcur_key_seqno = p1.sgrstsp_key_seqno
+    JOIN sgbstdn t1 ON z1.sgradvr_pidm = t1.sgbstdn_pidm
     
 WHERE 
     1=1
@@ -63,14 +63,15 @@ WHERE
     AND t1.sgbstdn_stst_code = 'AS'
     
     -- Limit to current advisor record
-    AND sgradvr_term_code_eff = (SELECT MAX (z1.sgradvr_term_code_eff) FROM sgradvr z1 WHERE sgradvr_pidm = z1.sgradvr_pidm)
+    AND z1.sgradvr_term_code_eff = (SELECT MAX (z2.sgradvr_term_code_eff) FROM sgradvr z2 WHERE z1.sgradvr_pidm = z2.sgradvr_pidm)
     
 
     --AND advisor.spriden_id LIKE 'P%'
     AND sgradvr_advr_code = 'T001'
-    AND advisor.spriden_id = '19029684'
+    AND advisor.spriden_id = '11103291'
+    --AND student.spriden_id = '19054098'
     --AND s1.sorlcur_program = 'BSCH-NN'
-    AND s1.sorlcur_program != 'FNDIP-IFB'
+    --AND s1.sorlcur_program != 'FNDIP-IFB'
     
     ORDER BY 
         student.spriden_id, 
