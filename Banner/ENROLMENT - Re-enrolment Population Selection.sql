@@ -30,8 +30,9 @@ FROM
     JOIN sgbstdn_add t4 ON (t1.sgrstsp_pidm = t4.sgbstdn_pidm)
 WHERE
     1=1
-	-- CURRENT STUDENT NUMBER
+	-- CURRENT STUDENT NUMBER AND NOT TEST
     AND d1.spriden_change_ind IS NULL
+    AND (d1.spriden_ntyp_code IS NULL OR d1.spriden_ntyp_code != 'TEST')
     
 	-- IDENTIFY STUDENTS WITH ACTIVE STUDY PATHS
     AND t1.sgrstsp_term_code_eff = (
