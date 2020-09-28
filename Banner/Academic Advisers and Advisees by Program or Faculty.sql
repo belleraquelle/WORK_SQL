@@ -20,9 +20,9 @@ FROM
     sorlcur a1
     JOIN spriden s1 ON a1.sorlcur_pidm = s1.spriden_pidm AND s1.spriden_change_ind IS NULL
     LEFT JOIN sgradvr t1 ON a1.sorlcur_pidm = t1.sgradvr_pidm
-    LEFT JOIN spriden s2 ON sgradvr_advr_pidm = s2.spriden_pidm AND s2.spriden_change_ind IS NULL
-    JOIN sgrstsp p1 ON sgradvr_pidm = p1.sgrstsp_pidm AND sorlcur_key_seqno = p1.sgrstsp_key_seqno
-    JOIN sgbstdn t1 ON sgradvr_pidm = t1.sgbstdn_pidm
+    LEFT JOIN spriden s2 ON t1.sgradvr_advr_pidm = s2.spriden_pidm AND s2.spriden_change_ind IS NULL
+    JOIN sgrstsp p1 ON a1.sorlcur_pidm = p1.sgrstsp_pidm AND a1.sorlcur_key_seqno = p1.sgrstsp_key_seqno
+    JOIN sgbstdn r1 ON a1.sorlcur_pidm = r1.sgbstdn_pidm
 
 WHERE
     1=1
@@ -40,14 +40,14 @@ WHERE
     AND p1.sgrstsp_stsp_code = 'AS'
     
     -- Max learner record is active
-    AND t1.sgbstdn_term_code_eff = ( 
+    AND r1.sgbstdn_term_code_eff = ( 
     
-    	SELECT MAX(t2.sgbstdn_term_code_eff)
-    	FROM sgbstdn t2
-    	WHERE t1.sgbstdn_pidm = t2.sgbstdn_pidm
+    	SELECT MAX(r2.sgbstdn_term_code_eff)
+    	FROM sgbstdn r2
+    	WHERE r1.sgbstdn_pidm = r2.sgbstdn_pidm
     
     )
-    AND t1.sgbstdn_stst_code = 'AS'
+    AND r1.sgbstdn_stst_code = 'AS'
     
     -- Curriculum criteria
     AND a1.sorlcur_lmod_code = 'LEARNER'
@@ -67,16 +67,16 @@ WHERE
     )
     
     -- Limit to students with an end date in the future
-    AND sorlcur_end_date > sysdate
+    AND a1.sorlcur_end_date > sysdate
     
     -- Use these criteria to limit to specific programmes
-    AND sorlcur_program != 'LLM-ILZ'
+    AND a1.sorlcur_program = 'BSCH-REZ'
 
-    AND (
-    	--sorlcur_program = 'BSCH-XS'
-    	--OR 
-    	sorlcur_program LIKE ('%MCM%')
-    	)
+--    AND (
+--    	--sorlcur_program = 'BSCH-XS'
+--    	--OR 
+--    	sorlcur_program LIKE ('%MCM%')
+--    	)
     
     
     -- Use these criteria to limit to specific college code
@@ -90,7 +90,7 @@ WHERE
         OR t1.sgradvr_advr_code IS NULL -- Return students who are missing an AA
         )
         
-    --AND a1.sorlcur_term_code_admit = '202009'
+    AND a1.sorlcur_term_code_admit = '202009'
         
     
 ORDER BY
@@ -98,3 +98,4 @@ ORDER BY
     s2.spriden_last_name || ', ' || s2.spriden_first_name,
     s1.spriden_last_name || ', ' || s1.spriden_first_name
 ;
+	

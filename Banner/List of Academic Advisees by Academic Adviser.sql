@@ -68,12 +68,14 @@ WHERE
 
     --AND advisor.spriden_id LIKE 'P%'
     AND sgradvr_advr_code = 'T001'
-    AND advisor.spriden_id = '11103291'
+    AND advisor.spriden_id = '19004787'
     --AND student.spriden_id = '19054098'
     --AND s1.sorlcur_program = 'BSCH-NN'
     --AND s1.sorlcur_program != 'FNDIP-IFB'
     
     ORDER BY 
+    	sorlcur_end_date,
         student.spriden_id, 
         SGRADVR_ADVR_CODE
 ;
+p0068127
