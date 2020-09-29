@@ -43,7 +43,7 @@ WHERE
 	
 	-- Limit to approved temporary withdrawal
 	AND a1.sorlcur_leav_code = 'A'
-	AND a1.sorlcur_leav_from_date <= :TWD_Start_Date_Less_Than_Or_Equal_To
+	AND a1.sorlcur_leav_from_date <= :TWD_End_Date_Greater_Than_Or_Equal_To
 	AND a1.sorlcur_leav_to_date >= :TWD_End_Date_Greater_Than_Or_Equal_To
 	
 	
