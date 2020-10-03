@@ -1,5 +1,5 @@
 /*
- * This query can be used to identify students who are 'part way' through enrolment for a given Banner Term
+ * This query can be used to identify students who are 'partway' through enrolment for a given Banner Term
  */
 
 SELECT 
