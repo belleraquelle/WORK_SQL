@@ -39,8 +39,9 @@ WHERE
         SELECT MAX(a2.sgrstsp_term_code_eff)
         FROM sgrstsp a2
         WHERE t1.sgrstsp_pidm = a2.sgrstsp_pidm AND t1.sgrstsp_key_seqno = a2.sgrstsp_key_seqno
-        AND t1.sgrstsp_stsp_code = 'AS'
     )
+    AND t1.sgrstsp_stsp_code = 'AS'
+    
 	-- ONLY INCLUDE STUDY PATHS WITH A COMPLETION DATE BEYOND MASTERS DISSERTATION SUBMISSION DEADLINE
     AND t2.sorlcur_term_code = (
         SELECT MAX(b2.sorlcur_term_code)

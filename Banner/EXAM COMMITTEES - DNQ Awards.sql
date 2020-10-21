@@ -17,3 +17,5 @@ WHERE
 		WHERE shrapsp1.shrapsp_pidm = shrapsp2.shrapsp_pidm AND shrapsp1.shrapsp_stsp_key_sequence = shrapsp2.shrapsp_stsp_key_sequence
 	) OR shrapsp1.shrapsp_term_code IS NULL)
 ;
+
+

@@ -1,6 +1,6 @@
 /*
 *
-* New full-time, non-ACP students who have academically enrolled but not financially enrolled
+* New ACP students who aren't enrolled
 *
 */
 
@@ -37,10 +37,10 @@ WHERE
 	AND a1.sorlcur_term_code_admit = '202009'
 	
 	-- Limit to specified campuses
-	AND a1.sorlcur_camp_code IN ('OBO','OBS','DL')
+	AND a1.sorlcur_camp_code NOT IN ('OBO','OBS','DL')
 	
 	-- Limit to specified mode of study
-	AND a1.sorlcur_styp_code = 'F'
+	--AND a1.sorlcur_styp_code = 'F'
 	
 	-- Exclude students who are 'EN' for the study path in 202009
 	AND a1.sorlcur_pidm || a1.sorlcur_key_seqno NOT IN (
@@ -66,8 +66,8 @@ WHERE
 	
 	)
 	
-	-- Include students who have completed academic enrolment and financial enrolment
-	AND a1.sorlcur_pidm IN ( 
+	-- Exclude students who have completed academic and financial enrolment
+	AND a1.sorlcur_pidm NOT IN ( 
 	
 		SELECT szrenrl_pidm
 		FROM szrenrl
@@ -75,77 +75,32 @@ WHERE
 			1=1
 			AND szrenrl_term_code = '202009'
 			AND szrenrl_academic_enrol_status = 'CO'
-			AND (szrenrl_financial_enrol_status != 'CO' OR szrenrl_financial_enrol_status IS NULL)
+			AND szrenrl_financial_enrol_status = 'CO'
+			AND szrenrl_overall_enrol_status = 'CO'
 	
 	)
 	
 	-- Exclude permitted late enrollers
 	AND spriden_id NOT IN (
 	
-		-- Degree apprenticeships
-		'19144235',
-		'19144633',
-		
-		-- Gav's list
-		'19131790',
-		'18035165',
-		'19141110',
-		'19141128',
-		'19137002',
-		'19142281',
-		'18059497',
-		'10058468',
-		'19062322',
-		'19142055',
-		'19141721',
-		'19129257',
-		'19026107',
-		'19141432',
-		'19034481',
-		'19008955',
-		'17010335',
-		'19068688',
-		'19141335',
-		'19038387',
-		'19042317',
-		'19144580',
-		'19057073',
-		'19020959',
-		'19072666',
-		'19135278',
-		'19129663',
-		'19064131',
-		'19044872',
-		'19141986',
-		'19071403',
-		'19141750',
-		'19066813',
-		'19028794',
-		'19069414',
-		'19045217',
-		'19071314',
-		'19139011',
-		'19062353',
-		'19062328',
-		'19062279',
-		'19061459',
-		'19013945',
-		'19045245',
-		'19026719',
-		'19031457',
-		'19018400',
-		'19141562',
-		'19144628',
-		'19042426',
-		'19062279',
-		'18054305',
-		'19137800',
-		'19131974',
-		'19044871',
-		'19023043',
-		'19126967',
-		'19143405',
-		'19033434'
+		-- Sarah's list
+		'19141841',
+		'19143837',
+		'19144021',
+		'19144117',
+		'19144909',
+		'19144712',
+		'19144836',
+		'19145409',
+		'19141951',
+		'19144818',
+		'19144662',
+		'19135257',
+		'19144277',
+		'19145826',
+		'19144294',
+		'19135123',
+		'19134683'
 	
 	)
 	

@@ -1,6 +1,6 @@
 /*
 *
-* New full-time, non-ACP students who have academically enrolled but not financially enrolled
+* New part-time, non-ACP students who have academically enrolled but not financially enrolled
 *
 */
 
@@ -40,7 +40,7 @@ WHERE
 	AND a1.sorlcur_camp_code IN ('OBO','OBS','DL')
 	
 	-- Limit to specified mode of study
-	AND a1.sorlcur_styp_code = 'F'
+	AND a1.sorlcur_styp_code = 'P'
 	
 	-- Exclude students who are 'EN' for the study path in 202009
 	AND a1.sorlcur_pidm || a1.sorlcur_key_seqno NOT IN (
@@ -66,7 +66,7 @@ WHERE
 	
 	)
 	
-	-- Include students who have completed academic enrolment and financial enrolment
+	-- Include students who have completed academic enrolment but not financial enrolment
 	AND a1.sorlcur_pidm IN ( 
 	
 		SELECT szrenrl_pidm

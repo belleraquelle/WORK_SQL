@@ -1,17 +1,15 @@
 /*
 *
-* New full-time, non-ACP students who have academically enrolled but not financially enrolled
+* New part-time, non-ACP students who have not enrolled
 *
 */
 
 SELECT 
 	spriden_id,
-	szrenrl.*,
 	a1.*
 FROM 
 	sorlcur a1
 	JOIN spriden ON a1.sorlcur_pidm = spriden_pidm AND spriden_change_ind IS NULL
-	LEFT JOIN szrenrl ON a1.sorlcur_pidm = szrenrl_pidm
 WHERE
 	1=1
 	
@@ -40,7 +38,7 @@ WHERE
 	AND a1.sorlcur_camp_code IN ('OBO','OBS','DL')
 	
 	-- Limit to specified mode of study
-	AND a1.sorlcur_styp_code = 'F'
+	AND a1.sorlcur_styp_code = 'P'
 	
 	-- Exclude students who are 'EN' for the study path in 202009
 	AND a1.sorlcur_pidm || a1.sorlcur_key_seqno NOT IN (
@@ -66,8 +64,8 @@ WHERE
 	
 	)
 	
-	-- Include students who have completed academic enrolment and financial enrolment
-	AND a1.sorlcur_pidm IN ( 
+	-- Exclude students who have completed academic enrolment
+	AND a1.sorlcur_pidm NOT IN ( 
 	
 		SELECT szrenrl_pidm
 		FROM szrenrl
@@ -75,7 +73,6 @@ WHERE
 			1=1
 			AND szrenrl_term_code = '202009'
 			AND szrenrl_academic_enrol_status = 'CO'
-			AND (szrenrl_financial_enrol_status != 'CO' OR szrenrl_financial_enrol_status IS NULL)
 	
 	)
 	
@@ -148,6 +145,8 @@ WHERE
 		'19033434'
 	
 	)
-	
+
+	ORDER BY 
+		sorlcur_program
 	
 ;
