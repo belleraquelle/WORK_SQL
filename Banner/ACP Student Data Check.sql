@@ -1,5 +1,5 @@
 /*
- * This query identifies continuing students who have not completed enrolment and so need to be put on UTWD 
+ * This query pulls out current ACP student for checking and verification 
  */
 
 SELECT 
