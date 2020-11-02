@@ -14,6 +14,9 @@ SELECT
 	a1.sorlcur_styp_code AS "Mode_of_Study",
 	sfrensp_ests_code AS "Enrolment_Status_Current_Term",
 	CASE
+		WHEN sfrensp_ests_code = 'AT' THEN a1.sorlcur_leav_from_date
+	END AS "Temporary_Withdrawal_Start_Date",
+	CASE
 		WHEN sfrensp_ests_code = 'AT' THEN a1.sorlcur_leav_to_date
 	END AS "Temporary_Withdrawal_End_Date"
 FROM 
