@@ -65,6 +65,7 @@ WITH Modules AS
       	sfrstcr_term_code >= :current_term_code
       	AND ssbsect_ptrm_end_date < sysdate +300
       	AND ssbsect_subj_code != 'FEE'
+      	AND sfrstcr_rsts_code IN ('RE','RW','RC','EN')
      
       ORDER BY sfrstcr_pidm, sfrstcr_term_code, sfrstcr_crn 
   )
@@ -180,3 +181,4 @@ ORDER BY
 	a1.sorlcur_term_code_admit asc
 ;
 
+SELECT * FROM sfrstcr;
