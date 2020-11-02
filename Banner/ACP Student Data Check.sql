@@ -9,9 +9,13 @@ SELECT
 	a1.sorlcur_program AS "Programme_Code",
 	b1.smrprle_program_desc AS "Programme_Description",
 	a1.sorlcur_term_code_admit AS "Admit_Term",
+	s1.sgrsatt_atts_code AS "Current_Stage",
 	a1.sorlcur_end_date AS "Expected_Completion_Date",
 	a1.sorlcur_styp_code AS "Mode_of_Study",
-	sfrensp_ests_code AS "Enrolment_Status_Current_Term"
+	sfrensp_ests_code AS "Enrolment_Status_Current_Term",
+	CASE
+		WHEN sfrensp_ests_code = 'AT' THEN a1.sorlcur_leav_to_date
+	END AS "Temporary_Withdrawal_End_Date"
 FROM 
 	sorlcur a1
 	JOIN spriden ON a1.sorlcur_pidm = spriden_pidm AND spriden_change_ind IS NULL
@@ -20,6 +24,8 @@ FROM
 	JOIN sgbstdn_add t4 ON a1.sorlcur_pidm = t4.sgbstdn_pidm
 	JOIN sfrensp ON a1.sorlcur_pidm = sfrensp_pidm AND a1.sorlcur_key_seqno = sfrensp_key_seqno
 	JOIN smrprle b1 ON b1.smrprle_program = a1.sorlcur_program
+	LEFT JOIN sgrsatt s1 ON a1.sorlcur_pidm = sgrsatt_pidm AND a1.sorlcur_key_seqno = sgrsatt_stsp_key_sequence 
+        AND s1.sgrsatt_term_code_eff = (SELECT MAX(s2.sgrsatt_term_code_eff) FROM sgrsatt s2 WHERE s1.sgrsatt_pidm = s2.sgrsatt_pidm AND s1.sgrsatt_stsp_key_sequence = s2.sgrsatt_stsp_key_sequence AND s2.sgrsatt_term_code_eff <= :current_term_code)
 WHERE
 	1=1
 	
@@ -75,5 +81,6 @@ WHERE
 ORDER BY 
 	a1.sorlcur_camp_code,
 	a1.sorlcur_program,
+	s1.sgrsatt_atts_code asc,
 	a1.sorlcur_term_code_admit asc
 ;
