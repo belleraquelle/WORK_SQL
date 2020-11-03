@@ -57,6 +57,9 @@ WHERE
 	AND sfrensp_term_code > stvterm_code
 	AND sfrensp_ests_code = 'EN'
 	--AND sfbetrm_ests_code != 'EL'
+	
+	-- Exclude VSMS programmes
+	AND a1.sorlcur_program NOT LIKE ('%-V')
 
 ORDER BY 
 	sfrensp_term_code

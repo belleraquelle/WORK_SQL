@@ -32,7 +32,10 @@ WHERE
 			AND a2.sorlcur_current_cde = 'Y'
 	
 		)
-		
+	
+	-- Exclude VSMS programmes
+	AND a1.sorlcur_program NOT LIKE ('%-V')
+	
 	-- Limit to 202009 admit term	
 	AND a1.sorlcur_term_code_admit = '202009'
 	

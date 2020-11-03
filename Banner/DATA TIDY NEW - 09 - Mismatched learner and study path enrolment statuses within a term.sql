@@ -42,6 +42,9 @@ WHERE
 			AND a2.sorlcur_current_cde = 'Y'
 	
 		)
+	
+	-- Exclude VSMS programmes
+	AND a1.sorlcur_program NOT LIKE ('%-V')
 		
 ORDER BY 
 	a1.sorlcur_program

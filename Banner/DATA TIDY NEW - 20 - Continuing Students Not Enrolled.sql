@@ -18,6 +18,9 @@ WHERE
 	-- Exclude Test Students
 	AND (spriden_ntyp_code IS NULL OR spriden_ntyp_code != 'TEST')
 	
+	-- Exclude VSMS programmes
+	AND a1.sorlcur_program NOT LIKE ('%-V')
+	
 	-- SORLCUR requirements  
 	AND a1.sorlcur_lmod_code = 'LEARNER'
 	AND a1.sorlcur_cact_code = 'ACTIVE'
@@ -72,7 +75,7 @@ WHERE
 		WHERE
 			1=1
 			AND sfrensp_term_code = '202009'
-			AND sfrensp_ests_code IN ('EN', 'WD', 'NS', 'AT')
+			AND sfrensp_ests_code IN ('EN', 'WD', 'NS', 'AT', 'UT')
 	
 	)
 	
@@ -84,7 +87,7 @@ WHERE
 		WHERE
 			1=1
 			AND sfbetrm_term_code = '202009'
-			AND sfbetrm_ests_code IN ('EN', 'WD', 'NS', 'AT')
+			AND sfbetrm_ests_code IN ('EN', 'WD', 'NS', 'AT', 'UT')
 	
 	)
 	
