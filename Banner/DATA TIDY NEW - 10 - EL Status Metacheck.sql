@@ -7,6 +7,7 @@
 
 SELECT
 	spriden_id,
+	a1.sorlcur_term_code_admit,
 	sfbetrm_term_code,
 	sfbetrm_ests_code,
 	sfrensp_key_seqno,
@@ -45,7 +46,7 @@ WHERE
 	AND a1.sorlcur_program NOT LIKE ('%-V')
 		
 	-- Limit to Banner native records
-	AND sfbetrm_term_code >= '202009'
+	AND sfbetrm_term_code = '202009'
 	
 	-- Identify any EL status records at learner or study path level
 	AND (sfbetrm_ests_code = 'EL' OR sfrensp_ests_code = 'EL')
@@ -56,6 +57,8 @@ WHERE
 	-- Exclude students who haven't been invited to enrol yet
 	AND a1.sorlcur_start_date < '01-NOV-2020'
 		
+	-- Exclude AIE
+	AND a1.sorlcur_camp_code != 'AIE'
 	
 ORDER BY 
 	spriden_id,
