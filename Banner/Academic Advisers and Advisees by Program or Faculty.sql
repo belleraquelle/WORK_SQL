@@ -70,7 +70,7 @@ WHERE
     AND a1.sorlcur_end_date > sysdate
     
     -- Use these criteria to limit to specific programmes
-    AND a1.sorlcur_program = 'BSCH-REZ'
+    AND a1.sorlcur_program = 'BAH-BUF'
 
 --    AND (
 --    	--sorlcur_program = 'BSCH-XS'
