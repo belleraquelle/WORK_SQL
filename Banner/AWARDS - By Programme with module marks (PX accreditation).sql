@@ -37,12 +37,3 @@ ORDER BY
 	shrtckn_crse_numb,
 	shrtckn_subj_code || shrtckn_crse_numb
 ;
-
-
-SELECT * FROM shrdgmr;
-
-SELECT * FROM shrdgcm;
-
-SELECT * FROM shrcmrk;
-
-SELECT * FROM shrtckn;
