@@ -16,7 +16,7 @@ FROM
 		AND a1.saradap_appl_no = b1.sarappd_appl_no
 WHERE
 	1=1
-	AND a1.saradap_term_code_entry = '202009'
+	AND a1.saradap_term_code_entry = '202101'
 	--AND a1.saradap_pidm = '1249554'
 	AND b1.sarappd_seq_no = (
 		SELECT MAX(b2.sarappd_seq_no) 
@@ -26,10 +26,6 @@ WHERE
 			AND b1.sarappd_appl_no = b2.sarappd_appl_no
 		
 		)
-	AND b1.sarappd_apdc_date < '01-MAY-20'
+	AND b1.sarappd_apdc_date < '01-DEC-20'
 	AND b1.sarappd_apdc_code = 'UF'
 ;
-
-SELECT *
-FROM shrapsp
-WHERE shrapsp_pidm = '1254756'
