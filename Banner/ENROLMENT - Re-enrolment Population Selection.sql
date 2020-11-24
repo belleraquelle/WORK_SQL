@@ -10,6 +10,7 @@ SELECT DISTINCT
     t1.sgrstsp_key_seqno,
     t1.sgrstsp_term_code_eff,
     t1.sgrstsp_stsp_code,
+    t2.sorlcur_term_code_admit,
     t2.sorlcur_key_seqno,
     t2.sorlcur_priority_no,
     t2.sorlcur_program,
@@ -67,7 +68,7 @@ WHERE
     
 	-- EXCLUDE STUDENTS WHO ARE ALREADY EN/AT/UT/WD FOR THE ENROLMENT TERM
     AND t1.sgrstsp_pidm NOT IN (
-        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_for_enrolment AND sfrensp_ests_code IN ('AT', 'EN', 'UT', 'WD')
+        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_for_enrolment AND sfrensp_ests_code IN ('AT', 'EN', 'UT', 'WD', 'XF')
     )
     
 	-- LIMIT TO STUDENTS WHO HAVE A FINAL STATUS FOR PREVIOUS TERM
