@@ -40,6 +40,7 @@ WHERE
             )
     AND sorlcur_camp_code IN ('OBO','OBS','DL')
     AND sorlcur_levl_code != 'RD'
+    AND sorlcur_program NOT IN ('PGC-SEY', 'PGC-SEZ')
     --AND sorlcur_term_code_admit = '201909'
     --AND spriden_id = '15050603'
 ORDER BY
