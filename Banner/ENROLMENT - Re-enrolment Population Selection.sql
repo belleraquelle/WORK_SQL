@@ -7,19 +7,24 @@ Re-enrolment Population Selection
 SELECT DISTINCT
     d1.spriden_id,
     t1.sgrstsp_pidm,
+    d1.spriden_last_name, 
+    d1.spriden_first_name,
     t1.sgrstsp_key_seqno,
     t1.sgrstsp_term_code_eff,
     t1.sgrstsp_stsp_code,
     t2.sorlcur_term_code_admit,
     t2.sorlcur_key_seqno,
     t2.sorlcur_priority_no,
+    t2.sorlcur_coll_code,
     t2.sorlcur_program,
     t2.sorlcur_end_date,
     t2.sorlcur_term_code,
     t2.sorlcur_term_code_end,
     t2.sorlcur_curr_rule,
     t3.sorlfos_csts_code,
-    t4.sgbstdn_term_code_eff
+    t4.sgbstdn_term_code_eff,
+    tbraccd_detail_code,
+    tbraccd_amount
     --t4.acenrol_status_1,
     --t4.finenrol_status_1,
     --t4.overall_enrol_status_1
@@ -29,6 +34,7 @@ FROM
     JOIN sorlfos t3 ON (t2.sorlcur_pidm = t3.sorlfos_pidm AND t2.sorlcur_seqno = t3.sorlfos_lcur_seqno)
     JOIN spriden d1 ON (t1.sgrstsp_pidm = d1.spriden_pidm)
     JOIN sgbstdn_add t4 ON (t1.sgrstsp_pidm = t4.sgbstdn_pidm)
+    LEFT JOIN tbraccd ON tbraccd_pidm = t1.sgrstsp_pidm
 WHERE
     1=1
 	-- CURRENT STUDENT NUMBER AND NOT TEST
@@ -81,7 +87,14 @@ WHERE
 	-- ONLY INCLUDE STUDENTS WHO HAVE NOT BEEN OPENED FOR ENROLMENT YET
 	-- AND t4.acenrol_status_1 IS NULL
 	--AND spriden_id = '17088151'
+	
+    -- Limit TBRACCD to enrolment term
+    AND (tbraccd_term_code = :term_for_enrolment OR tbraccd_term_code IS NULL)
+    AND (tbraccd_detail_code != 'SLC' OR tbraccd_detail_code IS NULL)
+    
 ORDER BY
     sorlcur_program,
     sorlcur_end_date ASC
 ;
+
+SELECT * FROM TBRACCD;

@@ -65,4 +65,3 @@ WHERE
 
 
 SELECT spriden_pidm FROM spriden WHERE spriden_id = '17022906';
-SELECT * FROM glbextr WHERE glbextr_key = '1230158'
