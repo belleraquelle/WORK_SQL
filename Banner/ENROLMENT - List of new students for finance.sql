@@ -1,6 +1,6 @@
 /*
 
-List of new students
+List of new students for finance
 
 */
 
@@ -27,7 +27,46 @@ SELECT DISTINCT
     --t3.sorlfos_csts_code,
     --t4.sgbstdn_term_code_eff,
     --tbraccd_detail_code,
-    SUM(tbraccd_amount) AS "Fees"
+    (
+    	SELECT SUM(tbraccd_amount) 
+    	FROM tbraccd 
+    	WHERE 
+    		t1.sgrstsp_pidm = tbraccd_pidm  
+    		AND (tbraccd_term_code = :term_for_enrolment)
+    		AND TBRACCD_DETAIL_CODE IN (
+    			SELECT TBBDETC_DETAIL_CODE 
+    			FROM TBBDETC 
+    			WHERE TBBDETC_DCAT_CODE = 'TUI'
+    			)
+    ) AS "Term_1_Fees",
+    (
+    	SELECT SUM(tbraccd_amount) 
+    	FROM tbraccd 
+    	WHERE 
+    		t1.sgrstsp_pidm = tbraccd_pidm  
+    		AND (tbraccd_term_code = :term_for_enrolment_plus_1)
+    		AND TBRACCD_DETAIL_CODE IN (
+    			SELECT TBBDETC_DETAIL_CODE 
+    			FROM TBBDETC 
+    			WHERE TBBDETC_DCAT_CODE = 'TUI'
+    			)
+    ) AS "Term_2_Fees",
+    (
+    	SELECT SUM(tbraccd_amount) 
+    	FROM tbraccd 
+    	WHERE 
+    		t1.sgrstsp_pidm = tbraccd_pidm  
+    		AND (tbraccd_term_code = :term_for_enrolment_plus_2)
+    		AND TBRACCD_DETAIL_CODE IN (
+    			SELECT TBBDETC_DETAIL_CODE 
+    			FROM TBBDETC 
+    			WHERE TBBDETC_DCAT_CODE = 'TUI'
+    			)
+    ) AS "Term_3_Fees",
+    CASE 
+    	WHEN szrenrl_term_code = :term_before_term_for_enrolment AND szrenrl_overall_enrol_status = 'CO' AND t1.sgrstsp_pidm NOT IN (
+        	SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_before_term_for_enrolment AND sfrensp_ests_code = 'AT') THEN 'Y'
+    END AS "Completed_Enrolment_Last_Term"
     --t4.acenrol_status_1,
     --t4.finenrol_status_1,
     --t4.overall_enrol_status_1
@@ -38,8 +77,10 @@ FROM
     JOIN spriden d1 ON (t1.sgrstsp_pidm = d1.spriden_pidm)
     JOIN sgbstdn_add t4 ON (t1.sgrstsp_pidm = t4.sgbstdn_pidm)
     LEFT JOIN tbraccd ON tbraccd_pidm = t1.sgrstsp_pidm
+    LEFT JOIN szrenrl z1 ON t1.sgrstsp_pidm = z1.szrenrl_pidm
 WHERE
     1=1
+  
 	-- CURRENT STUDENT NUMBER AND NOT TEST
     AND d1.spriden_change_ind IS NULL
     AND (d1.spriden_ntyp_code IS NULL OR d1.spriden_ntyp_code != 'TEST')
@@ -87,36 +128,19 @@ WHERE
     
 	-- LIMIT TO NEW STUDENTS
     AND t2.sorlcur_term_code_admit = :term_for_enrolment
+    
 	-- ONLY INCLUDE STUDENTS WHO HAVE NOT BEEN OPENED FOR ENROLMENT YET
 	-- AND t4.acenrol_status_1 IS NULL
-	--AND spriden_id = '17088151'
-	
-    -- Limit TBRACCD to enrolment term
-    AND (tbraccd_term_code = :term_for_enrolment OR tbraccd_term_code IS NULL)
-    AND (TBRACCD_DETAIL_CODE IN (SELECT TBBDETC_DETAIL_CODE FROM TBBDETC WHERE TBBDETC_DCAT_CODE = 'TUI') OR tbraccd_detail_code IS NULL)
-
-GROUP BY
-	d1.spriden_id,
-    t1.sgrstsp_pidm,
-    d1.spriden_last_name, 
-    d1.spriden_first_name,
-    t1.sgrstsp_key_seqno,
-    --t1.sgrstsp_term_code_eff,
-    --t1.sgrstsp_stsp_code,
-    t2.sorlcur_term_code_admit,
-    t4.sgbstdn_resd_code,
-    --t2.sorlcur_key_seqno,
-    --t2.sorlcur_priority_no,
-    t2.sorlcur_coll_code,
-    t2.sorlcur_levl_code,
-    t2.sorlcur_program,
-    t2.sorlcur_end_date,
-    t2.sorlcur_styp_code
-    --t2.sorlcur_term_code,
-    --t2.sorlcur_term_code_end,
-    --t2.sorlcur_curr_rule,
-    --t3.sorlfos_csts_code,
-    --t4.sgbstdn_term_code_eff
+	-- AND spriden_id = '17088151'
+    
+    -- Enrolment 
+    AND (z1.szrenrl_term_code = (
+    
+    	SELECT MAX(z2.szrenrl_term_code)
+    	FROM szrenrl z2
+    	WHERE z1.szrenrl_pidm = z2.szrenrl_pidm AND z1.szrenrl_study_paths = z2.szrenrl_study_paths
+    
+    ) OR z1.szrenrl_term_code IS NULL)
     
 ORDER BY
     sorlcur_program,
