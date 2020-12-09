@@ -5,26 +5,29 @@ Re-enrolment Population Selection
 */
 
 SELECT DISTINCT
-    d1.spriden_id,
-    t1.sgrstsp_pidm,
-    d1.spriden_last_name, 
-    d1.spriden_first_name,
-    t1.sgrstsp_key_seqno,
-    t1.sgrstsp_term_code_eff,
-    t1.sgrstsp_stsp_code,
-    t2.sorlcur_term_code_admit,
-    t2.sorlcur_key_seqno,
-    t2.sorlcur_priority_no,
-    t2.sorlcur_coll_code,
-    t2.sorlcur_program,
-    t2.sorlcur_end_date,
-    t2.sorlcur_term_code,
-    t2.sorlcur_term_code_end,
-    t2.sorlcur_curr_rule,
-    t3.sorlfos_csts_code,
-    t4.sgbstdn_term_code_eff,
-    tbraccd_detail_code,
-    tbraccd_amount
+    d1.spriden_id AS "Student_ID",
+    t1.sgrstsp_pidm AS "Student_PIDM",
+    d1.spriden_last_name AS "Last_Name", 
+    d1.spriden_first_name AS "First_Name",
+    t1.sgrstsp_key_seqno AS "Study_Path",
+    --t1.sgrstsp_term_code_eff,
+    --t1.sgrstsp_stsp_code,
+    t2.sorlcur_term_code_admit AS "Admit_Term",
+    t4.sgbstdn_resd_code AS "Residency",
+    --t2.sorlcur_key_seqno,
+    --t2.sorlcur_priority_no,
+    t2.sorlcur_coll_code AS "Faculty",
+    t2.sorlcur_levl_code AS "Level",
+    t2.sorlcur_program AS "Programme",
+    t2.sorlcur_styp_code AS "Mode_of_Study",
+    t2.sorlcur_end_date AS "Expected_End_Date",
+    --t2.sorlcur_term_code AS "Sorlcur_Term_Code",
+    --t2.sorlcur_term_code_end AS "Sorlcur_Term_Code_End",
+    --t2.sorlcur_curr_rule,
+    --t3.sorlfos_csts_code,
+    --t4.sgbstdn_term_code_eff,
+    --tbraccd_detail_code,
+    SUM(tbraccd_amount) AS "Fees"
     --t4.acenrol_status_1,
     --t4.finenrol_status_1,
     --t4.overall_enrol_status_1
@@ -90,11 +93,32 @@ WHERE
 	
     -- Limit TBRACCD to enrolment term
     AND (tbraccd_term_code = :term_for_enrolment OR tbraccd_term_code IS NULL)
-    AND (tbraccd_detail_code != 'SLC' OR tbraccd_detail_code IS NULL)
+    AND (TBRACCD_DETAIL_CODE IN (SELECT TBBDETC_DETAIL_CODE FROM TBBDETC WHERE TBBDETC_DCAT_CODE = 'TUI') OR tbraccd_detail_code IS NULL)
+
+GROUP BY
+	d1.spriden_id,
+    t1.sgrstsp_pidm,
+    d1.spriden_last_name, 
+    d1.spriden_first_name,
+    t1.sgrstsp_key_seqno,
+    --t1.sgrstsp_term_code_eff,
+    --t1.sgrstsp_stsp_code,
+    t2.sorlcur_term_code_admit,
+    t4.sgbstdn_resd_code,
+    --t2.sorlcur_key_seqno,
+    --t2.sorlcur_priority_no,
+    t2.sorlcur_coll_code,
+    t2.sorlcur_levl_code,
+    t2.sorlcur_program,
+    t2.sorlcur_end_date,
+    t2.sorlcur_styp_code
+    --t2.sorlcur_term_code,
+    --t2.sorlcur_term_code_end,
+    --t2.sorlcur_curr_rule,
+    --t3.sorlfos_csts_code,
+    --t4.sgbstdn_term_code_eff
     
 ORDER BY
     sorlcur_program,
     sorlcur_end_date ASC
 ;
-
-SELECT * FROM TBRACCD;
