@@ -133,7 +133,7 @@ WHERE
 	-- AND t4.acenrol_status_1 IS NULL
 	-- AND spriden_id = '17088151'
     
-    -- Enrolment 
+    -- Return latest entry from SZRENRL table
     AND (z1.szrenrl_term_code = (
     
     	SELECT MAX(z2.szrenrl_term_code)
