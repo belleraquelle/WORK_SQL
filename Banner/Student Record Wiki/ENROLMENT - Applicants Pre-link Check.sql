@@ -127,6 +127,7 @@ WHERE
     --AND saradap_pidm = '1701155'
     --AND saradap_pidm in (SELECT GLBEXTR_KEY FROM GLBEXTR WHERE GLBEXTR_SELECTION = 'SRC_LINK')
     --AND spriden_id = '19046115'
+
 ORDER BY
 	SARADAP_PROGRAM_1
       
