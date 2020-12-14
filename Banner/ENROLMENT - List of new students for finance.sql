@@ -62,11 +62,7 @@ SELECT DISTINCT
     			FROM TBBDETC 
     			WHERE TBBDETC_DCAT_CODE = 'TUI'
     			)
-    ) AS "Term_3_Fees",
-    CASE 
-    	WHEN szrenrl_term_code = :term_before_term_for_enrolment AND szrenrl_overall_enrol_status = 'CO' AND t1.sgrstsp_pidm NOT IN (
-        	SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_before_term_for_enrolment AND sfrensp_ests_code = 'AT') THEN 'Y'
-    END AS "Completed_Enrolment_Last_Term"
+    ) AS "Term_3_Fees"
     --t4.acenrol_status_1,
     --t4.finenrol_status_1,
     --t4.overall_enrol_status_1
@@ -119,11 +115,6 @@ WHERE
 	-- EXCLUDE STUDENTS WHO ARE ALREADY EN/AT/UT/WD FOR THE ENROLMENT TERM
     AND t1.sgrstsp_pidm NOT IN (
         SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_for_enrolment AND sfrensp_ests_code IN ('AT', 'EN', 'UT', 'WD', 'XF')
-    )
-    
-	-- LIMIT TO STUDENTS WHO HAVE A FINAL STATUS FOR PREVIOUS TERM
-    AND t1.sgrstsp_pidm IN (
-        SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = :term_before_term_for_enrolment AND sfrensp_ests_code IN ('AT', 'EN', 'UT')
     )
     
 	-- LIMIT TO NEW STUDENTS
