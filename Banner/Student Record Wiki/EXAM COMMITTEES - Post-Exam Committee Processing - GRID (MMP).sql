@@ -28,7 +28,7 @@ FROM
 	JOIN shrtckn b1 ON a1.spriden_pidm = b1.shrtckn_pidm
 	LEFT JOIN szrmrks c1 ON a1.spriden_pidm = c1.pidm AND TO_CHAR(c1.crn) = TO_CHAR(b1.shrtckn_crn) AND c1.activity_date > :activity_date_after
 	LEFT JOIN szrcmnt d1 ON a1.spriden_pidm = d1.szrcmnt_pidm AND TO_CHAR(b1.shrtckn_crn) = TO_CHAR(d1.szrcmnt_crn) AND d1.szrcmnt_type = 'EXCOM' AND d1.szrcmnt_date > :activity_date_after
-	LEFT JOIN szrcmnt e1 ON a1.spriden_pidm = e1.szrcmnt_pidm AND TO_CHAR(b1.shrtckn_crn) = TO_CHAR(e1.szrcmnt_crn) AND e1.szrcmnt_type = 'SCENT' AND e1.szrcmnt_date > :activity_date_after
+	LEFT JOIN szrcmnt e1 ON a1.spriden_pidm = e1.szrcmnt_pidm AND TO_CHAR(b1.shrtckn_crn) = TO_CHAR(e1.szrcmnt_crn) AND e1.szrcmnt_type = 'SCENT' AND e1.szrcmnt_date > :activity_date_after 
 	LEFT JOIN shrgcom f1 ON c1.term_code = f1.shrgcom_term_code AND c1.crn = f1.shrgcom_crn AND c1.gcom_id = f1.shrgcom_id
 	
 WHERE
