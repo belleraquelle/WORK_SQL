@@ -53,6 +53,3 @@ WHERE
 ORDER BY 
 	a1.sorlcur_program
 ;
-
-
-SELECT * FROM sorlcur;
