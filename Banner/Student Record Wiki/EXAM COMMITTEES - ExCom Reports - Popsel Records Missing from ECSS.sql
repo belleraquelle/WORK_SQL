@@ -62,7 +62,7 @@ WHERE
 	AND b1.sorlcur_end_date > '01-JAN-20'
 	AND b1.sorlcur_term_code_end IS NULL
 	
-	-- Limit to missing filters
+-- Limit to missing filters
 	AND (
 	
 		szrprop_term_code IS NULL 
@@ -74,7 +74,7 @@ WHERE
 	
 	)
 	
-	-- Exclude the following courses from the check that shouldn't be in ECSS (not needed in UG ECSS)
+-- Exclude the following courses from the check that shouldn't be in ECSS (not needed in UG ECSS)
 	AND sorlcur_program NOT IN (
 		'UGASSO',
 		'UGASSO-NAMED'
@@ -85,30 +85,5 @@ WHERE
 	
 ORDER BY 
 	b1.sorlcur_program
-;
-
-SELECT 
-	* 
-FROM 
-	szrgcmt 
-WHERE 
-	1=1
-	AND locked_resit_ind = 'Y'
-	AND crn IN ( 
-        
-    	SELECT
-            ssbsect_crn
-            
-        FROM
-            ssbsect
-            JOIN sobptrm ON ssbsect_term_code = sobptrm_term_code AND ssbsect_ptrm_code = sobptrm_ptrm_code
-            
-        WHERE
-            1=1
-            
-            -- Limit to modules that end between specified dates
-            AND sobptrm_end_date BETWEEN :MODULE_END_DATE_RANGE_START AND :MODULE_END_DATE_RANGE_END
-            
-        )
 ;
 

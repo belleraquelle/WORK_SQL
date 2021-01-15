@@ -7,11 +7,11 @@
 
 
 SELECT DISTINCT
-	b1.sorlcur_coll_code AS "Faculty",
-	b1.sorlcur_camp_code AS "Campus",
-	b1.sorlcur_program AS "Programme_Code",
+	szrprop_coll_code AS "Faculty",
+	szrprop_camp_code AS "Campus",
+	szrprop_prog_code AS "Programme_Code",
 	j1.smrprle_program_desc AS "Programme_Description",
-	COUNT(DISTINCT sorlcur_pidm) AS "Student_Count"
+	COUNT(DISTINCT pidm) AS "Student_Count"
 	
 FROM
 	spriden a1 -- Person Record
@@ -19,7 +19,9 @@ FROM
 	JOIN sobcurr_add e1 ON b1.sorlcur_program = e1.sobcurr_program -- Course record (SOACURR)
 	JOIN sgbstdn f1 ON a1.spriden_pidm = f1.sgbstdn_pidm -- Learner Record
 	JOIN sgrstsp g1 ON b1.sorlcur_pidm = g1.sgrstsp_pidm AND b1.sorlcur_key_seqno = sgrstsp_key_seqno -- Study Path Record
-	JOIN smrprle j1 ON b1.sorlcur_program = j1.smrprle_program -- Programme Record for Title
+	JOIN glbextr ON glbextr_key = spriden_pidm -- Join to popsel table
+	JOIN szrprop ON spriden_pidm = pidm AND glbextr_selection = population AND study_path = sgrstsp_key_seqno
+	JOIN smrprle j1 ON szrprop_prog_code = j1.smrprle_program -- Programme Record for Title
 	
 WHERE
 	1=1
@@ -71,17 +73,18 @@ WHERE
 
 
 	-- Limit to records in specified popsel
-	AND spriden_pidm in (SELECT glbextr_key FROM glbextr WHERE glbextr_selection = :popsel_name AND glbextr_user_id = :popsel_user)
+	AND glbextr_selection = :popsel_name 
+	AND glbextr_user_id = :popsel_user
 
 GROUP BY 
-	b1.sorlcur_program,
-	j1.smrprle_program_desc,
-	b1.sorlcur_coll_code,
-	b1.sorlcur_camp_code
+	szrprop_coll_code,
+	szrprop_camp_code,
+	szrprop_prog_code,
+	j1.smrprle_program_desc
 	
 ORDER BY 
-	b1.sorlcur_coll_code, 
-	b1.sorlcur_program,
-	b1.sorlcur_camp_code
+	szrprop_coll_code,
+	szrprop_camp_code,
+	szrprop_prog_code
 	
 ;
