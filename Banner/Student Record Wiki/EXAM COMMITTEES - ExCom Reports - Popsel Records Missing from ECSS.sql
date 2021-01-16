@@ -86,4 +86,3 @@ WHERE
 ORDER BY 
 	b1.sorlcur_program
 ;
-
