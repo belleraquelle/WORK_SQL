@@ -21,7 +21,7 @@ SELECT DISTINCT
 
 FROM
     spriden 
-    LEFT JOIN shrapsp ON spriden_pidm = shrapsp_pidm AND shrapsp_term_code = '202001'
+    LEFT JOIN shrapsp ON spriden_pidm = shrapsp_pidm AND shrapsp_term_code = '202009'
     
 WHERE 
     1=1

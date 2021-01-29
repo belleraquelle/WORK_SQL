@@ -92,7 +92,7 @@ WHERE
 	AND k1.shrdgmr_degs_code IN ('AW','PN')
 	
 	-- Limit to 'future' awards
-	AND shrdgmr_grad_date >= '01-MAY-20'
+	AND shrdgmr_grad_date >= '01-DEC-20'
 	
 	AND o1.shrdgcm_comment IS NOT NULL
 	

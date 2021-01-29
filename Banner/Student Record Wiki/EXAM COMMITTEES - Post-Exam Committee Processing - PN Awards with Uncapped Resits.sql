@@ -94,10 +94,13 @@ WHERE
 	AND k1.shrdgmr_degs_code IN ('PN')
 	
 	-- Limit to students with an exceptional circumstances comment
-	AND shrmrks_comments = 'Exceptional Circumstances' AND shrmrks_completed_date >= '01-APR-20'
+	AND shrmrks_comments = 'Exceptional Circumstances' AND shrmrks_completed_date >= '01-OCT-20'
 	
 	-- Limit to modules ending in S2
-	AND ssbsect_ptrm_code IN ('S2','S12')
+	--AND ssbsect_ptrm_code IN ('S2','S12','S32')
+	
+	-- Limit to modules ending in S1
+	--AND ssbsect_ptrm_code IN ('S1','S21','S31')
 
 	
 ORDER BY 
@@ -106,7 +109,3 @@ ORDER BY
 	b1.sorlcur_camp_code
 	
 ;
-
-SELECT * FROM shrmrks JOIN spriden ON shrmrks_pidm = spriden_pidm AND spriden_id = '17060873';
-
-SELECT * FROM ssbsect;
