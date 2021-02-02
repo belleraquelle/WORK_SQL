@@ -142,6 +142,9 @@ WHERE
     
     ) OR z1.szrenrl_term_code IS NULL)
     
+    AND t2.sorlcur_program NOT LIKE 'MPHIL%'
+    
+    
 ORDER BY
     sorlcur_program,
     sorlcur_end_date ASC
