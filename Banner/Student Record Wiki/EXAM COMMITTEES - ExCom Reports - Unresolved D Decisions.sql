@@ -51,5 +51,3 @@ WHERE
 	
 	)
 ;
-
-SELECT * FROM gtvsdax;
