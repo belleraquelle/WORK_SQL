@@ -34,4 +34,7 @@ WHERE
   AND shrmrks_gchg_code NOT IN (SELECT stvgchg_code FROM stvgchg WHERE stvgchg_reas_grde_ind = 'Y')
   AND ssbsect_ptrm_end_date BETWEEN :module_end_date_range_start AND :module_end_date_range_end
   AND s2.spriden_id LIKE 'P%'
+ORDER BY 
+  ssbsect_subj_code,
+  ssbsect_crse_numb
 ;
