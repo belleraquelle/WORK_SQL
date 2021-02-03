@@ -1,11 +1,9 @@
 /*
- * This report can be used to identify specific decision codes against a term and within specified population
- * selections. 
+ * This query identifies students whose latest decision is a Deferred decision
+ * which was recorded in a term other than the one currently going to committee.
  * 
- * It can be used to, for example, find unresolved D3s at the July committees.
- * 
- * Re-work this so that it returns any student who currently has a max record of 'D%' recorded against a term earlier than
- * the one currently going to committee.
+ * These need to be reviewed to see if an updated decision should be recorded. 
+ * Especially important at July resit committees.
  */
 
 SELECT 
