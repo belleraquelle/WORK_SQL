@@ -35,5 +35,3 @@ WHERE
   AND ssbsect_ptrm_end_date BETWEEN :module_end_date_range_start AND :module_end_date_range_end
   AND s2.spriden_id LIKE 'P%'
 ;
-
-SELECT * FROM shrmrks;
