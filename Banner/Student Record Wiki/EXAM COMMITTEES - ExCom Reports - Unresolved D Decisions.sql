@@ -27,7 +27,7 @@ WHERE
 		FROM shrapsp s2
 		WHERE s1.shrapsp_pidm = s2.shrapsp_pidm AND s1.shrapsp_stsp_key_sequence = s2.shrapsp_stsp_key_sequence
 	)
-	AND glbextr_selection = :population
+	AND glbextr_selection IN ('202101_PINK', '202101_GREY', '202101_GOLD')
 	AND shrapsp_term_code != (SELECT gtvsdax_external_code FROM gtvsdax WHERE gtvsdax_internal_code_group = 'OBU' AND gtvsdax_internal_code = 'EXAM_TERM')
 	AND shrapsp_astd_code_end_of_term LIKE 'D%'
 	
@@ -48,4 +48,8 @@ WHERE
 			AND b2.sorlcur_cact_code = 'ACTIVE'
 	
 	)
+ORDER BY 
+	"Course",
+	"Decision_Code",
+	"Last_Name"
 ;
