@@ -12,10 +12,12 @@ but this query could still be useful.
 SELECT 
     spriden_id, 
     s1.sorlcur_key_seqno,
+    s1.sorlcur_program,
     s1.sorlcur_end_date AS "Learner_End_Date",
     s2.sorlcur_key_seqno,
     s2.sorlcur_end_date AS "Outcome_End_Date",
-    shrdgmr_degs_code
+    shrdgmr_degs_code,
+    shrdgmr_grad_date
 
 FROM
     sorlcur s1
@@ -45,4 +47,8 @@ WHERE
     
     AND shrdgmr_degs_code = 'AW'
     
+    AND shrdgmr_grad_date >= '01-JAN-2020'
+    
+ORDER BY 
+	s1.sorlcur_program
 ;

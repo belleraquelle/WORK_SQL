@@ -55,12 +55,13 @@ WHERE
 	
 	-- Identify records where there is a status recorded against the study path in a term beyond the student's completion term
 	AND sfrensp_term_code > stvterm_code
-	AND sfrensp_ests_code = 'EN'
+	AND sfrensp_ests_code != 'NS'
 	--AND sfbetrm_ests_code != 'EL'
 	
 	-- Exclude VSMS programmes
 	AND a1.sorlcur_program NOT LIKE ('%-V')
 
 ORDER BY 
+	a1.sorlcur_program,
 	sfrensp_term_code
 ;

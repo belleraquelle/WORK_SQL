@@ -55,12 +55,13 @@ WHERE
 	AND a1.sorlcur_levl_code != 'RD'
 	
 	-- Exclude students who haven't been invited to enrol yet
-	AND a1.sorlcur_start_date < '01-NOV-2020'
+	AND a1.sorlcur_start_date < '01-JAN-2021'
 		
 	-- Exclude AIE
 	AND a1.sorlcur_camp_code != 'AIE'
 	
 ORDER BY 
+	a1.sorlcur_program,
 	spriden_id,
 	sfrensp_key_seqno,
 	sfbetrm_term_code

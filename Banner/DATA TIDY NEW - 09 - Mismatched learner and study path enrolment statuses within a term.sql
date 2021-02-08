@@ -20,7 +20,7 @@ WHERE
 	1=1
 	
 	-- Term to check enrolment codes
-	AND sfbetrm_term_code = '202009'
+	AND sfbetrm_term_code = '202101'
 	
 	-- Limit to records where the study path and learner enrolment codes don't match
 	AND sfbetrm_ests_code != sfrensp_ests_code
@@ -50,7 +50,3 @@ ORDER BY
 	a1.sorlcur_program
 	
 ;
-
-
-
-SELECT * FROM sfbetrm;

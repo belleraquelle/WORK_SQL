@@ -60,7 +60,8 @@ WHERE
 	
 	)
 	
-	
+ORDER BY 
+	a1.sorlcur_program
 	
 ;
 
