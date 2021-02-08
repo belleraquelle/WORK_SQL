@@ -34,6 +34,3 @@ HAVING
 ORDER BY
 	s1.sorlcur_program
 ;
-
-
-SELECT * FROM shrdgmr;
