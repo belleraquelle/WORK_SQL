@@ -39,7 +39,7 @@ WHERE
                 )
             AND sfrstcr_rsts_code IN ('RE','RW','RC')
             )
-    AND sorlcur_camp_code IN ('OBO','OBS','DL')
+    AND sorlcur_camp_code IN ('OBO','OBS','DL', 'OH')
     AND sorlcur_levl_code != 'RD'
     AND sorlcur_program NOT IN ('PGC-SEY', 'PGC-SEZ')
     --AND sorlcur_term_code_admit = '201909'
