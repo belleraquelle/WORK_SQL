@@ -39,11 +39,14 @@ WHERE
 	
 		)
 		
+	-- Exclude study paths where max active has an end term
+	AND a1.sorlcur_term_code_end IS NOT NULL
+		
 	-- Exclude new students based on admit term	
-	AND a1.sorlcur_term_code_admit != '202009'
+	AND a1.sorlcur_term_code_admit != '202101'
 	
 	-- Limit to students with a completion date in the future that is beyond the PG dissertation deadline
-	AND a1.sorlcur_end_date > '30-SEP-2020'
+	AND a1.sorlcur_end_date > '31-JAN-2021'
 	
 	-- Current student status is Active
     AND t4.sgbstdn_term_code_eff = (
@@ -65,7 +68,7 @@ WHERE
     AND a1.sorlcur_camp_code NOT IN ('AIE')
     
     -- Exclude Research students
-    AND a1.sorlcur_levl_code != 'RD'
+    --AND a1.sorlcur_levl_code != 'RD'
 	
 	-- Exclude students who are 'EN' for the study path in 202009
 	AND a1.sorlcur_pidm || a1.sorlcur_key_seqno NOT IN (
@@ -74,7 +77,7 @@ WHERE
 		FROM sfrensp
 		WHERE
 			1=1
-			AND sfrensp_term_code = '202009'
+			AND sfrensp_term_code = '202101'
 			AND sfrensp_ests_code IN ('EN', 'WD', 'NS', 'AT', 'UT')
 	
 	)
@@ -86,7 +89,7 @@ WHERE
 		FROM sfbetrm
 		WHERE
 			1=1
-			AND sfbetrm_term_code = '202009'
+			AND sfbetrm_term_code = '202101'
 			AND sfbetrm_ests_code IN ('EN', 'WD', 'NS', 'AT', 'UT')
 	
 	)
@@ -98,7 +101,7 @@ WHERE
 		FROM szrenrl
 		WHERE
 			1=1
-			AND szrenrl_term_code = '202009'
+			AND szrenrl_term_code = '202101'
 			AND szrenrl_academic_enrol_status = 'CO'
 			AND szrenrl_financial_enrol_status = 'CO'
 			AND szrenrl_overall_enrol_status = 'CO'
