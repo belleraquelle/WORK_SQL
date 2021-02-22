@@ -40,7 +40,7 @@ WHERE
 		)
 		
 	-- Exclude study paths where max active has an end term
-	AND a1.sorlcur_term_code_end IS NOT NULL
+	AND a1.sorlcur_term_code_end IS NULL
 		
 	-- Exclude new students based on admit term	
 	AND a1.sorlcur_term_code_admit != '202101'
