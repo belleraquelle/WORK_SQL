@@ -26,5 +26,7 @@ WHERE
 	)
 ORDER BY 
 	shrtckn_term_code,
+	shrtckn_subj_code,
+	shrtckn_crse_numb,
 	spriden_id
 ;
