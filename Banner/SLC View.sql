@@ -1,4 +1,16 @@
-SELECT DISTINCT
+/**
+ * This query takes students from the RKRSSLC table based on the aid year that the current term falls within
+ * and computes an ATFEE STATUS based on elements of that student's record.
+ * 
+ * The ATFEE_STATUS column can then be used in further Banner processes to update the corresponding field on 
+ * the RKRSSLC table.
+ * 
+ * NOTE: the codes in ATFEE_STATUS currently contain more than the code required to help with testing and 
+ * debugging the output. Most of the select columns can be stripped out as well once checking is complete. 
+ */
+
+SELECT
+	spriden_id,
 	rkrsslc_pidm,
 	rkrsslc_acad_year,
 	rkrsslc_finaid_year,
@@ -17,8 +29,9 @@ SELECT DISTINCT
 			WHERE 1=1
 			AND rkrsslc_pidm=sfb.sfbetrm_pidm
 			AND sfb.sfbetrm_term_code = stv.stvterm_code
+			-- Limit to students who have an NS or WD status recorded against any of the terms associated with the current aid year
 			AND sfb.SFBETRM_ESTS_CODE IN ('NS', 'WD')
-			AND stv.stvterm_fa_proc_yr = rkrsslc_finaid_year) THEN 'WITHDRAWN (X)'
+			AND stv.stvterm_fa_proc_yr = rkrsslc_finaid_year) THEN 'WITHDRAWN (X)' -- rkrsslc_finaid_year is limited to the current year in the WHERE clause of the main query
 		-- Check for suspended students
 		WHEN EXISTS (
 			SELECT 1
@@ -26,8 +39,9 @@ SELECT DISTINCT
 			WHERE 1=1
 			AND rkrsslc_pidm=sfb.sfbetrm_pidm
 			AND sfb.sfbetrm_term_code = stv.stvterm_code
+			-- Limit to students who have an AT or UT status recorded against any of ther terms associated with the current aid year
 			AND sfb.SFBETRM_ESTS_CODE IN ('AT', 'UT')
-			AND stv.stvterm_fa_proc_yr = rkrsslc_finaid_year) THEN 'SUSPENDED (S)'
+			AND stv.stvterm_fa_proc_yr = rkrsslc_finaid_year) THEN 'SUSPENDED (S)'-- rkrsslc_finaid_year is limited to the current year in the WHERE clause of the main query
 		-- Check for fee mismatch
 		WHEN rkrsslc_course_tuition_fee != (
 			SELECT  sum(tbraccd_amount)    
@@ -52,6 +66,7 @@ SELECT DISTINCT
 				THEN 'COURSE NOT MAPPED (C)'
 		-- Check for valid Year 0 entries
 		WHEN 
+			-- Check student is enrolled for at least one term
 			EXISTS (
 				SELECT 1
 				FROM sfbetrm sfb, stvterm stv
@@ -60,8 +75,9 @@ SELECT DISTINCT
 				AND sfb.sfbetrm_term_code = stv.stvterm_code
 				AND sfb.SFBETRM_ESTS_CODE IN ('EN')
 				AND stv.stvterm_fa_proc_yr = rkrsslc_finaid_year
-				)	
+				)
 			AND rkrsslc_course_year = 0
+			-- Check student is currently on an S1 attribute
 			AND EXISTS (
 				SELECT 1
 				FROM sgrsatt sgr1
@@ -102,7 +118,8 @@ SELECT DISTINCT
 						WHERE 
 							sgr1.sgrsatt_pidm = sgr2.sgrsatt_pidm 
 							AND sgr1.sgrsatt_stsp_key_sequence = sgr2.sgrsatt_stsp_key_sequence
-							AND '202106' >= sgr2.sgrsatt_term_code_eff
+							-- Limit to attribute records that started on or before the CURRENT term
+							AND sgr2.sgrsatt_term_code_eff <= (SELECT stvterm_code AS "Current Term" FROM stvterm WHERE sysdate BETWEEN stvterm_start_date AND stvterm_end_date)
 					)
 					AND sgrsatt_atts_code IN ('S1', 'X1')
 				)
@@ -428,15 +445,16 @@ SELECT DISTINCT
 						AND sgrsatt_atts_code IN ('XM')
 				)
 		THEN 'YEAR 4 POST-AFR (A)'
-		ELSE 'No hits (C))'
+		ELSE 'No hits (C)'
 	END AS "ATFEE_STATUS"
 FROM 
 	rkrsslc
 	JOIN sorlcur s1 ON rkrsslc_pidm = s1.sorlcur_pidm
+	JOIN spriden ON rkrsslc_pidm = spriden_pidm AND spriden_change_ind IS NULL
 WHERE
 	1=1
 	AND rkrsslc_finaid_year = (SELECT max(rkrsslc_finaid_year) FROM rkrsslc) -- Current year in the SLC table
-	--AND rkrsslc_atfe_status = 'A'
+	AND rkrsslc_file_type = 'ATFEE'
 	AND s1.sorlcur_cact_code = 'ACTIVE' 
 	AND s1.sorlcur_lmod_code = 'LEARNER'
 	AND s1.sorlcur_current_cde = 'Y' 
@@ -456,6 +474,6 @@ WHERE
 	-- End term of curricula record is greater than or equal to the first term of the current finaid year
 	AND (SELECT stvterm_code FROM stvterm WHERE s1.sorlcur_end_date BETWEEN stvterm_start_date AND stvterm_end_date) 
 		>= (SELECT stvterm_code FROM stvterm WHERE stvterm_fa_proc_yr = (SELECT max(rkrsslc_finaid_year) FROM rkrsslc) AND stvterm_fa_term = 1)
-	AND rkrsslc_pidm = '1701503'
+	--AND rkrsslc_pidm = '1228047'
 ORDER BY "ATFEE_STATUS"
 ;
