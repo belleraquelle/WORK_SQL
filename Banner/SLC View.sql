@@ -112,7 +112,7 @@ FROM rkrsslc slc LEFT JOIN (
         END
         ) INITIAL_ATFEE_STATUS
     FROM rkrsslc r1
-    JOIN stvterm ON '01-MAY-21' BETWEEN stvterm_start_date AND stvterm_end_date
+    JOIN stvterm ON sysdate BETWEEN stvterm_start_date AND stvterm_end_date
     -- presuming everyone has rows in tbraccd, if not make LEFT JOIN
     LEFT JOIN (
         SELECT  sum(tbraccd_amount) amount,
