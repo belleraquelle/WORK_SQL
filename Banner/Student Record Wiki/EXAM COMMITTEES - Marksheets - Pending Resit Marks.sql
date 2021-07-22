@@ -86,7 +86,7 @@ WHERE
     AND ssbsect_camp_code :IN_FOR_BROOKES_NOT_IN_FOR_ACP ('OBO', 'OBS', 'DL')
     
     -- Exclude anyone with a DR grade
-    AND shrtckg_grde_code_final != 'DR'
+    AND shrtckg_grde_code_final IN ('F', 'FAIL')
 
     AND (
             -- Limit to components that are eligible for a resit
