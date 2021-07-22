@@ -85,7 +85,7 @@ WHERE
     -- Limit to Brookes / Collaborative Provision
     AND ssbsect_camp_code :IN_FOR_BROOKES_NOT_IN_FOR_ACP ('OBO', 'OBS', 'DL')
     
-    -- Exclude anyone with a DR grade
+    -- Limit to students with an overall fail grade
     AND shrtckg_grde_code_final IN ('F', 'FAIL')
 
     AND (
