@@ -1,25 +1,23 @@
-SELECT DISTINCT
-    sfbetrm_pidm, 
-    spriden_id, 
-    spriden_last_name,
-    spriden_first_name,
-    sorlcur_program,
-    sfbetrm_term_code, 
-    sfbetrm_ests_code, 
-    sfrensp_key_seqno, 
-    sfrensp_term_code, 
-    sfrensp_ests_code, 
-    sorlcur_key_seqno, 
-    sorlcur_camp_code
+SELECT DISTINCT 
+    spriden_id AS "Student_Number", 
+    spriden_last_name || ', ' || spriden_first_name AS "Student_Name",
+    sorlcur_camp_code AS "Campus",
+    sorlcur_program AS "Programme_Code",
+    smrprle_program_desc AS "Programme_Description",
+    sfbetrm_term_code AS "Enrolment_Term", 
+    sfbetrm_ests_code AS "Overall_Enrolment_Status", 
+    sfrensp_key_seqno AS "Study_Path",  
+    sfrensp_ests_code AS "Study_Path_Enrolment_Status"  
 FROM
     sfbetrm
     JOIN sfrensp ON sfbetrm_pidm = sfrensp_pidm AND sfbetrm_term_code = sfrensp_term_code
     JOIN spriden ON sfbetrm_pidm = spriden_pidm AND spriden_change_ind IS NULL
     JOIN sorlcur ON sfrensp_pidm = sorlcur_pidm AND sfrensp_key_seqno = sorlcur_key_seqno AND sorlcur_lmod_code = 'LEARNER'
     JOIN stvterm ON sfbetrm_term_code = stvterm_code
+    JOIN smrprle ON sorlcur_program = smrprle_program
 WHERE
     1=1
-    AND sfbetrm_term_code = '202101'
+    AND sfbetrm_term_code = :term_code
     AND sfbetrm_ests_code = 'EN'
     AND sfbetrm_pidm NOT IN (
         SELECT DISTINCT sfrstcr_pidm
@@ -39,11 +37,13 @@ WHERE
                 )
             AND sfrstcr_rsts_code IN ('RE','RW','RC')
             )
-    AND sorlcur_camp_code IN ('OBO','OBS','DL', 'OH')
+    --AND sorlcur_camp_code NOT IN ('AIE', 'OCE')
     AND sorlcur_levl_code != 'RD'
     AND sorlcur_program NOT IN ('PGC-SEY', 'PGC-SEZ')
     --AND sorlcur_term_code_admit = '201909'
     --AND spriden_id = '15050603'
 ORDER BY
-    sorlcur_program
+    "Campus",
+    "Programme_Code",
+    "Student_Name"
 ;
