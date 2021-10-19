@@ -19,7 +19,7 @@ SELECT
 FROM 
 	sorlcur a1
 	JOIN spriden ON a1.sorlcur_pidm = spriden_pidm AND spriden_change_ind IS NULL
-	LEFT JOIN szrenrl ON a1.sorlcur_pidm = szrenrl_pidm
+	LEFT JOIN szrenrl ON a1.sorlcur_pidm = szrenrl_pidm AND szrenrl_term_code = :term_code
 	JOIN sgrstsp t1 ON a1.sorlcur_pidm = t1.sgrstsp_pidm AND a1.sorlcur_key_seqno = t1.sgrstsp_key_seqno
 	JOIN sgbstdn t4 ON a1.sorlcur_pidm = t4.sgbstdn_pidm
     JOIN smrprle ON a1.sorlcur_program = smrprle_program
@@ -105,7 +105,80 @@ WHERE
 			AND sfbetrm_ests_code IN ('EN', 'WD', 'NS', 'AT', 'UT')
 	
 	)
+    
+    -- Exclude specified students
+	AND spriden_id NOT IN (
+        '19189574',
+        '19061404',
+        '19191738',
+        '19186855',
+        '19181288',
+        '14058497',
+        '19061184',
+        '19018564',
+        '18067055',
+        '19046640',
+        '19141556',
+        '19019852',
+        '19007177',
+        '19009457',
+        '19140266',
+        '18040955',
+        '19022701',
+        '18002754',
+        '19024918',
+        '18044029',
+        '17077282',
+        '14111488',
+        '18107166',
+        '19185895',
+        '19146277',
+        '18107526',
+        '19033743',
+        '18107166',
+        '19176077',
+        '19183626',
+        '19145627',
+        '19129790',
+        '19184397',
+        '19179575',
+        '19180282',
+        '19176614',
+        '19179355',
+        '19184740',
+        '19185335',
+        '19159388',
+        '19138307',
+        '19162663',
+        '19174928',
+        '19169438',
+        '19179540',
+        '19164884',
+        '19181053',
+        '19142523',
+        '19169215',
+        '19164883',
+        '19043489',
+        '19164386',
+        '19051709',
+        '19175479',
+        '19143875',
+        '19066269',
+        '19142616',
+        '19162565',
+        '19133281',
+        '19158844',
+        '19026773',
+        '19167461',
+        '19180928',
+        '19184463',
+        '19162471',
+        '19184255'
+        )
 	
+    -- Limit to students without an overall enrolment status
+    AND szrenrl_overall_enrol_status IS NULL
+    
 ORDER BY
     "Campus",
     "Programme_Code", 
