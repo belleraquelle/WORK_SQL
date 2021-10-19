@@ -19,7 +19,7 @@ WHERE
     AND s1.sfrstcr_rsts_code IN ('RE','RW', 'RC')
     
     -- Limit to modules that end in the current AY
-    AND ssbsect_ptrm_end_date BETWEEN '01-SEP-20' AND '31-AUG-21'
+    AND ssbsect_ptrm_end_date BETWEEN '01-SEP-21' AND '31-AUG-22'
     
     -- Pick out 'current' sorlcur record
     AND a1.sorlcur_term_code = (
@@ -27,8 +27,8 @@ WHERE
         FROM sorlcur a2 
         WHERE a1.sorlcur_pidm = a2.sorlcur_pidm AND a1.sorlcur_key_seqno = a2.sorlcur_key_seqno AND a1.sorlcur_lmod_code = 'LEARNER'
         )    
-    AND (('202101' BETWEEN sorlcur_term_code AND sorlcur_term_code_end) OR sorlcur_term_code_end IS NULL)
-    AND sorlcur_end_date >= '31-JAN-21'
+    AND (('202201' BETWEEN sorlcur_term_code AND sorlcur_term_code_end) OR sorlcur_term_code_end IS NULL)
+    AND sorlcur_end_date >= '01-MAY-22'
     AND sorlcur_cact_code = 'ACTIVE'
     AND sorlcur_current_cde = 'Y'
     
@@ -42,7 +42,7 @@ WHERE
     AND s1.sfrstcr_pidm NOT IN (
         SELECT sgrsatt_pidm
         FROM sgrsatt
-        WHERE sgrsatt_term_code_eff = '202009' AND sgrsatt_atts_code = 'SW'
+        WHERE sgrsatt_term_code_eff = '202109' AND sgrsatt_atts_code = 'SW'
     )
     
     -- Exclude specific wonky courses
@@ -52,14 +52,14 @@ WHERE
     AND sorlcur_program NOT LIKE 'FDA%'
     
     -- Only include students enrolled in both S1 and S2
-    AND s1.sfrstcr_pidm IN (SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202009' AND sfrensp_ests_code = 'EN')
-    AND s1.sfrstcr_pidm IN (SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202101' AND sfrensp_ests_code = 'EN')
+    AND s1.sfrstcr_pidm IN (SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202109' AND sfrensp_ests_code = 'EN')
+    AND s1.sfrstcr_pidm IN (SELECT sfrensp_pidm FROM sfrensp WHERE sfrensp_term_code = '202201' AND sfrensp_ests_code = 'EN')
     
     -- Exclude students on exchange
     AND s1.sfrstcr_pidm NOT IN (
         SELECT s2.sfrstcr_pidm 
         FROM sfrstcr s2 JOIN ssbsect z1 ON s2.sfrstcr_crn = z1.ssbsect_crn AND s2.sfrstcr_term_code = z1.ssbsect_term_code 
-        WHERE s2.sfrstcr_rsts_code IN ('RE','RW') AND z1.ssbsect_subj_code = 'EXCH' AND ssbsect_term_code IN ('202009','202101')
+        WHERE s2.sfrstcr_rsts_code IN ('RE','RW') AND z1.ssbsect_subj_code = 'EXCH' AND ssbsect_term_code IN ('202109','202201')
     )
     
 GROUP BY
