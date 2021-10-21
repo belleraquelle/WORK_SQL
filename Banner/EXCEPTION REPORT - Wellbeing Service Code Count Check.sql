@@ -10,9 +10,8 @@ SELECT * FROM (
             1=1
             AND s1.serdtsr_pidm = s2.serdtsr_pidm
             AND s2.serdtsr_sser_code LIKE :first_two_chars_of_service
-            -- Exclude specific codes (on ES% for example)
-            --AND s2.serdtsr_sser_code NOT IN ('ESLR', 'ESPW', 'ESCR')
-            AND s2.serdtsr_sser_code NOT IN ('EDBD')
+            -- Exclude specific codes
+            AND s2.serdtsr_sser_code NOT IN ('ESLR', 'ESPW', 'ESCR', 'EDBD', 'EITS')
             AND s2.serdtsr_ssst_code = 'AG'
             AND (s2.serdtsr_end_date IS NULL OR s2.serdtsr_end_date > sysdate)
             AND s2.serdtsr_term_code_eff = (
