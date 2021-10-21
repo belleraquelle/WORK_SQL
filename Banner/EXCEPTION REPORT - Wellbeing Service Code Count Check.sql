@@ -10,6 +10,7 @@ SELECT * FROM (
             1=1
             AND s1.serdtsr_pidm = s2.serdtsr_pidm
             AND s2.serdtsr_sser_code LIKE :first_two_chars_of_service
+            --AND s2.serdtsr_sser_code IN ('EDIP','EDIR','EDYP','EDYR','EIND','EINP','ESMR','ESMP')
             -- Exclude specific codes
             AND s2.serdtsr_sser_code NOT IN ('ESLR', 'ESPW', 'ESCR', 'EDBD', 'EITS')
             AND s2.serdtsr_ssst_code = 'AG'

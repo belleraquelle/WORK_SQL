@@ -1,10 +1,10 @@
 SELECT * FROM obu_datatyding_new_19OCT21;
 
-SELECT * FROM sprhold;
-
 --DELETE FROM sprhold WHERE sprhold_pidm IN (SELECT pidm from obu_datatyding_new_19OCT21) AND sprhold_hldd_code = 'RX';
 --UPDATE sgrstsp SET sgrstsp_stsp_code = 'IS' WHERE sgrstsp_term_code_eff = :term_code AND sgrstsp_pidm || sgrstsp_key_seqno IN (SELECT m1.sgrstsp_pidm || m1.sgrstsp_key_seqno
 --UPDATE sfbetrm SET sfbetrm_ar_ind = 'N' WHERE sfbetrm_term_code = '202206' AND sfbetrm_pidm IN (SELECT spriden_pidm
+--INSERT INTO sfrensp(sfrensp_term_code, sfrensp_pidm, sfrensp_key_seqno, sfrensp_ests_code, sfrensp_ests_date, sfrensp_add_date, sfrensp_activity_date, sfrensp_user, sfrensp_data_origin)
+--SELECT '202109', PIDM, "Study_Path", 'NS', '21-OCT-21', '21-OCT-21', sysdate, 'BANSECR_SCLARKE', 'DataTidy' FROM (
 
 
 /*
@@ -23,11 +23,14 @@ SELECT * FROM sprhold;
 *
 */
 
+SELECT * FROM (
 SELECT 
 	spriden_id AS "Student_Number",
+    spriden_pidm AS "PIDM",
     spriden_last_name || ', ' || spriden_first_name AS "Student_Name",
     CASE WHEN sprhold_hldd_code = 'RX' THEN 'Y' END AS "Current_RX_Hold",
     b1.sgbstdn_stst_code AS "Current_Student_Status",
+    m1.sgrstsp_key_seqno AS "Study_Path",
     m1.sgrstsp_stsp_code AS "Current_Study_Path_Status",
     a1.sorlcur_camp_code AS "Campus",
     a1.sorlcur_program AS "Programme_Code",
@@ -95,7 +98,8 @@ WHERE
     
     -- Limit to entries with an SGRSTSP_STSP_CODE of AS/IS
     AND m1.sgrstsp_stsp_code = 'IS'
-
+)
+--WHERE SFRENSP_202109 IS NULL
 ORDER BY
     "Campus",
     "Programme_Code", 
