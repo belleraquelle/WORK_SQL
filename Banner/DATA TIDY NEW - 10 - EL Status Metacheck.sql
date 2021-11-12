@@ -46,7 +46,7 @@ WHERE
 	AND a1.sorlcur_program NOT LIKE ('%-V')
 		
 	-- Limit to Banner native records
-	AND sfbetrm_term_code = '202009'
+	AND sfbetrm_term_code = '202109'
 	
 	-- Identify any EL status records at learner or study path level
 	AND (sfbetrm_ests_code = 'EL' OR sfrensp_ests_code = 'EL')
@@ -55,7 +55,7 @@ WHERE
 	AND a1.sorlcur_levl_code != 'RD'
 	
 	-- Exclude students who haven't been invited to enrol yet
-	AND a1.sorlcur_start_date < '01-JAN-2021'
+	AND a1.sorlcur_start_date < '01-OCT-2021'
 		
 	-- Exclude AIE
 	AND a1.sorlcur_camp_code != 'AIE'

@@ -1,4 +1,5 @@
 SELECT DISTINCT 
+    sorlcur_term_code_admit AS "Admit_Term",
     spriden_id AS "Student_Number", 
     spriden_last_name || ', ' || spriden_first_name AS "Student_Name",
     sorlcur_camp_code AS "Campus",
@@ -37,11 +38,23 @@ WHERE
                 )
             AND sfrstcr_rsts_code IN ('RE','RW','RC')
             )
-    --AND sorlcur_camp_code NOT IN ('AIE', 'OCE')
+    AND sorlcur_camp_code NOT IN ('AIE', 'OCE', 'HKM')
     AND sorlcur_levl_code != 'RD'
     AND sorlcur_program NOT IN ('PGC-SEY', 'PGC-SEZ')
     --AND sorlcur_term_code_admit = '201909'
-    --AND spriden_id = '15050603'
+    AND spriden_id NOT IN ( 
+        '19036779',
+        '19142564',
+        '19129058',
+        '19054175',
+        '19127486',
+        '19129938',
+        '19044751',
+        '19190498',
+        '19189182',
+        '19186358',
+        '19160388'
+    )
 ORDER BY
     "Campus",
     "Programme_Code",
