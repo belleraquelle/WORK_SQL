@@ -90,14 +90,7 @@ WHERE
     )
     AND t1.sgrstsp_stsp_code = 'AS'
     
-	-- ONLY INCLUDE STUDY PATHS WITH A COMPLETION DATE BEYOND MASTERS DISSERTATION SUBMISSION DEADLINE
-    AND t2.sorlcur_term_code = (
-        SELECT MAX(b2.sorlcur_term_code)
-        FROM sorlcur b2
-        WHERE t2.sorlcur_pidm = b2.sorlcur_pidm AND t2.sorlcur_key_seqno = b2.sorlcur_key_seqno
-        AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date >= :next_pg_dissertation_deadline
-    )
-    AND t2.sorlcur_lmod_code = 'LEARNER' AND t2.sorlcur_end_date > :completion_date_is_greater_than
+    -- Exclude AIE students
     AND t2.sorlcur_camp_code NOT IN ('AIE')
     
 	-- LIMIT TO CURRENT SGBSTDN RECORD
@@ -109,6 +102,7 @@ WHERE
     AND sgbstdn_stst_code = 'AS'
     
 	-- ONLY INCLUDE PROPER SORLCUR RECORDS
+    AND t2.sorlcur_lmod_code = 'LEARNER'
     AND t3.SORLFOS_csts_code = 'INPROGRESS'
     AND t2.sorlcur_current_cde = 'Y'
     AND t2.sorlcur_term_code_end IS NULL
@@ -133,6 +127,7 @@ WHERE
     	WHERE z1.szrenrl_pidm = z2.szrenrl_pidm AND z1.szrenrl_study_paths = z2.szrenrl_study_paths
     
     ) OR z1.szrenrl_term_code IS NULL)
+    --AND spriden_id = '19148019'
     
 ORDER BY
     sorlcur_program,
