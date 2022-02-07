@@ -25,3 +25,31 @@ values
  'ADMIN_UPLOAD',
  SYSDATE);
  
+ -- Check using P number
+ SELECT 'Y' AS "Has_Role"
+ FROM wtailor.twgrrole
+ WHERE 
+    twgrrole_pidm = (SELECT spriden_pidm FROM spriden WHERE spriden_id = :spriden_id) 
+    AND twgrrole_role = 'PREENROLADMIN'
+;
+ 
+ --Insert using P numbers
+ Insert into WTAILOR.TWGRROLE
+(TWGRROLE_PIDM,
+ TWGRROLE_ROLE,
+ TWGRROLE_ACTIVITY_DATE)
+values
+((SELECT spriden_pidm FROM spriden WHERE spriden_id = :spriden_id),  -- for me
+ 'PREENROLADMIN',
+ SYSDATE);
+ 
+ -- Return all columns using staff number
+SELECT * 
+ FROM wtailor.twgrrole
+ WHERE 
+    twgrrole_pidm = (SELECT DISTINCT spriden_pidm FROM spriden WHERE spriden_id = :spriden_id) 
+    AND twgrrole_role = 'PREENROLADMIN'
+;
+
+-- Delete using PIDM and role
+DELETE FROM wtailor.twgrrole WHERE twgrrole_pidm = :pidm AND twgrrole_role = 'PREENROLADMIN';
