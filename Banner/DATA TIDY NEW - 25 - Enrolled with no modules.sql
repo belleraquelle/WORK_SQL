@@ -42,21 +42,14 @@ WHERE
     AND sorlcur_levl_code != 'RD'
     AND sorlcur_program NOT IN ('PGC-SEY', 'PGC-SEZ')
     --AND sorlcur_term_code_admit = '201909'
-    AND spriden_id NOT IN ( 
-        '19036779',
-        '19142564',
-        '19129058',
-        '19054175',
-        '19127486',
-        '19129938',
-        '19044751',
-        '19190498',
-        '19189182',
-        '19186358',
-        '19160388'
+    AND spriden_pidm NOT IN ( 
+        SELECT glbextr_key FROM glbextr WHERE glbextr_selection = :popsel
     )
 ORDER BY
     "Campus",
     "Programme_Code",
     "Student_Name"
 ;
+
+
+SELECT * FROM glbextr;
