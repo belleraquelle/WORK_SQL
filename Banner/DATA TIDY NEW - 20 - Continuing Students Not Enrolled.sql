@@ -2,7 +2,7 @@
  * This query identifies continuing students who have not completed enrolment and so need to be put on UTWD 
  * Updated 22-FEB-2022 - SRC
  */
-CREATE TABLE obu_datatidying_continuing AS
+--CREATE TABLE obu_datatidying_continuing AS
 SELECT 
 	spriden_id AS "Student_Number",
     spriden_last_name || ', ' || spriden_first_name AS "Student_Name",

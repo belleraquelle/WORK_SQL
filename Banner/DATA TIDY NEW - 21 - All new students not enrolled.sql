@@ -5,7 +5,7 @@
 *
 */
 
-CREATE TABLE obu_datatidying_new AS
+--CREATE TABLE obu_datatidying_new AS
 SELECT
 	spriden_id AS "Student_Number",
     spriden_last_name || ', ' || spriden_first_name AS "Student_Name",
