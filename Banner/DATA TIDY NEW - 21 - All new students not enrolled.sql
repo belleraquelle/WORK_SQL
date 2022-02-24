@@ -4,8 +4,9 @@
 * Updated 24-FEB-2022 - SRC
 *
 */
+
 CREATE TABLE obu_datatidying_new AS
-SELECT 
+SELECT
 	spriden_id AS "Student_Number",
     spriden_last_name || ', ' || spriden_first_name AS "Student_Name",
     CASE WHEN sprhold_hldd_code = 'RX' THEN 'Y' END AS "Current_RX_Hold",
@@ -20,7 +21,12 @@ SELECT
     skricas_cas_status AS "CAS_Status",
     szrenrl_academic_enrol_status AS "Academic_Enrolment_Status", 
     szrenrl_financial_enrol_status AS "Financial_Enrolment_Status",
-    szrenrl_overall_enrol_status AS "Overall_Enrolment_Status"
+    szrenrl_overall_enrol_status AS "Overall_Enrolment_Status",
+    a1.sorlcur_pidm AS "pidm",
+    a1.sorlcur_program,
+    a1.sorlcur_start_date,
+    a1.SORLCUR_KEY_SEQNO,
+    a1.SORLCUR_TERM_CODE_ADMIT
 FROM 
 	sorlcur a1
 	JOIN spriden ON a1.sorlcur_pidm = spriden_pidm AND spriden_change_ind IS NULL
