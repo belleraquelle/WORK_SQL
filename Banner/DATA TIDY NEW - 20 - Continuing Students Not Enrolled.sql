@@ -1,8 +1,8 @@
 /*
  * This query identifies continuing students who have not completed enrolment and so need to be put on UTWD 
- * Updated 18-OCT-2021 - SRC
+ * Updated 22-FEB-2022 - SRC
  */
-
+CREATE TABLE obu_datatidying_continuing AS
 SELECT 
 	spriden_id AS "Student_Number",
     spriden_last_name || ', ' || spriden_first_name AS "Student_Name",
@@ -11,6 +11,7 @@ SELECT
     a1.sorlcur_camp_code AS "Campus",
     a1.sorlcur_program AS "Programme_Code",
     smrprle_program_desc AS "Programme_Description",
+    a1.sorlcur_levl_code AS "Level",
     to_char(a1.sorlcur_start_date,'DD-MON-YYYY') AS "Start_Date",
     to_char(a1.sorlcur_end_date, 'DD-MON-YYYY') AS "Expected_Completion_Date",
     szrenrl_academic_enrol_status AS "Academic_Enrolment_Status", 
@@ -19,7 +20,7 @@ SELECT
 FROM 
 	sorlcur a1
 	JOIN spriden ON a1.sorlcur_pidm = spriden_pidm AND spriden_change_ind IS NULL
-	LEFT JOIN szrenrl ON a1.sorlcur_pidm = szrenrl_pidm AND szrenrl_term_code = :term_code
+	LEFT JOIN szrenrl ON a1.sorlcur_pidm = szrenrl_pidm AND szrenrl_term_code = :current_term
 	JOIN sgrstsp t1 ON a1.sorlcur_pidm = t1.sgrstsp_pidm AND a1.sorlcur_key_seqno = t1.sgrstsp_key_seqno
 	JOIN sgbstdn t4 ON a1.sorlcur_pidm = t4.sgbstdn_pidm
     JOIN smrprle ON a1.sorlcur_program = smrprle_program
@@ -55,10 +56,10 @@ WHERE
 	AND a1.sorlcur_term_code_end IS NULL
 		
 	-- Exclude new students based on admit term	
-	AND a1.sorlcur_term_code_admit != :term_code
+	AND a1.sorlcur_term_code_admit != :current_term
 	
 	-- Limit to students with a completion date in the future that is beyond the PG dissertation deadline
-	AND a1.sorlcur_end_date > :PG_dissertation_deadline
+	AND a1.sorlcur_end_date > :expected_completion_date
 	
 	-- Current student status is Active
     AND t4.sgbstdn_term_code_eff = (
@@ -80,7 +81,7 @@ WHERE
     AND a1.sorlcur_camp_code NOT IN ('AIE', 'CD')
     
     -- Exclude Research students
-    --AND a1.sorlcur_levl_code != 'RD'
+    AND a1.sorlcur_levl_code != 'RD'
 	
 	-- Exclude students who have a valid final enrolment status for the study path in specified term
 	AND a1.sorlcur_pidm || a1.sorlcur_key_seqno NOT IN (
@@ -89,7 +90,7 @@ WHERE
 		FROM sfrensp
 		WHERE
 			1=1
-			AND sfrensp_term_code = :term_code
+			AND sfrensp_term_code = :current_term
 			AND sfrensp_ests_code IN ('EN', 'WD', 'NS', 'AT', 'UT')
 	
 	)
@@ -101,79 +102,16 @@ WHERE
 		FROM sfbetrm
 		WHERE
 			1=1
-			AND sfbetrm_term_code = : term_code
+			AND sfbetrm_term_code = :current_term
 			AND sfbetrm_ests_code IN ('EN', 'WD', 'NS', 'AT', 'UT')
 	
 	)
     
     -- Exclude specified students
-	AND spriden_id NOT IN (
-        '19189574',
-        '19061404',
-        '19191738',
-        '19186855',
-        '19181288',
-        '14058497',
-        '19061184',
-        '19018564',
-        '18067055',
-        '19046640',
-        '19141556',
-        '19019852',
-        '19007177',
-        '19009457',
-        '19140266',
-        '18040955',
-        '19022701',
-        '18002754',
-        '19024918',
-        '18044029',
-        '17077282',
-        '14111488',
-        '18107166',
-        '19185895',
-        '19146277',
-        '18107526',
-        '19033743',
-        '18107166',
-        '19176077',
-        '19183626',
-        '19145627',
-        '19129790',
-        '19184397',
-        '19179575',
-        '19180282',
-        '19176614',
-        '19179355',
-        '19184740',
-        '19185335',
-        '19159388',
-        '19138307',
-        '19162663',
-        '19174928',
-        '19169438',
-        '19179540',
-        '19164884',
-        '19181053',
-        '19142523',
-        '19169215',
-        '19164883',
-        '19043489',
-        '19164386',
-        '19051709',
-        '19175479',
-        '19143875',
-        '19066269',
-        '19142616',
-        '19162565',
-        '19133281',
-        '19158844',
-        '19026773',
-        '19167461',
-        '19180928',
-        '19184463',
-        '19162471',
-        '19184255'
+	AND spriden_pidm NOT IN (
+        SELECT glbextr_key
+	    FROM glbextr
+	    WHERE glbextr_selection = :exclusion_selection
         )
 	
     -- Limit to students without an overall enrolment status
