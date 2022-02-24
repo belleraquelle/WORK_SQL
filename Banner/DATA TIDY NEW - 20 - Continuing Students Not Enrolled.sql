@@ -17,7 +17,7 @@ SELECT
     szrenrl_academic_enrol_status AS "Academic_Enrolment_Status", 
     szrenrl_financial_enrol_status AS "Financial_Enrolment_Status",
     szrenrl_overall_enrol_status AS "Overall_Enrolment_Status",
-    a1.sorlcur_pidm AS "pidm",
+    a1.sorlcur_pidm,
     a1.sorlcur_program,
     a1.sorlcur_start_date,
     a1.SORLCUR_KEY_SEQNO,
