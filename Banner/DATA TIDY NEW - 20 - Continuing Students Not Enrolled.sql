@@ -16,7 +16,12 @@ SELECT
     to_char(a1.sorlcur_end_date, 'DD-MON-YYYY') AS "Expected_Completion_Date",
     szrenrl_academic_enrol_status AS "Academic_Enrolment_Status", 
     szrenrl_financial_enrol_status AS "Financial_Enrolment_Status",
-    szrenrl_overall_enrol_status AS "Overall_Enrolment_Status"
+    szrenrl_overall_enrol_status AS "Overall_Enrolment_Status",
+    a1.sorlcur_pidm AS "pidm",
+    a1.sorlcur_program,
+    a1.sorlcur_start_date,
+    a1.SORLCUR_KEY_SEQNO,
+    a1.SORLCUR_TERM_CODE_ADMIT
 FROM 
 	sorlcur a1
 	JOIN spriden ON a1.sorlcur_pidm = spriden_pidm AND spriden_change_ind IS NULL
