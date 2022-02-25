@@ -1,12 +1,12 @@
-SELECT * FROM obu_datatyding_new_19OCT21;
-SELECT * FROM obu_datatyding_new_25OCT21 ORDER BY PIDM;
+SELECT * FROM obu_datatidying_new;
+SELECT * FROM obu_datatidying_continuing;
 
---DELETE FROM sprhold WHERE sprhold_pidm IN (SELECT pidm from obu_datatyding_new_19OCT21) AND sprhold_hldd_code = 'RX';
+--DELETE FROM sprhold WHERE sprhold_pidm IN (SELECT sorlcur_pidm from obu_datatidying_new) AND sprhold_hldd_code = 'RX';
 --UPDATE sgrstsp SET sgrstsp_stsp_code = 'IS' WHERE sgrstsp_term_code_eff = :term_code AND sgrstsp_pidm || sgrstsp_key_seqno IN (SELECT PIDM || Study_Path
 --UPDATE sgbstdn SET sgbstdn_stst_code = 'IS' WHERE sgbstdn_term_code_eff = :term_code AND sgbstdn_pidm IN (SELECT PIDM
 --UPDATE sfrensp SET sfrensp_ests_code = 'NS' WHERE sfrensp_term_code = :term_code AND sfrensp_pidm || sfrensp_key_seqno IN (SELECT PIDM || Study_Path
 --UPDATE sfbetrm SET sfbetrm_ests_code = 'NS' WHERE sfbetrm_term_code = :term_code AND sfbetrm_pidm IN (SELECT PIDM
---UPDATE sfbetrm SET sfbetrm_ar_ind = 'N' WHERE sfbetrm_term_code = '202206' AND sfbetrm_pidm IN (SELECT spriden_pidm
+--UPDATE sfbetrm SET sfbetrm_ar_ind = 'N' WHERE sfbetrm_term_code = '202209' AND sfbetrm_pidm IN (SELECT sorlcur_pidm FROM obu_datatidying_new);
 --INSERT INTO sfrensp(sfrensp_term_code, sfrensp_pidm, sfrensp_key_seqno, sfrensp_ests_code, sfrensp_ests_date, sfrensp_add_date, sfrensp_activity_date, sfrensp_user, sfrensp_data_origin)
 --SELECT '202109', PIDM, "Study_Path", 'NS', '21-OCT-21', '21-OCT-21', sysdate, 'BANSECR_SCLARKE', 'DataTidy' FROM (
 --CREATE TABLE obu_datatyding_new_25OCT21 AS (
@@ -15,6 +15,7 @@ SELECT * FROM obu_datatyding_new_25OCT21 ORDER BY PIDM;
 /*
 *
 * New Student Data Tidy Check
+* Updated 25th February 2022
 * 
 *  1. Have the RX holds been cleared?
 *  2. Is the student status IS?
@@ -41,13 +42,13 @@ SELECT
     a1.sorlcur_camp_code AS "Campus",
     a1.sorlcur_program AS "Programme_Code",
     CASE WHEN to_char(a1.sorlcur_start_date,'DD-MON-YYYY') = to_char(a1.sorlcur_end_date, 'DD-MON-YYYY') THEN 'Y' END AS "End_date_equals_start_date",
-    (SELECT sfbetrm_ests_code FROM sfbetrm WHERE spriden_pidm = sfbetrm_pidm AND sfbetrm_term_code = '202109') AS "SFEBTRM_202109",
     (SELECT sfbetrm_ests_code FROM sfbetrm WHERE spriden_pidm = sfbetrm_pidm AND sfbetrm_term_code = '202201') AS "SFEBTRM_202201",
     (SELECT sfbetrm_ests_code FROM sfbetrm WHERE spriden_pidm = sfbetrm_pidm AND sfbetrm_term_code = '202206') AS "SFEBTRM_202206",
-    (SELECT sfrensp_ests_code FROM sfrensp WHERE spriden_pidm = sfrensp_pidm AND sfrensp_term_code = '202109') AS "SFRENSP_202109",
-    (SELECT sfrensp_ests_code FROM sfrensp WHERE spriden_pidm = sfrensp_pidm AND sfrensp_term_code = '202201') AS "SFRENSP_202201",
+    (SELECT sfbetrm_ests_code FROM sfbetrm WHERE spriden_pidm = sfbetrm_pidm AND sfbetrm_term_code = '202209') AS "SFEBTRM_202209",
+    (SELECT MIN(sfrensp_ests_code) FROM sfrensp WHERE spriden_pidm = sfrensp_pidm AND sfrensp_term_code = '202201') AS "SFRENSP_202201",
     (SELECT sfrensp_ests_code FROM sfrensp WHERE spriden_pidm = sfrensp_pidm AND sfrensp_term_code = '202206') AS "SFRENSP_202206",
-    CASE WHEN EXISTS (SELECT 1 FROM sfrstcr WHERE spriden_pidm = sfrstcr_pidm AND sfrstcr_term_code >= '202109') THEN 'Y' END AS "Module_Registrations?"
+    (SELECT sfrensp_ests_code FROM sfrensp WHERE spriden_pidm = sfrensp_pidm AND sfrensp_term_code = '202209') AS "SFRENSP_202209",
+    CASE WHEN EXISTS (SELECT 1 FROM sfrstcr WHERE spriden_pidm = sfrstcr_pidm AND sfrstcr_term_code >= '202201') THEN 'Y' END AS "Module_Registrations?"
 FROM 
 	sorlcur a1
 	JOIN spriden ON a1.sorlcur_pidm = spriden_pidm AND spriden_change_ind IS NULL
@@ -55,7 +56,7 @@ FROM
     JOIN smrprle ON a1.sorlcur_program = smrprle_program
     LEFT JOIN sprhold ON a1.sorlcur_pidm = sprhold_pidm AND sprhold_hldd_code = 'RX' AND sysdate BETWEEN sprhold_from_date AND sprhold_to_date
     LEFT JOIN skricas ON a1.sorlcur_pidm = skricas_pidm AND a1.sorlcur_seqno = skricas_lcur_seqno
-    LEFT JOIN szrenrl ON a1.sorlcur_pidm = szrenrl_pidm AND szrenrl_term_code = '202109'
+    LEFT JOIN szrenrl ON a1.sorlcur_pidm = szrenrl_pidm AND szrenrl_term_code = '202201'
     LEFT JOIN sgrstsp m1 ON sgrstsp_pidm = a1.sorlcur_pidm AND sgrstsp_key_seqno = a1.sorlcur_key_seqno
 WHERE
 	1=1
@@ -82,20 +83,20 @@ WHERE
 	AND a1.sorlcur_program NOT LIKE ('%-V')
 		
 	-- Limit to specified admit term	
-	AND a1.sorlcur_term_code_admit = '202109'
+	AND a1.sorlcur_term_code_admit = '202201'
 
     -- Limit to students in the snapshot table of students to be tidied
 	AND spriden_pidm IN (
-        SELECT DISTINCT PIDM FROM obu_datatyding_new_25OCT21
+        SELECT DISTINCT sorlcur_pidm FROM obu_datatidying_new
         )
     
     -- Pick out latest learner record
     --AND b1.sgbstdn_term_code_eff = (SELECT MAX(b2.sgbstdn_term_code_eff) FROM sgbstdn b2 WHERE b1.sgbstdn_pidm = b2.sgbstdn_pidm)
-    AND b1.sgbstdn_term_code_eff = '202109'
+    AND b1.sgbstdn_term_code_eff = '202201'
     
     -- Pick out latest study path record
     --AND m1.sgrstsp_term_code_eff = (SELECT MAX(n1.sgrstsp_term_code_eff) FROM sgrstsp n1 WHERE m1.sgrstsp_pidm = n1.sgrstsp_pidm AND m1.sgrstsp_key_seqno = n1.sgrstsp_key_seqno)
-    AND m1.sgrstsp_term_code_eff = '202109'
+    AND m1.sgrstsp_term_code_eff = '202201'
     
     --AND spriden_id = '19136721'
     
