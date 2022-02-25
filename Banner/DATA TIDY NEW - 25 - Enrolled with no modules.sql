@@ -1,4 +1,9 @@
-SELECT DISTINCT 
+/*
+ Identifies students who are enrolled with no modules who may need to be data tidied.
+ Updated 25th February 2021 SRC
+ */
+
+SELECT DISTINCT
     sorlcur_term_code_admit AS "Admit_Term",
     spriden_id AS "Student_Number", 
     spriden_last_name || ', ' || spriden_first_name AS "Student_Name",
@@ -40,7 +45,7 @@ WHERE
             )
     AND sorlcur_camp_code NOT IN ('AIE', 'OCE', 'HKM')
     AND sorlcur_levl_code != 'RD'
-    AND sorlcur_program NOT IN ('PGC-SEY', 'PGC-SEZ')
+    AND sorlcur_program NOT IN ('PGC-SEY', 'PGC-SEZ', 'GRD-HKL','LLBH-LLB')
     --AND sorlcur_term_code_admit = '201909'
     AND spriden_pidm NOT IN ( 
         SELECT glbextr_key FROM glbextr WHERE glbextr_selection = :popsel
