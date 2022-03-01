@@ -11,6 +11,21 @@ SELECT * FROM obu_datatidying_continuing;
 --SELECT '202109', PIDM, "Study_Path", 'NS', '21-OCT-21', '21-OCT-21', sysdate, 'BANSECR_SCLARKE', 'DataTidy' FROM (
 --CREATE TABLE obu_datatyding_new_25OCT21 AS (
 
+/*UPDATE sfbetrm
+SET sfbetrm_ests_date = (
+    SELECT sorlcur_end_date
+    FROM sorlcur
+    WHERE
+        sfbetrm_pidm = sorlcur_pidm
+        AND sorlcur_lmod_code = 'LEARNER'
+        AND sorlcur_term_code_admit = '202201'
+        AND sorlcur_end_date > '01-JAN-2022'
+        AND sorlcur_end_date < '31-JAN-2022')
+WHERE
+    1=1
+    AND sfbetrm_pidm IN (SELECT sorlcur_pidm FROM obu_datatidying_new)
+    AND sfbetrm_term_code = '202201'
+;*/
 
 /*
 *
@@ -43,6 +58,7 @@ SELECT
     a1.sorlcur_program AS "Programme_Code",
     CASE WHEN to_char(a1.sorlcur_start_date,'DD-MON-YYYY') = to_char(a1.sorlcur_end_date, 'DD-MON-YYYY') THEN 'Y' END AS "End_date_equals_start_date",
     (SELECT sfbetrm_ests_code FROM sfbetrm WHERE spriden_pidm = sfbetrm_pidm AND sfbetrm_term_code = '202201') AS "SFEBTRM_202201",
+    (SELECT sfbetrm_ests_date FROM sfbetrm WHERE spriden_pidm = sfbetrm_pidm AND sfbetrm_term_code = '202201') AS "SFBETRM_DATE",
     (SELECT sfbetrm_ests_code FROM sfbetrm WHERE spriden_pidm = sfbetrm_pidm AND sfbetrm_term_code = '202206') AS "SFEBTRM_202206",
     (SELECT sfbetrm_ests_code FROM sfbetrm WHERE spriden_pidm = sfbetrm_pidm AND sfbetrm_term_code = '202209') AS "SFEBTRM_202209",
     (SELECT MIN(sfrensp_ests_code) FROM sfrensp WHERE spriden_pidm = sfrensp_pidm AND sfrensp_term_code = '202201') AS "SFRENSP_202201",

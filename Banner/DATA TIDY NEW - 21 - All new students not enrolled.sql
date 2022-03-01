@@ -112,24 +112,24 @@ WHERE
         )
     
     -- Excludes anyone on a CP status in SZRENRL who still has an active learner record
-    AND spriden_id NOT IN (
+   /* AND spriden_id NOT IN (
         SELECT szrenrl_student_id
         FROM szrenrl JOIN sgbstdn z1 ON z1.sgbstdn_pidm = szrenrl_pidm
-        WHERE 
+        WHERE
             szrenrl_term_code = :current_term
-            AND szrenrl_overall_enrol_status = 'CP' 
-            AND z1.sgbstdn_term_code_eff = (SELECT MAX(z2.sgbstdn_term_code_eff) FROM sgbstdn z2 WHERE z1.sgbstdn_pidm = z2.sgbstdn_pidm) 
+            AND szrenrl_overall_enrol_status = 'CP'
+            AND z1.sgbstdn_term_code_eff = (SELECT MAX(z2.sgbstdn_term_code_eff) FROM sgbstdn z2 WHERE z1.sgbstdn_pidm = z2.sgbstdn_pidm)
             AND z1.sgbstdn_stst_code = 'AS'
             --AND szrenrl_pidm = '1698034'
-    )
+    )*/
     
     -- Pick out latest learner record
     AND b1.sgbstdn_term_code_eff = (SELECT MAX(b2.sgbstdn_term_code_eff) FROM sgbstdn b2 WHERE b1.sgbstdn_pidm = b2.sgbstdn_pidm)
     
-    --AND spriden_id = '19136721'
+    --AND spriden_id = '19191919'
     
-    -- Limit to students without an overall enrolment status
-    AND szrenrl_overall_enrol_status IS NULL
+    -- Limit to students without an overall enrolment status or it is CP
+    AND (szrenrl_overall_enrol_status IS NULL OR szrenrl_overall_enrol_status = 'CP')
     
 ORDER BY
     "Campus",
