@@ -12,10 +12,12 @@
  202106 |   21              |   6
  202109 |   2819            |   395
  202201 |   76              |   10
+ 202206 |   12              |   3
+ 202209 |   2371            |   555
  ------------------------------------------------
- Total  |   5804            |   1450
+ Total  |   8187            |   2008
 
- Corrected: 4354
+ Corrected: 6179
  */
 
 SELECT * FROM saradap WHERE saradap_term_code_entry = :term AND saradap_resd_code = '0';
