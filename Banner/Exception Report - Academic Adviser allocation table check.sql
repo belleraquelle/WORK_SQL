@@ -31,5 +31,5 @@ WHERE
         )
     -- Limit to records that are either missing the adivosr flag in SIAINST or aren't a member of staff
     AND (spriden_pidm NOT IN (SELECT spriden_pidm FROM spriden WHERE spriden_id LIKE 'P%')
-        OR sibinst_advr_ind IS NULL)
+        OR (sibinst_advr_ind IS NULL OR sibinst_advr_ind = 'N'))
 ;
