@@ -57,7 +57,7 @@ WHERE
 	AND spriden_change_ind IS NULL
 	
 	-- Limit to students who first went on UT before the specified term
-	AND b1.sfbetrm_term_code <= '202001'
+	AND b1.sfbetrm_term_code < :first_went_ut_before_term
 	
 	-- Exclude students with a 'final' enrolment status as their most recent status
 	AND a1.sfbetrm_ests_code NOT IN ('WD', 'EN', 'AT', 'XF')
