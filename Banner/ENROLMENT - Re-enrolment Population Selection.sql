@@ -21,6 +21,7 @@ SELECT DISTINCT
     t2.sorlcur_program AS "Programme",
     t2.sorlcur_styp_code AS "Mode_of_Study",
     t2.sorlcur_end_date AS "Expected_End_Date",
+    t4.sgbstdn_scpc_code AS "Student_Centric_Period",
     --t2.sorlcur_term_code AS "Sorlcur_Term_Code",
     --t2.sorlcur_term_code_end AS "Sorlcur_Term_Code_End",
     --t2.sorlcur_curr_rule,
@@ -149,3 +150,5 @@ ORDER BY
     sorlcur_program,
     sorlcur_end_date ASC
 ;
+
+SELECT * FROM sgbstdn;

@@ -11,7 +11,7 @@
 SELECT 
 	spriden_id AS "Student_Number",
 	a1.sfbetrm_pidm AS "Student_PIDM",
-	sfrensp_key_seqno AS "Study_Path", 
+	sfrensp_key_seqno AS "Study_Path",
 	s1.sorlcur_program AS "Programme",
 	s1.sorlcur_end_date AS "Learner_End_Date",
 	a1.sfbetrm_term_code AS "Last_Enrolment_Term",
@@ -69,11 +69,11 @@ WHERE
 	AND s1.sorlcur_term_code = (
 		SELECT MAX(s2.sorlcur_term_code)
 		FROM sorlcur s2
-		WHERE s1.sorlcur_pidm = s2.sorlcur_pidm AND s1.sorlcur_key_seqno = s2.sorlcur_key_seqno AND s2.sorlcur_lmod_code = 'LEARNER' 
+		WHERE s1.sorlcur_pidm = s2.sorlcur_pidm AND s1.sorlcur_key_seqno = s2.sorlcur_key_seqno AND s2.sorlcur_lmod_code = 'LEARNER'
 			AND s2.sorlcur_cact_code = 'ACTIVE' AND s2.sorlcur_current_cde = 'Y'
-	) 
-	
+	)
+	AND spriden_id = '17071643'
 ORDER BY 
-	b1.sfbetrm_term_code, 
+	b1.sfbetrm_term_code,
 	s1.sorlcur_program
 ;
