@@ -8,7 +8,7 @@ SELECT
     f1.spriden_id AS "Banner ID",
     f1.spriden_last_name || ', ' || f1.spriden_first_name AS "Applicant Name",
     a1.saradap_pidm AS "PIDM",
-    a1.saradap_term_code_entry AS "Entry Term",
+    a1.saradap_term_code_entry AS "Application Entry Term",
     a1.saradap_apst_code AS "Application Status",
     a1.saradap_levl_code AS "Application Level",
     a1.saradap_program_1 AS "Application Programme",
