@@ -6,14 +6,15 @@
 
 SELECT
     f1.spriden_id AS "Banner ID",
+    f1.spriden_last_name || ', ' || f1.spriden_first_name AS "Applicant Name",
     a1.saradap_pidm AS "PIDM",
     a1.saradap_term_code_entry AS "Entry Term",
     a1.saradap_apst_code AS "Application Status",
-    a1.saradap_levl_code AS "Programme Level",
-    a1.saradap_program_1 AS "Programme Code",
-    --a1.saradap_coll_code_1 AS "Faculty Code",
-    --a1.saradap_degc_code_1 AS "Award Code",
-    --a1.saradap_majr_code_1 AS "Major Code",
+    a1.saradap_levl_code AS "Application Level",
+    a1.saradap_program_1 AS "Application Programme",
+    --a1.saradap_coll_code_1 AS "Application Faculty",
+    --a1.saradap_degc_code_1 AS "Application Award",
+    --a1.saradap_majr_code_1 AS "Application Major",
     b1.sarappd_apdc_code AS "Application Decision",
     c1.sfbetrm_term_code AS "Term Excluded",
     c1.sfbetrm_ests_code AS "Enrolment Status Code",
@@ -57,12 +58,4 @@ WHERE
 ORDER BY
     a1.saradap_pidm
 ;
-
-SELECT * FROM stvterm;
-
-SELECT DISTINCT saradap_apst_code FROM saradap;
-
-SELECT spriden_id FROM spriden WHERE spriden_pidm = '1704971';
-
-SELECT * FROM glbextr;
 
