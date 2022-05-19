@@ -8,14 +8,14 @@ FROM
 
 
 --; 
---UPDATE gorsdav SET gorsdav_value = SYS.ANYDATA.convertVarchar2('Master of Science in Management in Healthcare')
+--UPDATE gorsdav SET gorsdav_value = SYS.ANYDATA.convertVarchar2('Bachelor of Arts in Business Studies')
 
 WHERE
     1=1
     AND gorsdav_table_name = 'SHRDGMR' 
     AND gorsdav_attr_name = 'AWTITLEOLD'
-    --AND gorsdav_pk_parenttab = '14253771' 
-    --AND SYS.ANYDATA.accessVarchar2(gorsdav_value) = 'Master of Science '
+    AND gorsdav_pk_parenttab = '14253771'
+    AND SYS.ANYDATA.accessVarchar2(gorsdav_value) = 'Bachelor of Arts '
     AND SUBSTR(gorsdav_pk_parenttab,0,7) IN (
         SELECT DISTINCT spriden_pidm
         FROM spriden
@@ -47,3 +47,14 @@ WHERE
         )
     )
     ;
+
+SELECT * FROM gorsdav WHERE gorsdav_table_name = 'SHRDGMR' AND gorsdav_attr_name = 'AWTITLEOLD';
+
+
+SELECT * FROM SHRDGMR_add;
+
+SELECT spriden_pidm  from spriden where spriden_id = '87200919';
+
+SELECT * FROM ;
+              UPDATE shrdgmr_add SET awtitleold_1 = 'Bachelor of Arts in Planning Studies'
+               WHERE shrdgmr_pidm = '1454006' AND SHRDGMR_GRAD_DATE = '06-JUL-1990' AND awtitleold_1 = 'Bachelor of Arts ';
