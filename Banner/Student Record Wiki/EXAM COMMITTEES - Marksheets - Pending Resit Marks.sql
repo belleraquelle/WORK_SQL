@@ -88,12 +88,12 @@ WHERE
     -- Limit to students with an overall fail grade
     AND shrtckg_grde_code_final IN ('F', 'FAIL')
 
-    AND (
+   AND (
             -- Limit to components that are eligible for a resit
             (
-                (shrmrks_comments IS NULL OR shrmrks_comments = 'Exceptional Circumstances') -- Student has a null comment (i.e. they've attempted) or the comment is Exceptional Circumstances
-                AND (shrmrks_grde_code IN ('F', 'FAIL') OR shrmrks_comments = 'Exceptional Circumstances') -- Student has failed a component or the comment is Exceptional Circumstances
-                AND (shrtckg_grde_code_final IN ('F','FAIL') OR shrmrks_comments = 'Exceptional Circumstances') -- Student has failed the module overall or the comment is Exceptional Circumstances
+                (shrmrks_comments IS NULL OR shrmrks_comments in ('Not Attempted', 'Exceptional Circumstances')) -- Student has a null comment (i.e. they've attempted) or the comment is Exceptional Circumstances
+                AND (shrmrks_grde_code IN ('F', 'FAIL') OR shrmrks_comments in ('Not Attempted', 'Exceptional Circumstances')) -- Student has failed a component or the comment is Exceptional Circumstances
+                AND (shrtckg_grde_code_final IN ('F','FAIL') OR shrmrks_comments in ('Not Attempted', 'Exceptional Circumstances')) -- Student has failed the module overall or the comment is Exceptional Circumstances
             )
             -- And exclude students who have had a resit grade entered
             AND (shrmrks_gchg_code NOT IN ('RE', 'UR', 'CR'))
@@ -103,13 +103,13 @@ WHERE
     --AND shrmrks_comments IS NULL
      
     -- Exclude students who have a Not Attempted comment on ANY component for that CRN
- 	AND shrmrks_pidm || shrmrks_term_code || shrmrks_crn NOT IN (
+ 	--AND shrmrks_pidm || shrmrks_term_code || shrmrks_crn NOT IN (
  	
- 		SELECT shrmrks_pidm || shrmrks_term_code || shrmrks_crn
- 		FROM shrmrks
- 		WHERE shrmrks_comments = 'Not Attempted'
+ 		--SELECT shrmrks_pidm || shrmrks_term_code || shrmrks_crn
+ 		--FROM shrmrks
+ 		--WHERE shrmrks_comments = 'Not Attempted'
  	
- 	)
+ --)
  	
 ORDER BY
     shrmrks_crn, shrgcom_name, shrgcom_description, s1.spriden_last_name, s1.spriden_id
