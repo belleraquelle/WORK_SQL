@@ -78,14 +78,14 @@ WHERE
     AND shrtckg_grde_code_final != 'DR'
 
     AND (
-            -- Limit to components that are eligible for a resit...
+            -- Limit to components that are eligible for a resit
             (
-                (shrmrks_comments IS NULL OR shrmrks_comments = 'Exceptional Circumstances') -- Student has a null comment (i.e. they've attempted) or the comment is Exceptional Circumstances
-                AND (shrmrks_grde_code IN ('F', 'FAIL') OR shrmrks_comments = 'Exceptional Circumstances') -- Student has failed a component or the comment is Exceptional Circumstances
-                AND (shrtckg_grde_code_final IN ('F','FAIL') OR shrmrks_comments = 'Exceptional Circumstances') -- Student has failed the module overall or the comment is Exceptional Circumstances
+                (shrmrks_comments IS NULL OR shrmrks_comments in ('Not Attempted', 'Exceptional Circumstances')) -- Student has a null comment (i.e. they've attempted) or the comment is Exceptional Circumstances
+                AND (shrmrks_grde_code IN ('F', 'FAIL') OR shrmrks_comments in ('Not Attempted', 'Exceptional Circumstances')) -- Student has failed a component or the comment is Exceptional Circumstances
+                AND (shrtckg_grde_code_final IN ('F','FAIL') OR shrmrks_comments in ('Not Attempted', 'Exceptional Circumstances')) -- Student has failed the module overall or the comment is Exceptional Circumstances
             )
-            -- ... or where the student has already had a resit grade entered
-            OR (shrmrks_gchg_code IN ('RE', 'UR', 'CR'))
+            -- And exclude students who have had a resit grade entered
+            AND (shrmrks_gchg_code NOT IN ('RE', 'UR', 'CR'))
         )
         
 GROUP BY
